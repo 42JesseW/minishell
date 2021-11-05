@@ -1,0 +1,87 @@
+NAME = minishell
+
+SHELL = /bin/bash
+
+LIBFTDIR	= libft
+LIBFTLIB	= libft.a
+
+SOURCE_DIR 	= srcs
+OBJECT_DIR 	= obj
+INCLUDE_DIR	= includes $(LIBFTDIR)/includes
+
+CLINKS 		= -ltermcap -lreadline
+CFLAGS		= -Wall -Wextra -Werror
+
+SOURCES		= env/env_init.c \
+			  env/env_get.c \
+			  env/env_del.c \
+			  env/env_new.c \
+			  env/env_lst_del.c \
+			  env/env_lst_add_back.c \
+			  pair/pair_del.c \
+			  pair/pair_new.c \
+			  main.c
+
+OBJECTS 	= $(addprefix $(OBJECT_DIR)/$(SOURCE_DIR)/, $(SOURCES:.c=.o))
+LIBS		= $(addprefix -l, $(subst lib,,$(subst .a,,$(LIBFTLIB))))
+INCLUDES	= $(addprefix -I, $(INCLUDE_DIR))
+
+R=$(shell tput setaf 1)
+G=$(shell tput setaf 2)
+Y=$(shell tput setaf 3)
+P=$(shell tput setaf 5)
+B=$(shell tput setaf 4)
+W=$(shell tput setaf 7)
+
+U=$(shell tput smul)
+N=$(shell tput sgr0)
+
+define ASCII
+
+$P███████╗$B██╗  ██╗$Y███████╗$G██╗     $R██╗     $W██████╗  $P██████╗ $B███╗   ██╗
+$P██╔════╝$B██║  ██║$Y██╔════╝$G██║     $R██║     $W██╔══██╗$P██╔═══██╗$B████╗  ██║
+$P███████╗$B███████║$Y█████╗  $G██║     $R██║     $W██║  ██║$P██║   ██║$B██╔██╗ ██║
+$P╚════██║$B██╔══██║$Y██╔══╝  $G██║     $R██║     $W██║  ██║$P██║   ██║$B██║╚██╗██║
+$P███████║$B██║  ██║$Y███████╗$G███████╗$R███████╗$W██████╔╝$P╚██████╔╝$B██║ ╚████║
+$P╚══════╝$B╚═╝  ╚═╝$Y╚══════╝$G╚══════╝$R╚══════╝$W╚═════╝  $P╚═════╝ $B╚═╝  ╚═══╝
+$W               -- created by aheister & jevan-de --
+
+endef
+export ASCII
+
+all: ascii setup $(NAME)
+
+setup:
+	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/env
+	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/pair
+
+ascii:
+	@echo -e "$$ASCII"
+
+$(NAME): $(OBJECTS) $(LIBFTLIB)
+	@$(CC) $(INCLUDES) $(CFLAGS) $(OBJECTS) -o $@ -L. $(LIBS) $(CLINKS)
+	@printf "[$(G)INFO$(W)]: Finished building program $(NAME)\n"
+
+$(OBJECT_DIR)/%.o: %.c
+	@if $(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; then \
+		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
+	else \
+	  	printf "\n[$(R)ERROR$(W)]: Failed to create object file %-33.33s\n" $@; \
+	  	$(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; \
+	fi
+
+$(LIBFTLIB):
+	@make --directory=$(LIBFTDIR)
+	@cp $(LIBFTDIR)/$(LIBFTLIB) .
+
+clean:
+	@echo -e "$(R)cleaning up obj files$(W)"
+	@rm -rf $(OBJECT_DIR)
+	@make --directory=$(LIBFTDIR) clean
+
+fclean: clean
+	@echo -e "$(R)cleaning up executable files$(W)"
+	@rm -f $(NAME) $(LIBFTLIB)
+	@make --directory=$(LIBFTDIR) fclean
+
+re: fclean all

@@ -1,0 +1,17 @@
+#BUILTIN ECHO
+echo
+echo -n
+echo -nnnnnnnnnnn
+echo -n -n
+echo -nf -n
+echo -n -nf
+echo test -n
+echo -n test
+echo test -n -n
+echo -n -n test
+echo -n test -n
+echo testOne testTwo testThree
+
+#BUILTIN CD
+cd ..;pwd
+mkdir TEST_DIR;cd TEST_DIR;rm -r ../TEST_DIR;pwd
