@@ -30,7 +30,6 @@ jobs:
 
       - name: makefile check
         run: |
-          pwd
           make
           make clean
           make fclean
@@ -39,4 +38,6 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: regression test
-        run: bash tests/minishell_tester.sh
+        run: |
+          brew install coreutils
+          bash tests/minishell_tester.sh
