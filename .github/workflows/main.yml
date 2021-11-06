@@ -30,6 +30,7 @@ jobs:
 
       - name: makefile check
         run: |
+          pwd
           make
           make clean
           make fclean
