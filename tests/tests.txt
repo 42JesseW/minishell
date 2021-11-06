@@ -1,4 +1,4 @@
-#BUILTIN ECHO
+#BUILTIN echo
 echo
 echo -n
 echo -nnnnnnnnnnn
@@ -12,6 +12,63 @@ echo -n -n test
 echo -n test -n
 echo testOne testTwo testThree
 
-#BUILTIN CD
+#BUILTIN cd
+cd
+cd NOT_EXISTING_DIR
+cd tests
+cd NOT_EXISTING_FILE
+cd LICENSE
+cd ..
+cd tests/../srcs
+cd ../srcs/../srcs/env
 cd ..;pwd
+
+#BUILTIN export
+export
+export TEST;export
+export TEST=;export
+export TEST=a;export
+export TEST=a=b=c=d=e=f=g=h=i=j;export
+export TEST+=;export
+export TEST;export TEST+=a;export TEST+=b;export
+
+#BUILTIN env
+env
+
+#BUILTIN unset
+unset
+unset NOT_EXISTING_KEY
+unset EXISTING_KEY
+unset _1
+unset 1
+
+#BUILTIN exit
+exit
+exit 42
+exit 42 42
+exit exit exit
+exit exit 42
+exit 42 exit
+exit 10000
+
+#BUILTIN pwd
+pwd
 mkdir TEST_DIR;cd TEST_DIR;rm -r ../TEST_DIR;pwd
+
+#ENVIRONMENT
+unset PATH;ls
+cd ..;unset PWD;export;cd $PWD;export
+cd ..;unset OLDPWD;export;cd $OLDPWD;export
+
+#REDIRECTIONS
+touch NEW_FILE;cat < NEW_FILE;rm NEW_FILE
+touch NEW_FILE;cat < NEW_FILE > EPIC_FILE;rm NEW_FILE EPIC_FILE
+echo "data" > NEW_FILE;cat < NEW_FILE > EPIC_FILE;cat EPIC_FILE;rm NEW_FILE EPIC_FILE
+echo "data" > FILE_ONE > FILE_TWO > FILE_THREE;ls;cat FILE_THREE;rm FILE_*
+> FILE_ONE echo "data" > FILE_TWO > FILE_THREE;ls;cat FILE_THREE;rm FILE_*
+> FILE_ONE > FILE_TWO echo "data" > FILE_THREE;ls;cat FILE_THREE;rm FILE_*
+
+#PIPES
+
+#ALIASES
+

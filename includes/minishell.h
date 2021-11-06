@@ -32,7 +32,9 @@ typedef struct s_env
 	t_pair			*pair;
 }	t_env;
 
-void	pair_del(t_pair *pair);
+void	pair_del(t_pair **pair);
+
+char	*pair_join(t_pair *pair);
 
 t_pair	*pair_new_def(void);
 t_pair	*pair_new_cpy(t_pair *cpy);
@@ -40,13 +42,13 @@ t_pair	*pair_new_val(const char *key, const char *val);
 
 int		env_init(t_env **root, const char *envp[]);
 
-void	env_del(t_env *env);
+void	env_del(t_env **env);
 
 t_env	*env_new_def(void);
 t_env	*env_new_cpy(t_env *cpy);
 t_env	*env_new_val(t_pair *pair);
 
 void	env_lst_del(t_env **root);
-void	env_lst_add_back(t_env **root, t_env *env);
+t_env	*env_lst_put(t_env **root, t_env *env);
 
 #endif

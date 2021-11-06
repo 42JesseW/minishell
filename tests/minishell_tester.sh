@@ -41,11 +41,15 @@ while IFS= read -r cmd; do command_lines+=("$cmd"); done < "$(dirname "$0")/test
 
 for cmd in "${command_lines[@]}"
 do
+	# print the Title for a group of tests
 	if [[ "${cmd:0:1}" == "#" ]]; then
 		printf "%-40s\n" "${Y}${U}${cmd#\#}${N}"
 		continue
-	fi
-  if [[ -z "$cmd" ]]; then
+	# comments
+	elif [[ "${cmd:0:2}" == "//" ]]; then
+		continue
+	# empty lines
+  elif [[ -z "$cmd" ]]; then
   	echo
     continue
   fi
@@ -63,7 +67,7 @@ do
   your_exit_code=$?
 
 	# replace '\n' characters with " ; " in $cmd
-  printf "%-80s" "${U}[> ${cmd//$'\n'/ ; }]${N}"
+  printf "%-110s" "${U}[> ${cmd//$'\n'/ ; }]${N}"
   if [[ your_exit_code -eq $SIGSEG ]]; then
     printf "%40s" "${R}SEGFAULT${N}";
   elif [[ your_exit_code -eq $SIGTIME ]]; then
@@ -78,8 +82,8 @@ done
 
 # SPECIAL ENVIRONMENT VARIABLES
 # 1. SHLVL      -> Incremented by 1 each time you open the program. Taken from {extern char **environ or char *envp[]}
-# 2. PWD        -> Current working directory
-# 3. OLDPWD     -> Previous working directory. Empty when the program starts.
+# 2. PWD        -> Current working directory																	{USE getenv() if unset}
+# 3. OLDPWD     -> Previous working directory. Empty when the program starts. {USE getenv() if unset}
 # 4. PATH       -> Should be used to find binaries from left to right
 #               -> when unset, program can not be found anymore
 
@@ -173,6 +177,7 @@ done
 #-------------------
 ## < EXISTING_FILE cat                                -> cat < EXISTING_FILE
 ## > NOT_EXISTING_FILE cat -e < EXISTING_FILE         -> cat -e < EXISTING_FILE > NOT_EXISTING_FILE
+# > FILE_ONE echo "TEXT" > FILE_TWO > FILE_THREE			-> echo "TEXT" > FILE_ONE > FILE_TWO > FILE_THREE
 
 # Multiple redirects
 #-------------------

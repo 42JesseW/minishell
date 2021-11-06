@@ -12,28 +12,28 @@
 
 #include <minishell.h>
 
-/*
-** NOTES
-**	- "key=" is a valid string to pass to
-**	  this function and will set pair.val
-**	  to NULL.
-*/
-
-t_pair	*env_init_create_pair(const char *env)
+static t_pair	*create_pair(const char *env)
 {
-	t_pair	*pair;
-	char	**kv;
+	char	*key;
+	char	*val;
+	char	*p;
 
-	kv = ft_strsplit(env, '=');
-	if (!kv)
-		return (NULL);
-	pair = pair_new_val(kv[0], kv[1]);
-	if (!pair)
+	val = NULL;
+	p = ft_strchr(env, '=');
+	if (!p)
+		key = strdup(env);
+	else
 	{
-		ft_strarrfree(&kv);
+		key = strndup(env, (p - env));
+		val = strdup(env + (p - env) + 1);
+	}
+	if ((!p && !key) || (p && (!key || !val)))
+	{
+		free(key);
+		free(val);
 		return (NULL);
 	}
-	return (pair);
+	return (pair_new_val(key, val));
 }
 
 /*
@@ -43,8 +43,10 @@ t_pair	*env_init_create_pair(const char *env)
 **	  with t_env nodes.
 **
 ** NOTES
-**	- *envp[] only contains strings with format key=val
-**	  where a '=' is always present.
+**	- a char* environment variable can be key=''
+**	  where the key is "key" and the value is ""
+**	- a char* environment variable can be key=a=b=c
+**	  where the key is "key" and the value is "a=b=c"
 */
 
 int	env_init(t_env **root, const char *envp[])
@@ -56,7 +58,7 @@ int	env_init(t_env **root, const char *envp[])
 	idx = 0;
 	while (envp[idx])
 	{
-		pair = env_init_create_pair(envp[idx]);
+		pair = create_pair(envp[idx]);
 		if (!pair)
 		{
 			env_lst_del(root);
@@ -68,7 +70,7 @@ int	env_init(t_env **root, const char *envp[])
 			env_lst_del(root);
 			return (SYS_ERROR);
 		}
-		env_lst_add_back(root, env);
+		env_lst_put(root, env);
 		idx++;
 	}
 	return (EXIT_SUCCESS);

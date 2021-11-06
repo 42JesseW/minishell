@@ -12,16 +12,16 @@
 
 #include "libft.h"
 
-void	ft_lstadd_front(t_list **lst, t_list *new)
+void	ft_lstadd_front(t_list **lst, t_list *node)
 {
-	if (new == NULL)
+	if (node == NULL)
 		return ;
 	else if (*lst == NULL)
-		*lst = new;
+		*lst = node;
 	else
 	{
-		new->next = *lst;
-		*lst = new;
+		node->next = *lst;
+		*lst = node;
 	}
 	return ;
 }

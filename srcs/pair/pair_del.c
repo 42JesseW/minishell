@@ -12,8 +12,16 @@
 
 #include <minishell.h>
 
-void	pair_del(t_pair *pair)
+void	pair_del(t_pair **pair)
 {
-	free(pair->key);
-	free(pair->val);
+	t_pair	*p;
+
+	p = *pair;
+	if (p)
+	{
+		free(p->key);
+		free(p->val);
+	}
+	free(p);
+	*pair = NULL;
 }

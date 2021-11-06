@@ -12,14 +12,14 @@
 
 #include "libft.h"
 
-void	ft_lstadd_back(t_list **lst, t_list *new)
+void	ft_lstadd_back(t_list **lst, t_list *node)
 {
 	t_list	*cur;
 
-	if (new == NULL)
+	if (node == NULL)
 		return ;
 	else if (*lst == NULL)
-		*lst = new;
+		*lst = node;
 	else
 	{
 		cur = *lst;
@@ -27,7 +27,7 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 		{
 			if (cur->next == NULL)
 			{
-				cur->next = new;
+				cur->next = node;
 				return ;
 			}
 			cur = cur->next;

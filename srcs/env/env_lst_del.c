@@ -22,7 +22,7 @@ void	env_lst_del(t_env **root)
 	{
 		temp = env;
 		env = env->next;
-		env_del(temp);
+		env_del(&temp);
 	}
 	*root = NULL;
 }

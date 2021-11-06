@@ -36,8 +36,10 @@ jobs:
           make minishell
           make re
 
-      # Runs a set of commands using the runners shell
       - name: regression test
         run: |
           brew install coreutils
           bash tests/minishell_tester.sh
+
+      - name: unittests
+        run: make test

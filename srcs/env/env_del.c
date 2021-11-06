@@ -12,8 +12,15 @@
 
 #include <minishell.h>
 
-void	env_del(t_env *env)
+void	env_del(t_env **env)
 {
-	pair_del(env->pair);
-	free(env);
+	t_env	*p;
+
+	p = *env;
+	if (p)
+	{
+		pair_del(&p->pair);
+		free(p);
+	}
+	*env = NULL;
 }

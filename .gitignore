@@ -5,4 +5,5 @@ a.out
 .idea/
 .DS_Store
 *.a
-cmake-build-debug
+cmake-build*
+minishell

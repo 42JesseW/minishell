@@ -21,3 +21,5 @@ add_executable(minishell ${SOURCES})
 add_dependencies(minishell ${LIBFT})
 
 target_link_libraries(minishell ft termcap readline)
+
+add_subdirectory(tests)
