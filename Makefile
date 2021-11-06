@@ -49,7 +49,7 @@ $W               -- created by aheister & jevan-de --
 endef
 export ASCII
 
-all: ascii setup $(NAME)
+all: ascii $(NAME)
 
 setup:
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/env
@@ -58,7 +58,7 @@ setup:
 ascii:
 	@echo -e "$$ASCII"
 
-$(NAME): $(OBJECTS) $(LIBFTLIB)
+$(NAME): setup $(OBJECTS) $(LIBFTLIB)
 	@$(CC) $(INCLUDES) $(CFLAGS) $(OBJECTS) -o $@ -L. $(LIBS) $(CLINKS)
 	@printf "[$(G)INFO$(W)]: Finished building program $(NAME)\n"
 
