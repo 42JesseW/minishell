@@ -24,6 +24,7 @@ fi
 # 1.2 $SIGTIME  -> minishell program times out when running command
 # 1.3 $?        -> minishell exit_code
 # 2. output written to STDOUT
+# 3. memory leaks // TODO
 
 if [[ ! -f "$(dirname "$0")/tests.txt" ]]; then
   printf "[${R}ERROR${N}] Failed to find tests.txt"
@@ -36,7 +37,7 @@ if ! timeout --version &> /dev/null; then
 fi
 
 command_lines=()
-while IFS= read -r cmd; do command_lines+=("$cmd"); done < tests.txt
+while IFS= read -r cmd; do command_lines+=("$cmd"); done < "$(dirname "$0")/tests.txt"
 
 for cmd in "${command_lines[@]}"
 do
