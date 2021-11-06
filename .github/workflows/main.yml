@@ -27,11 +27,11 @@ jobs:
 
       - name: makefile check
         run: |
-          - make
-          - make clean
-          - make fclean
-          - make minishell
-          - make re
+          make
+          make clean
+          make fclean
+          make minishell
+          make re
 
       # Runs a set of commands using the runners shell
       - name: regression test
