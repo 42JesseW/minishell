@@ -95,12 +95,12 @@ SCENARIO("environment is initialised from entrypoint main") {
 			"_=/usr/bin/env",
 		};
 
-		WHEN("env_init() is used to convert the char* to a t_env list") {
+		WHEN("env_from_envp() is used to convert the char* to a t_env list") {
 			t_env	*environ;
 			char	*kv;
 
 			environ = NULL;
-			REQUIRE(env_init(&environ, envp) != SYS_ERROR);
+			REQUIRE(env_from_envp(&environ, envp) != SYS_ERROR);
 			THEN("*environ should contain the converted list") {
 				REQUIRE(environ != NULL);
 				int	idx = 0;

@@ -18,7 +18,7 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	t_env	*environ;
 
-	if (env_init(&environ, (const char **)envp) == SYS_ERROR)
+	if (env_from_envp(&environ, (const char **) envp) == SYS_ERROR)
 		return (EXIT_FAILURE);
 	(void)argc;
 	(void)argv;
