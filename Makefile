@@ -13,9 +13,11 @@ CMAKE_DIR	= cmake-build
 CLINKS 		= -ltermcap -lreadline
 CFLAGS		= -Wall -Wextra -Werror
 
-SOURCES		= env/env_init.c \
+SOURCES		= env/env_from_envp.c \
+			  env/env_to_envp.c \
 			  env/env_del.c \
 			  env/env_new.c \
+			  env/env_lst_len.c \
 			  env/env_lst_del.c \
 			  env/env_lst_get.c \
 			  env/env_lst_put.c \
