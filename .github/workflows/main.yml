@@ -35,11 +35,17 @@ jobs:
           make fclean
           make minishell
           make re
+  test:
+
+    runs-on: macos-11
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: unittests
+        run: make test
 
       - name: regression test
         run: |
           brew install coreutils
           bash tests/minishell_tester.sh
-
-      - name: unittests
-        run: make test
