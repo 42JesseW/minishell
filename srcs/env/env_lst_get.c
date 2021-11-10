@@ -21,7 +21,7 @@ t_env	*env_lst_get(t_env **root, char *key)
 	traverse_env = *root;
 	while (traverse_env)
 	{
-		if (traverse_env->pair && strcmp(traverse_env->pair->key, key) == 0)
+		if (strcmp(traverse_env->pair->key, key) == 0)
 			return (traverse_env);
 		traverse_env = traverse_env->next;
 	}

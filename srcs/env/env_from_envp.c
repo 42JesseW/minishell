@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   env_init.c                                         :+:    :+:            */
+/*   env_from_envp.c                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
@@ -49,7 +49,7 @@ static t_pair	*create_pair(const char *env)
 **	  where the key is "key" and the value is "a=b=c"
 */
 
-int	env_init(t_env **root, const char *envp[])
+int	env_from_envp(t_env **root, const char **envp)
 {
 	t_pair	*pair;
 	t_env	*env;
