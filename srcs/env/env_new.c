@@ -32,6 +32,11 @@ t_env	*env_new_cpy(t_env *cpy)
 	if (!env)
 		return (NULL);
 	env->pair = pair_new_cpy(cpy->pair);
+	if (!env->pair)
+	{
+		env_del(&env);
+		return (NULL);
+	}
 	env->next = cpy->next;
 	return (env);
 }
@@ -44,6 +49,11 @@ t_env	*env_new_val(t_pair *pair)
 	if (!env)
 		return (NULL);
 	env->pair = pair_new_cpy(pair);
+	if (!env->pair)
+	{
+		env_del(&env);
+		return (NULL);
+	}
 	env->next = NULL;
 	return (env);
 }

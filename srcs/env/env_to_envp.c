@@ -19,7 +19,7 @@ static void	free_array_part(const char **envp, int idx)
 	reverse_idx = idx;
 	while (reverse_idx >= 0)
 	{
-		free((void*)envp[reverse_idx]);
+		free((void *)envp[reverse_idx]);
 		reverse_idx--;
 	}
 	free(envp);

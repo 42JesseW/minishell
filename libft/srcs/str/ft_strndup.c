@@ -1,31 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   ft_strncmp.c                                       :+:    :+:            */
+/*   ft_strndup.c                                       :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/04/17 13:49:47 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/10/17 14:38:12 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/11/10 11:45:21 by jevan-de      #+#    #+#                 */
+/*   Updated: 2021/11/10 11:45:21 by jevan-de      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+char	*ft_strndup(const char *str, size_t n)
 {
-	size_t			idx;
-	unsigned char	*ps1;
-	unsigned char	*ps2;
+	char	*dup;
+	size_t	idx;
 
+	if (!str)
+		return (NULL);
+	dup = (char *)malloc(sizeof(char) * (ft_strlen(str) + 1));
+	if (!dup)
+		return (NULL);
 	idx = 0;
-	ps1 = (unsigned char *)s1;
-	ps2 = (unsigned char *)s2;
-	while (idx < n)
+	while (str[idx] && idx < n)
 	{
-		if (ps1[idx] != ps2[idx] || s1[idx] == '\0' || s2[idx] == '\0')
-			return (ps1[idx] - ps2[idx]);
+		dup[idx] = str[idx];
 		idx++;
 	}
-	return (0);
+	dup[idx] = '\0';
+	return (dup);
 }

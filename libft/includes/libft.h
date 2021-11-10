@@ -78,6 +78,8 @@ char				*ft_strtrim(char const *s1, char const *set);
 
 char				*ft_strdup(const char *s);
 
+char				*ft_strndup(const char *str, size_t n);
+
 char				*ft_strchr(const char *s, int c);
 
 size_t				ft_strlcpy(char *dst, const char *src, size_t size);

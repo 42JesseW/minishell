@@ -42,6 +42,7 @@ BR=$(shell tput setaf 136)
 U=$(shell tput smul)
 N=$(shell tput sgr0)
 
+# TODO print at startup of minishell program ?
 define ASCII
 
         ______       ____         ${BR}.════.$W    @   @

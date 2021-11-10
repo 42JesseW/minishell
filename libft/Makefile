@@ -65,6 +65,7 @@ SRC =			ft_atof.c \
 				str/ft_strchr.c \
 				str/ft_strcpy.c \
 				str/ft_strdup.c \
+				str/ft_strndup.c \
 				str/ft_strjoin.c \
 				str/ft_strnjoin.c \
 				str/ft_strlcat.c \

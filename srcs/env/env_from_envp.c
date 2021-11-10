@@ -1,40 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   env_from_envp.c                                         :+:    :+:            */
+/*   env_from_envp.c                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/05 16:37:17 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/11/05 16:37:17 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/11/10 08:34:23 by jevan-de      #+#    #+#                 */
+/*   Updated: 2021/11/10 08:34:23 by jevan-de      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
-
-static t_pair	*create_pair(const char *env)
-{
-	char	*key;
-	char	*val;
-	char	*p;
-
-	val = NULL;
-	p = ft_strchr(env, '=');
-	if (!p)
-		key = strdup(env);
-	else
-	{
-		key = strndup(env, (p - env));
-		val = strdup(env + (p - env) + 1);
-	}
-	if ((!p && !key) || (p && (!key || !val)))
-	{
-		free(key);
-		free(val);
-		return (NULL);
-	}
-	return (pair_new_val(key, val));
-}
 
 /*
 ** DESCRIPTION
@@ -58,7 +34,7 @@ int	env_from_envp(t_env **root, const char **envp)
 	idx = 0;
 	while (envp[idx])
 	{
-		pair = create_pair(envp[idx]);
+		pair = pair_new_val(envp[idx]);
 		if (!pair)
 		{
 			env_lst_del(root);

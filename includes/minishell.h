@@ -38,7 +38,8 @@ char	*pair_join(t_pair *pair);
 
 t_pair	*pair_new_def(void);
 t_pair	*pair_new_cpy(t_pair *cpy);
-t_pair	*pair_new_val(const char *key, const char *val);
+t_pair	*pair_new_kv(const char *key, const char *val);
+t_pair	*pair_new_val(const char *kv);
 
 int		env_from_envp(t_env **root, const char **envp);
 
@@ -50,6 +51,7 @@ t_env	*env_new_val(t_pair *pair);
 
 void	env_lst_del(t_env **root);
 int		env_lst_len(t_env *root);
+t_env	*env_lst_get(t_env **root, char *key);
 t_env	*env_lst_put(t_env **root, t_env *env);
 
 #endif
