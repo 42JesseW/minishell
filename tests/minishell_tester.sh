@@ -14,17 +14,21 @@ N=$(tput sgr0)
 BASH_SHELL=/bin/bash
 YOUR_SHELL=$(ps -o comm= $PPID)
 
-if [[ -n $1 ]]; then
-  YOUR_SHELL=$1
-fi
-
 # tests check for the following
 # 1. exit_code
-# 1.1 $SIGSEG   -> minishell program segfaults
-# 1.2 $SIGTIME  -> minishell program times out when running command
-# 1.3 $?        -> minishell exit_code
+# 1.1 $SIGSEG   	-> minishell program segfaults
+# 1.2 $SIGTIME  	-> minishell program times out when running command
+# 1.3 $?        	-> minishell exit_code
 # 2. output written to STDOUT
-# 3. memory leaks // TODO
+
+if [[ -n $1 ]]; then
+  YOUR_SHELL=$1
+  if [[ ! -f "$(dirname "$0")/../Makefile" ]]; then
+		printf "[${R}ERROR${N}] Failed to find project makefile"
+		exit 1
+	fi
+	make minishell
+fi
 
 if [[ ! -f "$(dirname "$0")/tests.txt" ]]; then
   printf "[${R}ERROR${N}] Failed to find tests.txt"
@@ -39,6 +43,14 @@ fi
 command_lines=()
 while IFS= read -r cmd; do command_lines+=("$cmd"); done < "$(dirname "$0")/tests.txt"
 
+# NOTES
+# =~ is a regex operator that matches a pattern
+# ${var:x:y} is getting substring of $var starting at index x and ending at index y
+# ${var#\#} removes all # at the start of the string $var
+# <<- is insertion operator but with optional tabs for indentation
+# IFS='$c' read -r -a $array_name <<< "$var" creates a new based on splitting string $var using delimiter $c
+# "${#arr[@]}" returns the number of elements in array arr
+# "${arr[@]:x:y}" gets all elements from array arr between index x and index y
 for cmd in "${command_lines[@]}"
 do
 	# print the Title for a group of tests
@@ -53,13 +65,25 @@ do
   	echo
     continue
   fi
-  # if the $cmd variable contains a ';' character check with regex operator =~
+  # if the $cmd variable contains a ';' character, multiple commands
+  # are specified.
   if [[ "$cmd" =~ .*";".* ]]; then
     IFS=';' read -r -a multi_cmd <<< "$cmd"
     cmd="$(cat <<- EOF
 			$(for sub in "${multi_cmd[@]}"; do echo "$sub"; done)
 			EOF
 			)"
+  fi
+  # if the $cmd variable contains a ':' character, a HEREDOC is
+  # specified.
+  if [[ "$cmd" =~ .*":".* ]]; then
+  	IFS=':' read -r -a heredoc_cmd <<< "$cmd"
+		cmd="$(printf "%s%s\n%s\n%s\n" \
+			"cat << " \
+			"${heredoc_cmd[0]}" \
+			"$(for sub in "${heredoc_cmd[@]:1:${#heredoc_cmd[@]}-2}"; do echo "$sub"; done)" \
+			"${heredoc_cmd[${#heredoc_cmd[@]}-1]}" \
+		)"
   fi
   bash_output=$(timeout $TIMEOUT echo "$cmd" | $BASH_SHELL 2>&1)
   bash_exit_code=$?

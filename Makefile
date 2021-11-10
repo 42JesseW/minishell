@@ -11,7 +11,7 @@ INCLUDE_DIR	= includes $(LIBFTDIR)/includes
 CMAKE_DIR	= cmake-build
 
 CLINKS 		= -ltermcap -lreadline
-CFLAGS		= -Wall -Wextra -Werror
+CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
 
 SOURCES		= env/env_from_envp.c \
 			  env/env_to_envp.c \
@@ -56,20 +56,31 @@ $W        -- created by aheister & jevan-de --
 endef
 export ASCII
 
-all: ascii $(NAME)
+define ASCII
 
-setup:
-	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/env
-	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/pair
+    $W▒▒▒▒▒▒▒╗$W▒▒╗  ▒▒╗$W▒▒▒▒▒▒▒╗$W▒▒╗     $W▒▒╗  $W▒▒╗   ▒▒╗
+    $W▒▒╔════╝$W▒▒║  ▒▒║$W▒▒╔════╝$W▒▒║     $W▒▒║  $W╚▒▒╗ ▒▒╔╝     ${BR}.════.$W    @   @
+    $W▒▒▒▒▒▒▒╗$W▒▒▒▒▒▒▒║$W▒▒▒▒▒╗  $W▒▒║     $W▒▒║   $W╚▒▒▒▒╔╝     ${BR}/ .═"═.`.$W   \\v/
+    $W╚════▒▒║$W▒▒╔══▒▒║$W▒▒╔══╝  $W▒▒║     $W▒▒║    $W╚▒▒╔╝      ${BR}║ ║ '\ \ \$W_/ )
+    $W▒▒▒▒▒▒▒║$W▒▒║  ▒▒║$W▒▒▒▒▒▒▒╗$W▒▒▒▒▒▒▒╗$W▒▒▒▒▒▒▒╗$W▒▒║     $W,-${BR}\ `═.' /$W.'  /
+    $W╚══════╝$W╚═╝  ╚═╝$W╚══════╝$W╚══════╝$W╚══════╝$W╚═╝    $W'---${BR}`════'$W----'
+$W               -- created by aheister & jevan-de --
+
+endef
+export ASCII
+
+all: ascii $(NAME)
 
 ascii:
 	@echo -e "$$ASCII"
 
-$(NAME): setup $(OBJECTS) $(LIBFTLIB)
+$(NAME): $(OBJECTS) $(LIBFTLIB)
 	@$(CC) $(INCLUDES) $(CFLAGS) $(OBJECTS) -o $@ -L. $(LIBS) $(CLINKS)
 	@printf "[$(G)INFO$(W)]: Finished building program $(NAME)\n"
 
 $(OBJECT_DIR)/%.o: %.c
+	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/env
+	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/pair
 	@if $(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; then \
 		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
 	else \
