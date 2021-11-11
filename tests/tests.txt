@@ -1,0 +1,119 @@
+#BUILTIN echo
+echo
+echo -n
+echo -nnnnnnnnnnn
+echo -n -n
+echo -nf -n
+echo -n -nf
+echo test -n
+echo -n test
+echo test -n -n
+echo -n -n test
+echo -n test -n
+echo testOne testTwo testThree
+
+#BUILTIN cd
+cd
+cd NOT_EXISTING_DIR
+cd tests
+cd NOT_EXISTING_FILE
+cd LICENSE
+cd ..
+cd tests/../srcs
+cd ../srcs/../srcs/env
+cd ..;pwd
+
+#BUILTIN export
+export
+export TEST;export
+export TEST=;export
+export TEST=a;export
+export TEST=a=b=c=d=e=f=g=h=i=j;export
+export TEST+=;export
+export TEST;export TEST+=a;export TEST+=b;export
+export -f;export
+export f-;export
+export _TEST;export
+export __TEST;export
+export +_TEST;export
+
+#BUILTIN env
+env
+
+#BUILTIN unset
+unset
+unset NOT_EXISTING_KEY
+unset EXISTING_KEY
+unset _1
+unset 1
+unset f-
+unset -f
+
+#BUILTIN exit
+exit
+exit 42
+exit 42 42
+exit exit exit
+exit exit 42
+exit 42 exit
+exit 10000
+
+#BUILTIN pwd
+pwd
+mkdir TEST_DIR;cd TEST_DIR;rm -r ../TEST_DIR;pwd
+
+#ENVIRONMENT
+unset PATH;ls
+cd ..;unset PWD;export;cd $PWD;export
+cd ..;unset OLDPWD;export;cd $OLDPWD;export
+
+#EXIT CODES
+echo -f LoL;echo $?
+cd -f;echo $?
+cd -f LoL;echo $?
+cd LICENSE;echo $?
+cd NOT_EXISTING_DIR;echo $?
+pwd -f;echo $?
+
+#REDIRECTIONS
+touch NEW_FILE;cat < NEW_FILE;rm NEW_FILE
+touch FILE_ONE;cat < FILE_ONE > FILE_TWO;rm FILE_*
+echo "data" > FILE_ONE;cat < FILE_ONE > FILE_TWO;cat FILE_TWO;rm FILE_*
+echo "data" > FILE_ONE > FILE_TWO > FILE_THREE;ls;cat FILE_THREE;rm FILE_*
+> FILE_ONE echo "data" > FILE_TWO > FILE_THREE;ls;cat FILE_THREE;rm FILE_*
+> FILE_ONE > FILE_TWO echo "data" > FILE_THREE;ls;cat FILE_THREE;rm FILE_*
+
+#HEREDOCS
+EOF:lol:test:EOF
+EOF:lol:test:FEO
+
+#PIPES
+ |
+| cat
+cat |
+||
+ls | head -n 2
+ls | tail -n 4 | head -n 2
+
+#PIPES WITH BUILTINS
+cd | echo test;pwd
+echo test | cd;pwd
+echo one | cat -e | cat -e | grep one
+echo test | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e | cat -e
+env | grep PWD
+export | grep PWD
+pwd | grep "home"
+unset | cat
+exit | cat
+
+#PIPES AND REDIRECTIONS
+|>
+<|
+cat | exit < Makefile
+cat -e < Makefile | exit
+
+#ALIASES
+echo "test" > NEW_FILE;< NEW_FILE cat;rm NEW_FILE
+echo "test" > NEW_FILE;> OUT cat -e < NEW_FILE;rm NEW_FILE OUT
+echo "one" > FILE_ONE;echo "two" > FILE_TWO";< FILE_ONE cat -e < FILE_TWO;rm FILE_*
+
