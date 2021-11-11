@@ -14,12 +14,12 @@
 
 #include <readline/readline.h>
 
-static const char	prompt_startup[] = "\n"
+static const char	g_prompt_startup[] = "\n"
 	"        ______       ____         " B " .════. " R "    @   @\n"
 	"       / __/ /  ___ / / /_ __   " B " / .═\"═.`. " R "   \\\\v/\n"
 	"      _\\ \\/ _ \\/ -_) / / // /  " B "  ║ ║ '\\ \\ \\ " R "_/ )\n"
-	"     /___/_//_/\\__/_/_/\\_, /  ,- " B "\\ `═.' /.'  / " R "\n"
-	"                      /___/   '---`════'----'\n"
+	"     /___/_//_/\\__/_/_/\\_, /  ,- " B "\\ `═.' /.' " R " / \n"
+	"                      /___/   '--- " B "`════' " R "----'\n"
 	"\n"
 	"          -- created by aheister & jevan-de --"
 	"\n";
@@ -46,7 +46,7 @@ int	main(int argc, char *argv[], char *envp[])
 	if (argc > 1)
 		return (EXIT_SUCCESS);
 	environ = NULL;
-	printf("%s\n", prompt_startup);
+	printf("%s\n", g_prompt_startup);
 	if (env_from_envp(&environ, (const char **) envp) == SYS_ERROR)
 		return (EXIT_FAILURE);
 	(void)argc;
