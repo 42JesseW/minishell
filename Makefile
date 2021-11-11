@@ -42,20 +42,6 @@ BR=$(shell tput setaf 136)
 U=$(shell tput smul)
 N=$(shell tput sgr0)
 
-# TODO print at startup of minishell program ?
-define ASCII
-
-        ______       ____         ${BR}.════.$W    @   @
-       / __/ /  ___ / / /_ __    ${BR}/ .═"═.`.$W   \\v/
-      _\ \/ _ \/ -_) / / // /    ${BR}║ ║ '\ \ \$W_/ )
-     /___/_//_/\__/_/_/\_, /  $W,-${BR}\ `═.' /$W.'  /
-                      /___/   $W'---${BR}`════'$W----'
-
-$W        -- created by aheister & jevan-de --
-
-endef
-export ASCII
-
 define ASCII
 
     $W▒▒▒▒▒▒▒╗$W▒▒╗  ▒▒╗$W▒▒▒▒▒▒▒╗$W▒▒╗     $W▒▒╗  $W▒▒╗   ▒▒╗

@@ -3,6 +3,7 @@
 TIMEOUT=2
 SIGSEG=139
 SIGTIME=124
+EXITCODE=0
 
 R=$(tput setaf 1)
 G=$(tput setaf 2)
@@ -20,6 +21,9 @@ YOUR_SHELL=$(ps -o comm= $PPID)
 # 1.2 $SIGTIME  	-> minishell program times out when running command
 # 1.3 $?        	-> minishell exit_code
 # 2. output written to STDOUT
+# TODO 3. norminette		-> install using pip
+
+# TODO make sure exit_code of script is set when at least one test fails
 
 if [[ -n $1 ]]; then
   YOUR_SHELL=$1
@@ -35,9 +39,28 @@ if [[ ! -f "$(dirname "$0")/tests.txt" ]]; then
   exit 1;
 fi
 
-if ! timeout --version &> /dev/null; then
-	printf "[${R}ERROR${N}] Failed to find timeout program. You can install it with 'brew install coreutils'\n"
-	exit 1;
+# Make sure all programs to run the script are installed and available
+required_programs=(
+  "norminette"
+  "timeout"
+)
+for prog in "${required_programs[@]}"
+do
+  if ! "$prog" --version &> /dev/null; then
+    printf "%-20s%s\n" "${R}Error${N}" "Script needs $prog to function properly"
+    exit 1
+  fi
+done
+
+# Make sure norminette passes
+norm_paths=(
+	"libft/includes"
+	"libft/srcs"
+	"srcs"
+)
+norminette "${norm_paths[@]}"
+if [[ "$?" -eq 1 ]]; then
+	EXITCODE=1
 fi
 
 command_lines=()
@@ -94,15 +117,20 @@ do
   printf "%-110s" "${U}[> ${cmd//$'\n'/ ; }]${N}"
   if [[ your_exit_code -eq $SIGSEG ]]; then
     printf "%40s" "${R}SEGFAULT${N}";
+    EXITCODE=1
   elif [[ your_exit_code -eq $SIGTIME ]]; then
     printf "%40s" "${R}TIMEOUT${N}";
+    EXITCODE=1
   elif ! diff <(echo "$bash_output") <(echo "$your_output"); then
   	printf "%40s" "${R}OUTPUT${N}"
+  	EXITCODE=1
   else
     printf "%40s" "${G}SUCCESS${N}"
   fi
   echo
 done
+
+exit $EXITCODE
 
 # SPECIAL ENVIRONMENT VARIABLES
 # 1. SHLVL      -> Incremented by 1 each time you open the program. Taken from {extern char **environ or char *envp[]}
