@@ -15,6 +15,9 @@
 # define MINISHELL_H
 # define SYS_ERROR -1
 
+# define B "\e[0;38;2;139;69;19m"
+# define R "\e[m"
+
 # include <stdlib.h>
 # include <string.h>
 # include <stdio.h>
