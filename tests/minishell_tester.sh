@@ -21,9 +21,7 @@ YOUR_SHELL=$(ps -o comm= $PPID)
 # 1.2 $SIGTIME  	-> minishell program times out when running command
 # 1.3 $?        	-> minishell exit_code
 # 2. output written to STDOUT
-# TODO 3. norminette		-> install using pip
-
-# TODO make sure exit_code of script is set when at least one test fails
+# 3. norminette		-> install using pip
 
 if [[ -n $1 ]]; then
   YOUR_SHELL=$1
