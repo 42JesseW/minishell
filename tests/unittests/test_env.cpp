@@ -4,6 +4,23 @@ extern "C" {
 	#include <minishell.h>
 }
 
+size_t	strarrlen(char **arr)
+{
+	size_t	len;
+	size_t	idx;
+
+	len = 0;
+	if (!arr)
+		return (len);
+	idx = 0;
+	while (arr[idx])
+	{
+		len++;
+		idx++;
+	}
+	return (len);
+}
+
 static const char	*envp[] = {
 	"__INTELLIJ_COMMAND_HISTFILE__=/Users/jevan-de/Library/Application Support/JetBrains/CLion2020.2/terminal/history/history-25",
 	"HOME=/Users/jevan-de",
@@ -309,5 +326,50 @@ SCENARIO("environment is initialised from entrypoint main") {
 			}
 			env_lst_del(&environ);
 		}
+	}
+}
+
+SCENARIO("list of env structures is converted back to envp[] list of strings") {
+
+	GIVEN("an empty list of env structures") {
+		t_env	*environ;
+
+		environ = NULL;
+		WHEN("env_to_envp() is used to convert back to char**") {
+			char	**strs;
+
+			strs = env_to_envp(environ);
+			THEN("this should return a NULL pointer") {
+				CHECK(strarrlen(strs) == 0);
+			}
+			ft_strarrfree(&strs);
+		}
+	}
+
+	GIVEN("a full list of env structures") {
+		t_env	*environ;
+
+		environ = NULL;
+		REQUIRE(env_from_envp(&environ, envp) != SYS_ERROR);
+		WHEN("env_to_envp() is used to convert back to char**") {
+			char	**arr;
+
+			arr = env_to_envp(environ);
+			REQUIRE(arr != NULL);
+			THEN("the length of the list should be equal to the length of amount of nodes") {
+				char	*kv;
+				int		idx;
+
+				idx = 0;
+				CHECK(strarrlen(arr) == env_lst_len(environ));
+				for (t_env *env = environ; env != NULL; env = env->next, idx++)
+				{
+					kv = pair_join(env->pair);
+					CHECK(strcmp(kv, arr[idx]) == 0);
+					free(kv);
+				}
+			}
+		}
+		env_lst_del(&environ);
 	}
 }

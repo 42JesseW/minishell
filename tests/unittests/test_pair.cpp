@@ -87,6 +87,22 @@ SCENARIO("creating pairs") {
 		}
 	}
 
+	GIVEN("a full combination of more complex key and value") {
+		char	kv[] = "TMPDIR=/var/folders/zz/zyxvpxvq6csfxvn_n0008bm80022x2/T/";
+
+		WHEN("Creating a new pair") {
+			t_pair	*pair;
+
+			pair = pair_new_val(kv);
+			REQUIRE(pair != NULL);
+			THEN("key and val members should corresponding values") {
+				CHECK(strcmp(pair->key, "TMPDIR") == 0);
+				CHECK(strcmp(pair->val, "/var/folders/zz/zyxvpxvq6csfxvn_n0008bm80022x2/T/") == 0);
+			}
+			pair_del(&pair);
+		}
+	}
+
 	GIVEN("a combination of key and empty value") {
 		char	kv[] = "KEY=";
 

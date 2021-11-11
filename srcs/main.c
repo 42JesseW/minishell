@@ -42,6 +42,7 @@ static const char	g_prompt_startup[] = "\n"
 int	main(int argc, char *argv[], char *envp[])
 {
 	t_env	*environ;
+	char	*line;
 
 	if (argc > 1)
 		return (EXIT_SUCCESS);
@@ -51,10 +52,11 @@ int	main(int argc, char *argv[], char *envp[])
 		return (EXIT_FAILURE);
 	(void)argc;
 	(void)argv;
-
-	char	*line;
-
-	while ((line = readline("> ")))
+	line = readline("> ");
+	while (line)
+	{
 		printf("line: %s\n", line);
+		line = readline("> ");
+	}
 	return (EXIT_SUCCESS);
 }

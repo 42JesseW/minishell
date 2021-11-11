@@ -12,7 +12,7 @@
 
 #include <minishell.h>
 
-static void	free_array_part(const char **envp, int idx)
+static void	free_array_part(char **envp, int idx)
 {
 	int	reverse_idx;
 
@@ -25,18 +25,18 @@ static void	free_array_part(const char **envp, int idx)
 	free(envp);
 }
 
-const char	**env_to_envp(t_env **root)	// TODO testcase
+char	**env_to_envp(t_env *root)
 {
-	t_env		*traverse_env;
-	const char	**envp;
-	char		*kv;
-	int			idx;
+	t_env	*traverse_env;
+	char	**envp;
+	char	*kv;
+	int		idx;
 
-	if (!root)
-		return (NULL);
 	idx = 0;
-	traverse_env = *root;
-	envp = (const char **)malloc(sizeof(char *) + env_lst_len(*root) + 1);
+	traverse_env = root;
+	envp = (char **)malloc(sizeof(char *) * (env_lst_len(root) + 1));
+	if (!envp)
+		return (NULL);
 	while (traverse_env)
 	{
 		kv = pair_join(traverse_env->pair);
@@ -46,6 +46,7 @@ const char	**env_to_envp(t_env **root)	// TODO testcase
 			return (NULL);
 		}
 		traverse_env = traverse_env->next;
+		envp[idx] = kv;
 		idx++;
 	}
 	envp[idx] = NULL;

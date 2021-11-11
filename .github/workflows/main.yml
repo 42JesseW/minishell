@@ -39,4 +39,5 @@ jobs:
       - name: regression test
         run: |
           brew install coreutils
+          pip3 install --upgrade norminette
           bash tests/minishell_tester.sh

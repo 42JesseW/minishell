@@ -1,6 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   ft_strnjoin.c                                      :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/11/11 16:43:42 by jevan-de      #+#    #+#                 */
+/*   Updated: 2021/11/11 16:43:42 by jevan-de      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdarg.h>
-#include <stdlib.h>
-#include <stdio.h>
 #include <libft.h>
 
 static char	*get_string(const char *s, char **str)

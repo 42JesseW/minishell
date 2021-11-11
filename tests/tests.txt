@@ -117,3 +117,10 @@ echo "test" > NEW_FILE;< NEW_FILE cat;rm NEW_FILE
 echo "test" > NEW_FILE;> OUT cat -e < NEW_FILE;rm NEW_FILE OUT
 echo "one" > FILE_ONE;echo "two" > FILE_TWO";< FILE_ONE cat -e < FILE_TWO;rm FILE_*
 
+#TO TO BE GROUPED
+//cat < test4 | < test5 cat
+//cat < test4 | cat
+//cat > file1 < test5 > file2 > file3 | echo test > file4
+//cat > file1 < test5 > file2 > file3
+//cat > file1 < test5 > file2
+//cat > file1 < test5 | cat -e

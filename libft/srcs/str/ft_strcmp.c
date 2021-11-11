@@ -1,30 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   env_lst_del.c                                      :+:    :+:            */
+/*   ft_strcmp.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/05 17:28:15 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/11/05 17:28:15 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/11/11 14:23:29 by jevan-de      #+#    #+#                 */
+/*   Updated: 2021/11/11 14:23:29 by jevan-de      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <libft.h>
 
-void	env_lst_del(t_env **root)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	t_env	*env;
-	t_env	*temp;
+	size_t	idx;
 
-	if (!root)
-		return ;
-	env = *root;
-	while (env)
+	idx = 0;
+	while (s1[idx] && s2[idx])
 	{
-		temp = env;
-		env = env->next;
-		env_del(&temp);
+		if (s1[idx] != s2[idx])
+			return (s1[idx] - s2[idx]);
+		idx++;
 	}
-	*root = NULL;
+	return (s1[idx] - s2[idx]);
 }

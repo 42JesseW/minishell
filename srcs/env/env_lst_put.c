@@ -54,7 +54,7 @@ static t_env	*update_env(t_env **root, t_env *prev, t_env *match, t_env *env)
 **	  node that corresponded with {env.pair.key}.
 */
 
-t_env	*env_lst_put(t_env **root, t_env *env)	// TODO testcase
+t_env	*env_lst_put(t_env **root, t_env *env)
 {
 	t_env	*traverse_env;
 	t_env	*prev;
@@ -69,7 +69,7 @@ t_env	*env_lst_put(t_env **root, t_env *env)	// TODO testcase
 		traverse_env = *root;
 		while (traverse_env)
 		{
-			if (strcmp(traverse_env->pair->key, env->pair->key) == 0)	// TODO use ft_strcmp
+			if (strcmp(traverse_env->pair->key, env->pair->key) == 0)
 				return (update_env(root, prev, traverse_env, env));
 			prev = traverse_env;
 			traverse_env = traverse_env->next;

@@ -12,7 +12,7 @@
 
 #include <minishell.h>
 
-int		env_lst_len(t_env *root)
+int	env_lst_len(t_env *root)
 {
 	t_env	*traverse_env;
 	int		len;
