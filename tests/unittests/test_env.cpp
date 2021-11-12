@@ -344,7 +344,7 @@ SCENARIO("list of env structures is converted back to envp[] list of strings") {
 				int		idx;
 
 				idx = 0;
-				CHECK(strarrlen(arr) == env_lst_len(environ));
+				CHECK(ft_strarrlen(arr) == env_lst_len(environ));
 				for (t_env *env = environ; env != NULL; env = env->next, idx++)
 				{
 					kv = pair_join(env->pair);
