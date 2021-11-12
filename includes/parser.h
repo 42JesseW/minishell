@@ -23,8 +23,9 @@ typedef struct s_redir
 /* cmd node for linked list */
 typedef struct s_node
 {
-	char	**cmd;
-	t_redir	*redir;
+	char			**cmd;
+	t_redir			*redir;
+	struct s_node	*next;
 }	t_node;
 
 void	redir_del(t_redir **redir);	// TODO testcase

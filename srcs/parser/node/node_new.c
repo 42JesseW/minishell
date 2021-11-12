@@ -20,6 +20,7 @@ t_node	*node_new_def(void)
 	if (!node)
 		return (NULL);
 	node->cmd = NULL;
+	node->next = NULL;
 	node->redir = NULL;
 	return (node);
 }
@@ -40,6 +41,7 @@ t_node	*node_new_val(char **cmd, t_redir *redir)
 		node_del(&node);
 		return (NULL);
 	}
+	node->next = NULL;
 	return (node);
 }
 
@@ -59,5 +61,6 @@ t_node	*node_new_cpy(t_node *cpy)
 		node_del(&node);
 		return (NULL);
 	}
+	node->next = NULL;
 	return (node);
 }
