@@ -23,6 +23,30 @@
 # include <stdio.h>
 # include <libft.h>
 
+typedef enum e_redir_type
+{
+	REDIR_IN,
+	REDIR_OUT,
+	REDIR_APP,
+	REDIR_DELIM
+}	t_redir_type;
+
+/* redir node for linked list */
+typedef struct s_redir
+{
+	t_redir_type	type;
+	char			*file;
+	struct s_redir	*next;
+}	t_redir;
+
+/* cmd node for linked list */
+typedef struct s_node
+{
+	char			**cmd;
+	t_redir			*redir;
+	struct s_node	*next;
+}	t_node;
+
 typedef struct s_pair
 {
 	char	*key;

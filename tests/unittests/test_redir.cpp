@@ -11,7 +11,9 @@ SCENARIO("creating new t_redir structures") {
 
 			redir = redir_new_def();
 			REQUIRE(redir != NULL);
-			THEN("members")
+			THEN("members") {
+
+			}
 		}
 	}
 
