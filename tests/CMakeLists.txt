@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 include_directories(${PROJECT_SOURCE_DIR}/includes .)
 
-file(GLOB_RECURSE TEST_SOURCES ../srcs/env/*.c ../srcs/pair/*.c)
+file(GLOB_RECURSE TEST_SOURCES ../srcs/shell/*.c ../srcs/shell/**/*.c ../srcs/parser/*.c ../srcs/parser/**/*.c)
 
 add_library(tester STATIC ${TEST_SOURCES})
 

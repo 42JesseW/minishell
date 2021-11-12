@@ -14,49 +14,32 @@
 
 #include <readline/readline.h>
 
-static const char	g_prompt_startup[] = "\n"
-	"        ______       ____         " B " .════. " R "    @   @\n"
-	"       / __/ /  ___ / / /_ __   " B " / .═\"═.`. " R "   \\\\v/\n"
-	"      _\\ \\/ _ \\/ -_) / / // /  " B "  ║ ║ '\\ \\ \\ " R "_/ )\n"
-	"     /___/_//_/\\__/_/_/\\_, /  ,- " B "\\ `═.' /.' " R " / \n"
-	"                      /___/   '--- " B "`════' " R "----'\n"
-	"\n"
-	"          -- created by aheister & jevan-de --"
-	"\n";
+static const char	g_prompt[] = "shelly3.2$ ";
 
 /*
-1. Discuss testing
- 	- Github actions
- 	- branches
-	- unit tests
- 	- regression test
-2. Code reviews
- 	- merge request
-	- tiny features (pieces of functionality)
-3. Minishell structure
- 	- readline
- 	- lexer / parser structure
- 	- executor
+** main() has 4 main jobs:
+**	1. checking arguments passed to the program
+**	2. initialising the t_shell struct
+**	3. passing output from the initial readline() call to the lexer
+**	4. passing output from the parser to the executor
 */
 
-int	main(int argc, char *argv[], char *envp[])
+int	main(int argc, char *argv[], const char *envp[])
 {
-	t_env	*environ;
-	char	*line;
+	t_shell	*shell;
+	char	*input_line;
 
-	if (argc > 1)
+	if (argc > 1 || argv[1])
 		return (EXIT_SUCCESS);
-	environ = NULL;
-	printf("%s\n", g_prompt_startup);
-	if (env_from_envp(&environ, (const char **) envp) == SYS_ERROR)
+	shell = shell_init(envp, &input_line);
+	if (!shell)
 		return (EXIT_FAILURE);
-	(void)argc;
-	(void)argv;
-	line = readline("> ");
-	while (line)
+	while (input_line)
 	{
-		printf("line: %s\n", line);
-		line = readline("> ");
+		free(input_line);
+		input_line = readline(g_prompt);
+		printf("%s\n", input_line);
 	}
+	shell_destroy(&shell);
 	return (EXIT_SUCCESS);
 }
