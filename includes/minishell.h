@@ -35,6 +35,11 @@ typedef struct s_env
 	t_pair			*pair;
 }	t_env;
 
+typedef struct s_shell
+{
+	t_env	*environ;
+}	t_shell;
+
 void		pair_del(t_pair **pair);
 
 char		*pair_join(t_pair *pair);
@@ -57,5 +62,8 @@ void		env_lst_del(t_env **root);
 int			env_lst_len(t_env *root);
 t_env		*env_lst_get(t_env **root, char *key);
 t_env		*env_lst_put(t_env **root, t_env *env);
+
+void		shell_destroy(t_shell **shell);
+t_shell		*shell_init(const char *envp[], char **input_line);
 
 #endif
