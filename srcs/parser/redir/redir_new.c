@@ -62,5 +62,5 @@ t_redir	*redir_new_val(t_redir_type type, const char *file)
 		return (NULL);
 	}
 	redir->next = NULL;
-	return (NULL);
+	return (redir);
 }

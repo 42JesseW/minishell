@@ -11,18 +11,56 @@ SCENARIO("creating new t_redir structures") {
 
 			redir = redir_new_def();
 			REQUIRE(redir != NULL);
-			THEN("members") {
-
+			THEN("members should have the approriate values") {
+				CHECK(redir->next == NULL);
+				CHECK(redir->file == NULL);
+				CHECK(redir->type == REDIR_IN);
 			}
+			redir_del(&redir);
 		}
 	}
 
 	GIVEN("another t_redir structure"){
+		t_redir	*cpy;
 
+		cpy = redir_new_val(REDIR_OUT, "filename");
+		cpy->next = cpy;
+		REQUIRE(cpy != NULL);
+		WHEN("creating a new t_redir structure") {
+			t_redir	*redir;
+
+			redir = redir_new_cpy(cpy);
+			REQUIRE(redir != NULL);
+			THEN("members should have the appropriate values") {
+				CHECK(redir->next == cpy->next);
+				CHECK(redir->type == cpy->type);
+				CHECK(strcmp(redir->file, cpy->file) == 0);
+			}
+			redir_del(&redir);
+		}
+		redir_del(&cpy);
 	}
 
 	GIVEN("input values") {
+		t_redir_type	type;
+		char			*file;
 
+		type = REDIR_APP;
+		file = strdup("filename");
+		REQUIRE(file != NULL);
+		WHEN("creating a new t_redir structure") {
+			t_redir	*redir;
+
+			redir = redir_new_val(type, file);
+			REQUIRE(redir != NULL);
+			THEN("members should have the appropriate values") {
+				CHECK(redir->next == NULL);
+				CHECK(redir->type == type);
+				CHECK(strcmp(redir->file, file) == 0);
+			}
+			redir_del(&redir);
+		}
+		free(file);
 	}
 }
 
