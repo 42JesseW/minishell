@@ -4,23 +4,6 @@ extern "C" {
 	#include <minishell.h>
 }
 
-size_t	strarrlen(char **arr)
-{
-	size_t	len;
-	size_t	idx;
-
-	len = 0;
-	if (!arr)
-		return (len);
-	idx = 0;
-	while (arr[idx])
-	{
-		len++;
-		idx++;
-	}
-	return (len);
-}
-
 static const char	*envp[] = {
 	"__INTELLIJ_COMMAND_HISTFILE__=/Users/jevan-de/Library/Application Support/JetBrains/CLion2020.2/terminal/history/history-25",
 	"HOME=/Users/jevan-de",
@@ -340,7 +323,7 @@ SCENARIO("list of env structures is converted back to envp[] list of strings") {
 
 			strs = env_to_envp(environ);
 			THEN("this should return a NULL pointer") {
-				CHECK(strarrlen(strs) == 0);
+				CHECK(ft_strarrlen(strs) == 0);
 			}
 			ft_strarrfree(&strs);
 		}
@@ -361,7 +344,7 @@ SCENARIO("list of env structures is converted back to envp[] list of strings") {
 				int		idx;
 
 				idx = 0;
-				CHECK(strarrlen(arr) == env_lst_len(environ));
+				CHECK(ft_strarrlen(arr) == env_lst_len(environ));
 				for (t_env *env = environ; env != NULL; env = env->next, idx++)
 				{
 					kv = pair_join(env->pair);
