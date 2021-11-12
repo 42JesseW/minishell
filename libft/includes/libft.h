@@ -138,6 +138,10 @@ int					ft_strarrexists(char **arr, char *str);
 
 void				ft_strarrfree(char ***str);
 
+int					ft_strarrlen(char **arr);
+
+char				**ft_strarrdup(char **arr);
+
 char				*ft_strnjoin(int n, ...);
 
 #endif

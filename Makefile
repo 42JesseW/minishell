@@ -26,6 +26,13 @@ SOURCES		= shell/env/pair/pair_del.c \
 			  shell/env/env_lst_put.c \
 			  shell/shell_init.c \
 			  shell/shell_destroy.c \
+			  parser/node/node_del.c \
+			  parser/node/node_new.c \
+			  parser/redir/redir_del.c \
+			  parser/redir/redir_lst_add.c \
+			  parser/redir/redir_lst_del.c \
+			  parser/redir/redir_lst_dup.c \
+			  parser/redir/redir_new.c \
 			  main.c
 
 OBJECTS 	= $(addprefix $(OBJECT_DIR)/$(SOURCE_DIR)/, $(SOURCES:.c=.o))
@@ -68,6 +75,7 @@ $(NAME): $(OBJECTS) $(LIBFTLIB)
 
 $(OBJECT_DIR)/%.o: %.c
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/shell/env/pair
+	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/parser/{node,redir}
 	@if $(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; then \
 		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
 	else \

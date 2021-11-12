@@ -16,29 +16,6 @@
 
 static const char	g_prompt[] = "shelly3.2$ ";
 
-typedef enum e_redir_type
-{
-	REDIR_IN,
-	REDIR_OUT,
-	REDIR_APP,
-	REDIR_DELIM
-}	t_redir_type;
-
-/* redir node for linked list */
-typedef struct s_redir
-{
-	t_redir_type	type;
-	char			*file;
-	struct s_redi	*next;
-}	t_redir;
-
-/* cmd node for linked list */
-typedef struct s_node
-{
-	char	**args;
-	t_redir	*redir;
-}	t_node;
-
 /*
 ** main() has 4 main jobs:
 **	1. checking arguments passed to the program
@@ -63,5 +40,6 @@ int	main(int argc, char *argv[], const char *envp[])
 		input_line = readline(g_prompt);
 		printf("%s\n", input_line);
 	}
+	shell_destroy(&shell);
 	return (EXIT_SUCCESS);
 }

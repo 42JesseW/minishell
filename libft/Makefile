@@ -80,6 +80,8 @@ SRC =			ft_atof.c \
 				str/ft_strtrim.c \
 				str/ft_strarrfree.c \
                 str/ft_strarrexists.c \
+                str/ft_strarrlen.c \
+                str/ft_strarrdup.c \
 				ft_split.c \
 				ft_substr.c \
 				ft_tolower.c \
