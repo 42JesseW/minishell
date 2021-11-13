@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   env_del.c                                          :+:    :+:            */
+/*   pair_del.c                                         :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/05 16:37:06 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/11/05 16:37:06 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/11/05 16:52:59 by jevan-de      #+#    #+#                 */
+/*   Updated: 2021/11/05 16:52:59 by jevan-de      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-void	env_del(t_env **env)
+void	pair_del(void *pair)
 {
-	t_env	*p;
+	t_pair	*p;
 
-	p = *env;
+	p = pair;
 	if (p)
 	{
-		pair_del(&p->pair);
-		free(p);
+		free(p->key);
+		free(p->val);
 	}
-	*env = NULL;
+	free(p);
 }

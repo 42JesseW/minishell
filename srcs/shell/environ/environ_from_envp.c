@@ -25,10 +25,10 @@
 **	  where the key is "key" and the value is "a=b=c"
 */
 
-int	env_from_envp(t_env **root, const char **envp)
+int	environ_from_envp(t_list **root, const char **envp)
 {
 	t_pair	*pair;
-	t_env	*env;
+	t_list	*env;
 	int		idx;
 
 	idx = 0;
@@ -37,16 +37,16 @@ int	env_from_envp(t_env **root, const char **envp)
 		pair = pair_new_val(envp[idx]);
 		if (!pair)
 		{
-			env_lst_del(root);
+			ft_lstclear(root, pair_del);
 			return (SYS_ERROR);
 		}
-		env = env_new_val(pair);
+		env = ft_lstnew(pair);
 		if (!env)
 		{
-			env_lst_del(root);
+			ft_lstclear(root, pair_del);
 			return (SYS_ERROR);
 		}
-		env_lst_put(root, env);
+		ft_lstadd_back(root, env);
 		idx++;
 	}
 	return (EXIT_SUCCESS);

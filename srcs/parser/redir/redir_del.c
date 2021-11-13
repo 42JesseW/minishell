@@ -12,17 +12,14 @@
 
 #include <parser.h>
 
-void	redir_del(t_redir **redir)
+void	redir_del(void *redir)
 {
 	t_redir	*p;
 
-	if (!redir)
-		return ;
-	p = *redir;
+	p = redir;
 	if (p)
 	{
 		free(p->file);
 		free(p);
 	}
-	*redir = NULL;
 }

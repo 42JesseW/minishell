@@ -12,18 +12,15 @@
 
 #include <parser.h>
 
-void	node_del(t_node	**node)
+void	node_del(void *node)
 {
 	t_node	*p;
 
-	if (!node)
-		return ;
-	p = *node;
+	p = node;
 	if (p)
 	{
 		ft_strarrfree(&p->cmd);
-		redir_lst_del(&p->redir);
+		ft_lstclear(&p->redir, redir_del);
 		free(p);
 	}
-	*node = NULL;
 }

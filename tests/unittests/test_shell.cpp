@@ -49,9 +49,9 @@ SCENARIO("initialize a shell structure from entrypoint") {
 				CHECK(strcmp(input_line, "") == 0);
 				CHECK(shell->environ != NULL);
 				int	idx = 0;
-				for (t_env *env = shell->environ; env != NULL; env = env->next, idx++)
+				for (t_list *env = shell->environ; env != NULL; env = env->next, idx++)
 				{
-					kv = pair_join(env->pair);
+					kv = pair_join((t_pair *)env->content);
 					CHECK(strcmp(envp[idx], kv) == 0);
 					free(kv);
 				}

@@ -24,23 +24,25 @@ t_pair	*pair_new_def(void)
 	return (pair);
 }
 
-t_pair	*pair_new_cpy(t_pair *cpy)
+void	*pair_new_cpy(void *cpy)
 {
 	t_pair	*pair;
+	t_pair  *copy;
 
 	pair = (t_pair *)malloc(sizeof(t_pair));
 	if (!pair)
 		return (NULL);
+	copy = cpy;
 	pair->key = NULL;
-	if (cpy->key)
-		pair->key = ft_strdup(cpy->key);
+	if (copy->key)
+		pair->key = ft_strdup(copy->key);
 	pair->val = NULL;
-	if (cpy->val)
-		pair->val = ft_strdup(cpy->val);
-	if ((cpy->key && !pair->key) || (cpy->val && !pair->val))
+	if (copy->val)
+		pair->val = ft_strdup(copy->val);
+	if ((copy->key && !pair->key) || (copy->val && !pair->val))
 	{
 		free(pair->key);
-		free(pair->key);
+		free(pair->val);
 		return (NULL);
 	}
 	return (pair);
@@ -92,7 +94,7 @@ t_pair	*pair_new_kv(const char *key, const char *val)
 	if ((key && !pair->key) || (val && !pair->val))
 	{
 		free(pair->key);
-		free(pair->key);
+		free(pair->val);
 		return (NULL);
 	}
 	return (pair);

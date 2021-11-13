@@ -25,27 +25,33 @@ static void	free_array_part(char **envp, int idx)
 	free(envp);
 }
 
-char	**env_to_envp(t_env *root)
+/*
+** environ_to_envp() converts a list of
+** pairs, the environment variables, back
+** to an array of strings.
+*/
+
+char	**environ_to_envp(t_list *root)
 {
-	t_env	*traverse_env;
+	t_list 	*traverse_lst;
 	char	**envp;
 	char	*kv;
 	int		idx;
 
 	idx = 0;
-	traverse_env = root;
-	envp = (char **)malloc(sizeof(char *) * (env_lst_len(root) + 1));
+    traverse_lst = root;
+	envp = (char **)malloc(sizeof(char *) * (ft_lstsize(root) + 1));
 	if (!envp)
 		return (NULL);
-	while (traverse_env)
-	{
-		kv = pair_join(traverse_env->pair);
+	while (traverse_lst)
+    {
+		kv = pair_join((t_pair *)traverse_lst->content);
 		if (!kv)
 		{
 			free_array_part(envp, idx);
 			return (NULL);
 		}
-		traverse_env = traverse_env->next;
+        traverse_lst = traverse_lst->next;
 		envp[idx] = kv;
 		idx++;
 	}

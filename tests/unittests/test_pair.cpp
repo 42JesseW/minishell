@@ -18,7 +18,7 @@ SCENARIO("creating pairs") {
 				CHECK(strcmp(key, pair->key) == 0);
 				CHECK(strcmp(val, pair->val) == 0);
 			}
-			pair_del(&pair);
+			pair_del(pair);
 		}
 	}
 
@@ -34,7 +34,7 @@ SCENARIO("creating pairs") {
 				CHECK(strcmp(key, pair->key) == 0);
 				CHECK(pair->val == NULL);
 			}
-			pair_del(&pair);
+			pair_del(pair);
 		}
 	}
 
@@ -48,7 +48,7 @@ SCENARIO("creating pairs") {
 				CHECK(pair->key == NULL);
 				CHECK(pair->val == NULL);
 			}
-			pair_del(&pair);
+			pair_del(pair);
 		}
 	}
 
@@ -60,15 +60,15 @@ SCENARIO("creating pairs") {
 		WHEN("Creating a new pair") {
 			t_pair	*pair;
 
-			pair = pair_new_cpy(cpy);
+			pair = (t_pair*)pair_new_cpy((void*)cpy);
 			REQUIRE(pair != NULL);
 			THEN("key and val members should have corresponding values") {
 				CHECK(strcmp(cpy->key, pair->key) == 0);
 				CHECK(strcmp(cpy->val, pair->val) == 0);
 			}
-			pair_del(&pair);
+			pair_del(pair);
 		}
-		pair_del(&cpy);
+		pair_del(cpy);
 	}
 
 	GIVEN("a full combination of key and value") {
@@ -83,7 +83,7 @@ SCENARIO("creating pairs") {
 				CHECK(strcmp(pair->key, "KEY") == 0);
 				CHECK(strcmp(pair->val, "VAL") == 0);
 			}
-			pair_del(&pair);
+			pair_del(pair);
 		}
 	}
 
@@ -99,7 +99,7 @@ SCENARIO("creating pairs") {
 				CHECK(strcmp(pair->key, "TMPDIR") == 0);
 				CHECK(strcmp(pair->val, "/var/folders/zz/zyxvpxvq6csfxvn_n0008bm80022x2/T/") == 0);
 			}
-			pair_del(&pair);
+			pair_del(pair);
 		}
 	}
 
@@ -115,7 +115,7 @@ SCENARIO("creating pairs") {
 				CHECK(strcmp(pair->key, "KEY") == 0);
 				CHECK(strlen(pair->val) == 0);
 			}
-			pair_del(&pair);
+			pair_del(pair);
 		}
 	}
 
@@ -131,7 +131,7 @@ SCENARIO("creating pairs") {
 				CHECK(strcmp(pair->key, "KEY") == 0);
 				CHECK(pair->val == NULL);
 			}
-			pair_del(&pair);
+			pair_del(pair);
 		}
 	}
 }
@@ -153,7 +153,7 @@ SCENARIO("joining pairs") {
 			}
 			free(kv);
 		}
-		pair_del(&pair);
+		pair_del(pair);
 	}
 
 	GIVEN("a pair with only a key") {
@@ -172,7 +172,7 @@ SCENARIO("joining pairs") {
 			}
 			free(kv);
 		}
-		pair_del(&pair);
+		pair_del(pair);
 	}
 
 	GIVEN("a pair with a key and an empty value") {
@@ -191,6 +191,6 @@ SCENARIO("joining pairs") {
 			}
 			free(kv);
 		}
-		pair_del(&pair);
+		pair_del(pair);
 	}
 }
