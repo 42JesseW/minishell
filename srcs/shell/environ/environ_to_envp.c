@@ -33,25 +33,25 @@ static void	free_array_part(char **envp, int idx)
 
 char	**environ_to_envp(t_list *root)
 {
-	t_list 	*traverse_lst;
+	t_list	*traverse_lst;
 	char	**envp;
 	char	*kv;
 	int		idx;
 
 	idx = 0;
-    traverse_lst = root;
+	traverse_lst = root;
 	envp = (char **)malloc(sizeof(char *) * (ft_lstsize(root) + 1));
 	if (!envp)
 		return (NULL);
 	while (traverse_lst)
-    {
+	{
 		kv = pair_join((t_pair *)traverse_lst->content);
 		if (!kv)
 		{
 			free_array_part(envp, idx);
 			return (NULL);
 		}
-        traverse_lst = traverse_lst->next;
+		traverse_lst = traverse_lst->next;
 		envp[idx] = kv;
 		idx++;
 	}

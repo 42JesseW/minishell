@@ -27,7 +27,7 @@ t_redir	*redir_new_def(void)
 void	*redir_new_cpy(void *cpy)
 {
 	t_redir	*redir;
-    t_redir *copy;
+	t_redir	*copy;
 
 	redir = (t_redir *)malloc(sizeof(t_redir));
 	if (!redir)

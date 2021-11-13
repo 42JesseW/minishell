@@ -27,7 +27,7 @@ t_pair	*pair_new_def(void)
 void	*pair_new_cpy(void *cpy)
 {
 	t_pair	*pair;
-	t_pair  *copy;
+	t_pair	*copy;
 
 	pair = (t_pair *)malloc(sizeof(t_pair));
 	if (!pair)

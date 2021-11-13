@@ -46,6 +46,7 @@ SCENARIO("initialize a shell structure from entrypoint") {
 			THEN("the members and input_line should have the appropriate values") {
 				char	*kv;
 
+				CHECK(shell->cmd_nodes == NULL);
 				CHECK(strcmp(input_line, "") == 0);
 				CHECK(shell->environ != NULL);
 				int	idx = 0;
