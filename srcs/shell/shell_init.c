@@ -26,11 +26,11 @@ static const char	g_prompt_startup[] = "\n"
 ** shell_init has four jobs:
 **	1. create a t_shell structure
 **	2. initialize the t_shell structure
-**	3. initialize the input_line string used by readline()
+**	3. initialize the input_string string used by readline()
 **	4. write an awesome ascii snail to STDOUT :)
 */
 
-t_shell	*shell_init(const char *envp[], char **input_line)
+t_shell	*shell_init(const char *envp[], char **input_string)
 {
 	t_shell	*shell;
 	t_list	*environ;
@@ -47,7 +47,7 @@ t_shell	*shell_init(const char *envp[], char **input_line)
 		shell_destroy(&shell);
 		return (NULL);
 	}
-	*input_line = line;
+	*input_string = line;
 	shell->environ = environ;
 	shell->cmd_nodes = NULL;
 	printf("%s\n", g_prompt_startup);

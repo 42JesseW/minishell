@@ -7,10 +7,13 @@ LIBFTLIB	= libft.a
 
 SOURCE_DIR 	= srcs
 OBJECT_DIR 	= obj
-INCLUDE_DIR	= includes $(LIBFTDIR)/includes
+INCLUDE_DIR	= includes $(LIBFTDIR)/includes ${HOME}/.brew/opt/readline/include
 CMAKE_DIR	= cmake-build
 
-CLINKS 		= -ltermcap -lreadline
+# `brew install readline` for function rl_replace_line
+LIB_DIR     = . ${HOME}/.brew/opt/readline/lib
+
+CLINKS 		= -ltermcap -lreadline -lft
 CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
 
 SOURCES		= shell/environ/pair/pair_del.c \
@@ -27,7 +30,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  main.c
 
 OBJECTS 	= $(addprefix $(OBJECT_DIR)/$(SOURCE_DIR)/, $(SOURCES:.c=.o))
-LIBS		= $(addprefix -l, $(subst lib,,$(subst .a,,$(LIBFTLIB))))
+LIBS		= $(addprefix -L, $(LIB_DIR))
 INCLUDES	= $(addprefix -I, $(INCLUDE_DIR))
 
 # https://unix.stackexchange.com/questions/269077/tput-setaf-color-table-how-to-determine-color-codes
@@ -61,7 +64,7 @@ ascii:
 	@echo -e "$$ASCII"
 
 $(NAME): $(OBJECTS) $(LIBFTLIB)
-	@$(CC) $(INCLUDES) $(CFLAGS) $(OBJECTS) -o $@ -L. $(LIBS) $(CLINKS)
+	@$(CC) $(OBJECTS) -o $@ $(LIBS) $(CLINKS) $(INCLUDES) $(CFLAGS)
 	@printf "[$(G)INFO$(W)]: Finished building program $(NAME)\n"
 
 $(OBJECT_DIR)/%.o: %.c

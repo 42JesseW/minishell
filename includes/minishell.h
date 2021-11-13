@@ -18,10 +18,11 @@
 # define B "\e[0;38;2;218;165;32m"
 # define R "\e[m"
 
-# include <stdlib.h>
-# include <string.h>
-# include <stdio.h>
 # include <libft.h>
+# include <stdio.h>
+# include <stdbool.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 
 typedef enum e_redir_type
 {
@@ -71,6 +72,6 @@ int			environ_from_envp(t_list **root, const char **envp);
 char		**environ_to_envp(t_list *root);
 
 void		shell_destroy(t_shell **shell);
-t_shell		*shell_init(const char *envp[], char **input_line);
+t_shell		*shell_init(const char *envp[], char **input_string);
 
 #endif

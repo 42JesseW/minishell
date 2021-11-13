@@ -5,8 +5,8 @@ set(CMAKE_C_STANDARD 99)
 set(LIBFT_DIR ${PROJECT_SOURCE_DIR}/libft)
 set(LIBFT libft.a)
 
-include_directories(includes ${LIBFT_DIR}/includes)
-link_directories(${LIBFT_DIR})
+include_directories(includes ${LIBFT_DIR}/includes $ENV{HOME}/.brew/opt/readline/include)
+link_directories(${LIBFT_DIR} ${HOME}/.brew/opt/readline/lib)
 
 add_custom_target(
     ${LIBFT} ALL
