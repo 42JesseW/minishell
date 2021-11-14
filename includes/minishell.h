@@ -55,6 +55,7 @@ typedef struct s_pair
 
 typedef struct s_shell
 {
+	int		exit_code;
 	t_list	*environ;
 	t_list	*cmd_nodes;
 }	t_shell;

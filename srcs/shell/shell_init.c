@@ -48,6 +48,7 @@ t_shell	*shell_init(const char *envp[], char **input_string)
 		return (NULL);
 	}
 	*input_string = line;
+	shell->exit_code = 0;
 	shell->environ = environ;
 	shell->cmd_nodes = NULL;
 	printf("%s\n", g_prompt_startup);

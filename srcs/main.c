@@ -14,33 +14,37 @@
 
 static const char	g_prompt[] = "shelly3.2$ ";
 
-/*
-** A multiline command is defined as a command line
-** where a single quote ' or a double quote " is not
-** properly closed by a matching quote of the same kind.
-*/
-static bool	has_paired_quotes(const char *str)
+typedef enum e_token_type
 {
-	char	*ptr;
-	int		idx;
+	TOK_DOLLAR,
+	TOK_QUOTE,
+	TOK_DQUOTE,
+	TOK_WORD,
+	TOK_SPACE,
+	TOK_PIPE,
+	TOK_LESS,
+	TOK_DLESS,
+	TOK_GREAT,
+	TOK_DGREAT
+}	t_token_type;
 
-	if (!str || !(*str))
-		return (true);
-	idx = 0;
-	while (str[idx])
-	{
-		if (str[idx] == '\'' || str[idx] == '\"')
-		{
-			ptr = ft_strchr(str + idx + 1, str[idx]);
-			if (!ptr)
-				return (false);
-			if (!has_paired_quotes(ptr + 1))
-				return (false);
-			idx += (int)(ptr - str);
-		}
-		idx++;
-	}
-	return (true);
+typedef struct s_token
+{
+	t_token_type	type;
+	char			*token;
+}	t_token;
+
+/*
+** tokenize_input_string() splits the input_string into
+** smaller tokens with a meaning. While creating tokens,
+** it checks if the order conforms to the shell grammar.
+** The tokenizer may set shell.exit_code = 2 when a syntax
+** error is found. // TODO discuss implementation of exit_code
+*/
+
+t_list	*tokenize_input_string(const char *input_string)
+{
+
 }
 
 /*
@@ -52,25 +56,29 @@ static bool	has_paired_quotes(const char *str)
 **
 ** It does this by:
 **
-**	1. 		lexing
+**	1. 		lexing / tokenizing
 **	1.1.	scanning
 **			- checking for syntax errors
 **	1.2		evaluating
 **			- resolving here-docs
-**			- expanding environment variables
 **	2.		parsing
 **	2.1.	normalization
 **			- converting aliases to simple form
+**  2.2		expansion
+**			- expanding environment variables
 **	2.2		aggregation
 **			- grouping tokens into t_node structures
 */
 
 int	parse_input_string(const char *input_string, t_shell *shell)
 {
-	if (!input_string)
+	t_list	*tokens;
+
+	if (!input_string)		// TODO print exit on EOF ?
 		return (0);
-	if (has_paired_quotes(input_string))
-		return (SYS_ERROR);
+	tokens = tokenize_input_string(input_string);
+	if (!tokens)
+		return (0);
 	(void)shell;
 	return (1);
 }
