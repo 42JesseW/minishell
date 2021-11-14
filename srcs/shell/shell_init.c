@@ -33,7 +33,7 @@ static const char	g_prompt_startup[] = "\n"
 t_shell	*shell_init(const char *envp[], char **input_line)
 {
 	t_shell	*shell;
-	t_env	*environ;
+	t_list	*environ;
 	char	*line;
 
 	shell = (t_shell *)malloc(sizeof(t_shell));
@@ -41,13 +41,15 @@ t_shell	*shell_init(const char *envp[], char **input_line)
 		return (NULL);
 	environ = NULL;
 	line = ft_strdup("");
-	if (!line || env_from_envp(&environ, (const char **) envp) == SYS_ERROR)
+	if (!line || environ_from_envp(&environ, (const char **) envp) == SYS_ERROR)
 	{
+		free(line);
 		shell_destroy(&shell);
 		return (NULL);
 	}
 	*input_line = line;
 	shell->environ = environ;
+	shell->cmd_nodes = NULL;
 	printf("%s\n", g_prompt_startup);
 	return (shell);
 }

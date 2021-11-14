@@ -46,12 +46,13 @@ SCENARIO("initialize a shell structure from entrypoint") {
 			THEN("the members and input_line should have the appropriate values") {
 				char	*kv;
 
+				CHECK(shell->cmd_nodes == NULL);
 				CHECK(strcmp(input_line, "") == 0);
 				CHECK(shell->environ != NULL);
 				int	idx = 0;
-				for (t_env *env = shell->environ; env != NULL; env = env->next, idx++)
+				for (t_list *env = shell->environ; env != NULL; env = env->next, idx++)
 				{
-					kv = pair_join(env->pair);
+					kv = pair_join((t_pair *)env->content);
 					CHECK(strcmp(envp[idx], kv) == 0);
 					free(kv);
 				}

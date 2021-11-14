@@ -13,25 +13,16 @@ CMAKE_DIR	= cmake-build
 CLINKS 		= -ltermcap -lreadline
 CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
 
-SOURCES		= shell/env/pair/pair_del.c \
-			  shell/env/pair/pair_new.c \
-			  shell/env/pair/pair_join.c \
-			  shell/env/env_from_envp.c \
-			  shell/env/env_to_envp.c \
-			  shell/env/env_del.c \
-			  shell/env/env_new.c \
-			  shell/env/env_lst_len.c \
-			  shell/env/env_lst_del.c \
-			  shell/env/env_lst_get.c \
-			  shell/env/env_lst_put.c \
+SOURCES		= shell/environ/pair/pair_del.c \
+			  shell/environ/pair/pair_new.c \
+			  shell/environ/pair/pair_join.c \
+			  shell/environ/environ_from_envp.c \
+			  shell/environ/environ_to_envp.c \
 			  shell/shell_init.c \
 			  shell/shell_destroy.c \
 			  parser/node/node_del.c \
 			  parser/node/node_new.c \
 			  parser/redir/redir_del.c \
-			  parser/redir/redir_lst_add.c \
-			  parser/redir/redir_lst_del.c \
-			  parser/redir/redir_lst_dup.c \
 			  parser/redir/redir_new.c \
 			  main.c
 
@@ -74,7 +65,7 @@ $(NAME): $(OBJECTS) $(LIBFTLIB)
 	@printf "[$(G)INFO$(W)]: Finished building program $(NAME)\n"
 
 $(OBJECT_DIR)/%.o: %.c
-	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/shell/env/pair
+	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/shell/environ/pair
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/parser/{node,redir}
 	@if $(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; then \
 		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
