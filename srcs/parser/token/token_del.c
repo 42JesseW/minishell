@@ -1,25 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   redir_del.c                                        :+:    :+:            */
+/*   token_del.c                                        :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/12 12:05:23 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/11/12 12:05:23 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/11/14 14:41:33 by jevan-de      #+#    #+#                 */
+/*   Updated: 2021/11/14 14:41:33 by jevan-de      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <parser.h>
 
-void	redir_del(void *redir)
+void	token_del(void *token)
 {
-	t_redir	*p;
+	t_token	*p;
 
-	p = redir;
+	p = token;
 	if (p)
 	{
-		free(p->file);
+		free(p->token);
 		free(p);
 	}
 }

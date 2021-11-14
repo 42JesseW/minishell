@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <minishell.h>
 
 /* Default constructor for t_node structure */
 t_node	*node_new_def(void)

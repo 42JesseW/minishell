@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
 extern "C" {
-	#include <parser.h>
+	#include <minishell.h>
 }
 
 SCENARIO("creating new node structures") {
