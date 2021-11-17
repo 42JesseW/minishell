@@ -6,9 +6,11 @@
 # include <stdio.h>
 # include <stdbool.h>
 
+# define PARSE_FAIL 0
+
 typedef enum e_token_type
 {
-	TOK_DOLLAR,
+	TOK_DOLLAR = 0,
 	TOK_QUOTE,
 	TOK_SPACE,
 	TOK_PIPE,
@@ -39,11 +41,22 @@ typedef struct s_lexer
 	size_t		idx;
 }	t_lexer;
 
+int		redirs_merge(t_list *tokens);
+int		correct_dollar(t_list *tokens);
+
 t_token	*get_next_token(t_lexer *lexer);
-t_list	*tokenize(const char *input_string);	// TODO testcase
+t_list	*tokenize(const char *input_string);
 
 void	token_display_stdout(t_list *tokens);
 bool	token_is_word_end(int c);
+
+typedef struct s_quote
+{
+	bool			between;
+	t_token_type	type;
+}	t_quote;
+
+void	remove_spaces(t_list **tokens);
 
 void	token_del(void *token);
 t_token	*token_new_def(void);

@@ -72,6 +72,10 @@ void	token_display_stdout(t_list *tokens) // TODO not norm
 			if (g_map[idx].type == token->type)
 				printf("\"%4s\"", g_map[idx].c);
 		}
+		if (token->type == TOK_DGREAT)
+			printf("\"%4s\"", ">>");
+		if (token->type == TOK_DLESS)
+			printf("\"%4s\"", "<<");
 		printf(" | \"%s\"\n", token->token);
 	}
 }
