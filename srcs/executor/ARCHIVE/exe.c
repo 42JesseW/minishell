@@ -11,12 +11,12 @@
 /* ************************************************************************** */
 
 
-void   execute(void)
+void   execute(t_shell **shell)
 {
     int		amount_cmds;
     pid_t	pid;
 
-    amount_cmds = ft_lstsize(shell);
+    amount_cmds = ft_lstsize(shell->cmd_nodes);
 	if (amount_cmds > 1)
 		pipe((amount_cmds - 1), shell);
 	else
