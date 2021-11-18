@@ -16,7 +16,7 @@ add_custom_target(
 
 file(GLOB_RECURSE SOURCES srcs/main.c srcs/**/*.c)
 
-add_executable(minishell ${SOURCES})
+add_executable(minishell ${SOURCES} srcs/executor/exe_paths.c srcs/executor/executor.c includes/exe.h)
 
 add_dependencies(minishell ${LIBFT})
 

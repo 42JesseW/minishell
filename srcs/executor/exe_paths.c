@@ -12,7 +12,7 @@
 
 // Nadenken over generieke foutafhandeling: printf errors vervangen
 
-#include "exe.h"
+#include <exe.h>
 
 void	store_paths(const char *str_paths, t_exe *exe, t_shell *shell)
 {
