@@ -46,6 +46,7 @@ int		correct_dollar(t_list *tokens);
 
 t_token	*get_next_token(t_lexer *lexer);
 t_list	*tokenize(const char *input_string);
+int		evaluate(t_list **tokens);
 
 void	token_display_stdout(t_list *tokens);
 bool	token_is_word_end(int c);

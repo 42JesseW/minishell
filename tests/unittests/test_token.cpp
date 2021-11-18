@@ -222,35 +222,16 @@ TEST_CASE("tokenize command line with unknown tokens") {
 
 }
 
+TEST_CASE("valid tokenization strings") {
+	t_list *tokens = tokenize("\"word\"|\"word\" word");
+	REQUIRE(tokens != NULL);
+}
+
 static void	lexer_init(t_lexer *lexer, const char *input_string)
 {
 	lexer->input_string = input_string;
 	lexer->string_len = ft_strlen(input_string);
 	lexer->idx = 0;
-}
-
-t_list	*custom_tokenize(const char *input_string)
-{
-	t_list	*tokens;
-	t_list	*node;
-	t_token	*token;
-	t_lexer	lexer;
-
-	tokens = NULL;
-	lexer_init(&lexer, input_string);
-	while (lexer.idx < lexer.string_len)
-	{
-		token = get_next_token(&lexer);
-		node = ft_lstnew(token);
-		if (!token || !node)
-		{
-			free(token);
-			ft_lstclear(&tokens, token_del);
-			return (NULL);
-		}
-		ft_lstadd_back(&tokens, node);
-	}
-	return (tokens);
 }
 
 class MergeRedirsFixture
@@ -262,7 +243,7 @@ public:
 	MergeRedirsFixture() : tokens(NULL) {}
 	virtual ~MergeRedirsFixture() { ft_lstclear(&tokens, token_del); }
 
-	virtual void	init_tokens(const char *input_string) { tokens = custom_tokenize(input_string); }
+	virtual void	init_tokens(const char *input_string) { tokens = tokenize(input_string); }
 };
 
 TEST_CASE_METHOD(MergeRedirsFixture, "Nothing to be merged")
@@ -389,28 +370,11 @@ TEST_CASE_METHOD(CorrectDollarFixture, "Multiple combinations of the TOK_DOLLAR 
 TEST_CASE_METHOD(CorrectDollarFixture, "Syntax errors") {
 	init_tokens("$$");
 	REQUIRE(correct_dollar(tokens) == PARSE_FAIL);
-	CorrectDollarFixture::~CorrectDollarFixture();
-	init_tokens("$\'");
+	ft_lstclear(&tokens, token_del);
+	init_tokens("$\'\'");
 	REQUIRE(correct_dollar(tokens) == PARSE_FAIL);
-	CorrectDollarFixture::~CorrectDollarFixture();
-	init_tokens("$\"");
-	REQUIRE(correct_dollar(tokens) == PARSE_FAIL);
-	CorrectDollarFixture::~CorrectDollarFixture();
-	init_tokens("$>");
-	REQUIRE(correct_dollar(tokens) == PARSE_FAIL);
-	CorrectDollarFixture::~CorrectDollarFixture();
-	init_tokens("$<");
-	REQUIRE(correct_dollar(tokens) == PARSE_FAIL);
-	CorrectDollarFixture::~CorrectDollarFixture();
-	init_tokens("$|");
-	REQUIRE(correct_dollar(tokens) == PARSE_FAIL);
-	CorrectDollarFixture::~CorrectDollarFixture();
-	init_tokens("$>>");
-	REQUIRE(correct_dollar(tokens) == PARSE_FAIL);
-	CorrectDollarFixture::~CorrectDollarFixture();
-	init_tokens("$<<");
-	REQUIRE(correct_dollar(tokens) == PARSE_FAIL);
-	CorrectDollarFixture::~CorrectDollarFixture();
+	ft_lstclear(&tokens, token_del);
+	init_tokens("$\"\"");
 }
 
 class RemoveSpacesFixture : public MergeRedirsFixture
@@ -434,6 +398,7 @@ TEST_CASE_METHOD(RemoveSpacesFixture, "start, middle and end of string") {
 
 TEST_CASE_METHOD(RemoveSpacesFixture, "Combination of different tokens") {
 	init_tokens(">>  <    LoL | < << <<  ");
+	REQUIRE(redirs_merge(tokens));
 	REQUIRE(ft_lstsize(tokens) == 19);
 	remove_spaces(&tokens);
 	REQUIRE(ft_lstsize(tokens) == 7);
@@ -487,3 +452,69 @@ TEST_CASE_METHOD(RemoveSpacesFixture, "Multiple double quotes in single quote") 
 	remove_spaces(&tokens);
 	REQUIRE(ft_lstsize(tokens) == 11);
 }
+
+class EvaluateTokensFixture : public MergeRedirsFixture
+{
+public:
+	void	init_tokens(const char *input_string) override {
+		tokens = tokenize(input_string);
+		REQUIRE(tokens != NULL);
+		REQUIRE(redirs_merge(tokens));
+		REQUIRE(correct_dollar(tokens));
+	}
+};
+
+TEST_CASE_METHOD(EvaluateTokensFixture, "No pipes") {
+	init_tokens("> word <");
+	REQUIRE(evaluate(&tokens));
+}
+
+TEST_CASE_METHOD(EvaluateTokensFixture, "One pipe") {
+	init_tokens("> wo | rd <");
+	REQUIRE(evaluate(&tokens));
+}
+
+TEST_CASE_METHOD(EvaluateTokensFixture, "Multiple pipes") {
+	init_tokens("> word | < word | > word");
+	REQUIRE(evaluate(&tokens));
+}
+
+TEST_CASE_METHOD(EvaluateTokensFixture, "Valid pipes") {
+	init_tokens("\"word\"|\"word\" word");
+	REQUIRE(evaluate(&tokens));
+	ft_lstclear(&tokens, token_del);
+	init_tokens("\'word\'|\'word\' word");
+	REQUIRE(evaluate(&tokens));
+	ft_lstclear(&tokens, token_del);
+	init_tokens("$word|$");
+	REQUIRE(evaluate(&tokens));
+	ft_lstclear(&tokens, token_del);
+	init_tokens("$|$word");
+	REQUIRE(evaluate(&tokens));
+	ft_lstclear(&tokens, token_del);
+	init_tokens("$|$");
+	REQUIRE(evaluate(&tokens));
+	ft_lstclear(&tokens, token_del);
+}
+
+TEST_CASE_METHOD(EvaluateTokensFixture, "invalid pipes") {
+	init_tokens("||");
+	REQUIRE(evaluate(&tokens) == PARSE_FAIL);
+	ft_lstclear(&tokens, token_del);
+	init_tokens(" | | ");
+	REQUIRE(evaluate(&tokens) == PARSE_FAIL);
+	ft_lstclear(&tokens, token_del);
+	init_tokens(" word | word > |");
+	REQUIRE(evaluate(&tokens) == PARSE_FAIL);
+	ft_lstclear(&tokens, token_del);
+	init_tokens(" word | word < |");
+	REQUIRE(evaluate(&tokens) == PARSE_FAIL);
+	ft_lstclear(&tokens, token_del);
+	init_tokens(" word | word >> |");
+	REQUIRE(evaluate(&tokens) == PARSE_FAIL);
+	ft_lstclear(&tokens, token_del);
+	init_tokens(" word | word << |");
+	REQUIRE(evaluate(&tokens) == PARSE_FAIL);
+	ft_lstclear(&tokens, token_del);
+}
+

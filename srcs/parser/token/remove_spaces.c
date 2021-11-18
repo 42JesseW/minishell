@@ -47,10 +47,7 @@ static bool	quote_is_type(bool match_type, t_quote *quote, t_token_type type)
 	return (match_type && type_matches && is_quote_type);
 }
 
-/*
-** remove spaces from the token list
-** ignoring those between quotes.
-*/
+/* remove spaces from the token list ignoring those between quotes. */
 void	remove_spaces(t_list **tokens)
 {
 	t_list	*node;
