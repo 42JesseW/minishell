@@ -70,22 +70,24 @@ void		*pair_new_cpy(void *cpy);
 t_pair		*pair_new_kv(const char *key, const char *val);
 t_pair		*pair_new_val(const char *kv);
 
-int			environ_from_envp(t_list **root, const char **envp);
-char		**environ_to_envp(t_list *root);
+int			environ_from_envp(t_list **root, const char **envp);	// TODO testcase
+char		**environ_to_envp(t_list *root);						// TODO testcase
+const char	*environ_get(t_list *environ, const char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[], char **input_string);
 
-void		redir_del(void *redir);	// TODO testcase
-t_redir		*redir_new_def(void);	// TODO testcase
-void		*redir_new_cpy(void *cpy);	// TODO testcase
-t_redir		*redir_new_val(t_redir_type type, const char *file);	// TODO testcase
+void		redir_del(void *redir);
+t_redir		*redir_new_def(void);
+void		*redir_new_cpy(void *cpy);
+t_redir		*redir_new_val(t_redir_type type, const char *file);
 
-void		node_del(void *node);	// TODO testcase
-t_node		*node_new_def(void);	// TODO testcase
-void		*node_new_cpy(void *cpy);	// TODO testcase
-t_node		*node_new_val(char **cmd, t_list *redir);	// TODO testcase
+void		node_del(void *node);
+t_node		*node_new_def(void);
+void		*node_new_cpy(void *cpy);
+t_node		*node_new_val(char **cmd, t_list *redir);
 
 int			parse_input_string(const char *input_string, t_shell *shell);	// TODO testcase
+int			resolve_dollar(t_shell *shell, t_list **tokens);
 
 #endif

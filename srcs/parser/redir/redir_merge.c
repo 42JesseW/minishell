@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   redirs_merge.c                              :+:    :+:            */
+/*   redir_merge.c                              :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
@@ -29,10 +29,17 @@ static int	merge(t_list *redir1, t_list *redir2)
 	token2 = (t_token *)redir2->content;
 	if (token1->type != token2->type)
 		return (PARSE_FAIL);
-	token1->type = TOK_DLESS;
-	if (token2->type == TOK_GREAT)
-		token1->type = TOK_DGREAT;
 	free(token1->token);
+	if (token2->type == TOK_GREAT)
+	{
+		token1->type = TOK_DGREAT;
+		token1->token = ft_strdup(">>");
+	}
+	else
+	{
+		token1->type = TOK_DLESS;
+		token1->token = ft_strdup("<<");
+	}
 	token1->token = NULL;
 	redir1->next = redir2->next;
 	ft_lstdelone(redir2, redir_del);
@@ -59,7 +66,7 @@ static int	scan_redirs(t_list *scan_from, t_list **merge_node)
 }
 
 /*
-** redirs_merge() groups tokens like >
+** redir_merge() groups tokens like >
 ** or < into << or >> tokens. It checks the
 ** following syntax errors:
 **	| >>>
@@ -68,7 +75,7 @@ static int	scan_redirs(t_list *scan_from, t_list **merge_node)
 **	| ><
 **
 */
-int	redirs_merge(t_list *tokens)
+int	redir_merge(t_list *tokens)
 {
 	t_list	*merge_node;
 	t_list	*node;

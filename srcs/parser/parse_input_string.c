@@ -12,57 +12,6 @@
 
 #include <minishell.h>
 
-static bool	redir_is_type(t_token_type type)
-{
-	return (type == TOK_LESS || type == TOK_GREAT
-		|| type == TOK_DLESS || type == TOK_DGREAT);
-}
-
-static bool	quote_is_type(t_token_type type)
-{
-	return (type == TOK_QUOTE || type == TOK_DQUOTE);
-}
-
-/*
-** DESCRIPTION
-**	valid_pipe_position() checks if the pipe placed
-**	in a valid position. If a pipe is placed at the
-**	start of the token list or there is no token on
-**	the right side of the the token, it is immediately
-**	flagged as incorrect.
-**
-** PARAMERS
-**	- {scan_from} : points to the token before the pipe
-**
-** A valid pipe is as follows:
-**	[command]|[command]
-**
-** Example invalid positions are:
-**	|
-**	[command]|
-**	>|
-**	>>|
-**	||
-**
-** TESTS // TODO
-**	- export TEST="cat";ls|$TEST -e
-*/
-static int	valid_pipe_position(t_list *scan_from)
-{
-	t_token	*tok_left;
-	t_token	*tok_right;
-
-	if (!scan_from || !scan_from->next->next)
-		return (PARSE_FAIL);
-	tok_left = ((t_token *)scan_from->content);
-	tok_right = ((t_token *)scan_from->next->next->content);
-	if (!(tok_left->type == TOK_WORD || quote_is_type(tok_left->type)))
-		return (PARSE_FAIL);
-	if (tok_right->type == TOK_PIPE)
-		return (PARSE_FAIL);
-	return (1);
-}
-
 /*
 ** normalize() has two main jobs:
 **	1. It converts aliased combinations to a
@@ -75,7 +24,7 @@ static int	valid_pipe_position(t_list *scan_from)
 **	   [cat] [-e] [cat] [<] [FILE1] [>] [FILE2] [>] [FILE3] [cat]	-> [cat -e cat < FILE1 > FILE2 > FILE3]
 **	2. It adds empty TOK_WORD tokens to REDIR + WORD combinations
 **	   - i.e. "< IN", which is TOK_LESS->TOK_WORD to TOK_WORD->TOK_LESS->TOK_WORD
-**	   This is to help the parser create the CMD nodes during the parsing phase.
+**	   This is to help creating the CMD nodes during the grouping phase.
 **
 ** in all cases the actual program(s) (with flags) is (are)
 ** moved to the front of the total command line. This is to
@@ -95,36 +44,146 @@ void	normalize(t_list **tokens)
 }
 
 /*
-** evaluate_tokens() will do the following:
-**	1. removes spaces from the token list since
-**	   they are no longer relevant and will only
-**	   be annoying to work with further on.
-**	2. Look for syntax errors, meaning successive
-** 	   tokens that don't follow the grammar rules
-**	   of the shell.
-**
-** // TODO resolve aliases ?
-**
-** RETURN
-**  - 1 on success, 0 on parsing error, -1 on sys_error
+** environ_get() returns a pointer to the string
+** held by the t_pair structure if key matches
+** pair.key of an existing environment variable.
+*/
+const char	*environ_get(t_list *environ, const char *key)
+{
+	t_list	*traverse;
+	t_pair	*pair;
+
+	if (!environ || !key)
+		return (NULL);
+	traverse = environ;
+	while (traverse)
+	{
+		pair = (t_pair *)traverse->content;
+		if (ft_strncmp(pair->key, key, ft_strlen(key)) == 0)
+			return (pair->val);
+		traverse = traverse->next;
+	}
+	return (NULL);
+}
+
+static void	remove_token(t_list **tokens, t_list *rm)
+{
+	t_list	*traverse;
+
+	traverse = *tokens;
+	if (!traverse)
+		return ;
+	if (traverse == *tokens)
+	{
+		*tokens = traverse->next;
+		ft_lstdelone(traverse, token_del);
+	}
+	else
+	{
+		while (traverse->next != rm)
+			traverse = traverse->next;
+		traverse->next = rm->next;
+		ft_lstdelone(rm, token_del);
+	}
+}
+
+static int	append_to_token(t_token *new_token, t_list *node)
+{
+	t_token	*token;
+	char	*new_token_str;
+
+	token = (t_token *)node->content;
+	new_token_str = ft_strjoin(new_token->token, token->token);
+	if (new_token_str)
+		return (SYS_ERROR);
+	free(new_token->token);
+	new_token->token = new_token_str;
+	return (1);
+}
+
+/*
+** resolve() should do the following:
+**	1. create a new TOK_WORD node where .token is
+**	   created by joining all .token components from
+**	   all token nodes in between the matching quote.
+**	2. remove all intermediary token nodes.
+**	3. return the new token to the caller
 */
 
-int	evaluate(t_list **tokens)	// TODO testcase
+static t_token	*resolve(t_list **tokens, t_list *start, t_token_type type)
+{
+	t_list	*node;
+	t_list	*temp;
+	t_token	*token;
+
+	token = token_new_val(TOK_WORD, "");
+	if (!token)
+		return (NULL);
+	node = start->next;
+	remove_token(tokens, start);
+	while (((t_token *)node->content)->type != type)
+	{
+		if (append_to_token(token, node) == SYS_ERROR)
+		{
+			token_del(token);
+			return (NULL);
+		}
+		temp = node;
+		node = node->next;
+		remove_token(tokens, temp);
+	}
+	remove_token(tokens, node);
+	return (token);
+}
+
+static int	insert_word(t_list **tokens, t_list *prev, t_token *word)
+{
+	t_list	*node;
+
+	node = ft_lstnew(word);
+	if (!node)
+		return (SYS_ERROR);
+	if (!prev)
+	{
+		node->next = (*tokens)->next;
+		*tokens = node;
+	}
+	else
+	{
+		node->next = prev->next;
+		prev->next = node;
+	}
+	return (1);
+}
+
+/*
+** resolve_quotes() creates one TOK_WORD out of
+** TOK_QUOTE / TOK_DQUOTE and everything inside.
+**
+** assumes the following:
+**	1. If a TOK_DOLLAR is found, this can safely
+**	   be converted to a string (only in TOK_QUOTE).
+**	2. Every QUOTE token has a matching QUOTE token
+**	   of the same type (has_paired_quotes).
+*/
+
+int	resolve_quotes(t_list **tokens)
 {
 	t_list	*node;
 	t_list	*prev;
 	t_token	*token;
+	t_token	*word;
 
 	prev = NULL;
-	remove_spaces(tokens);
 	node = *tokens;
 	while (node)
 	{
 		token = (t_token *)node->content;
-		if (token->type == TOK_PIPE)
+		if (token->type == TOK_QUOTE || token->type == TOK_DQUOTE)
 		{
-			if (!valid_pipe_position(prev))
-				return (PARSE_FAIL);
+			word = resolve(tokens, node, token->type);
+			if (!word || !insert_word(tokens, prev, word))
+				return (SYS_ERROR);
 		}
 		prev = node;
 		node = node->next;
@@ -161,6 +220,7 @@ int	evaluate(t_list **tokens)	// TODO testcase
 **	1.2		evaluating
 **			- removing TOK_SPACE tokens
 **			- checking for syntax errors (*2)
+**				- pipe position check
 **	2.		parsing
 **  2.1		expansion
 **			- expanding environment variables
@@ -187,17 +247,22 @@ int	parse_input_string(const char *input_string, t_shell *shell)
 	tokens = tokenize(input_string);
 	if (!tokens)						// TODO some exit code struct?
 		return (0);
-	if (!redirs_merge(tokens))			// TODO some exit code struct?
+	if (!redir_merge(tokens))			// TODO some exit code struct?
 		return (0);
 	if (!correct_dollar(tokens))		// TODO some exit code struct?
 		return (0);
-	if (!evaluate(&tokens))
+	remove_spaces(&tokens);
+	if (!validate_pipes(tokens))		// TODO some exit code struct?
+		return (0);
+	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
 		return (0);						// TODO some exit code struct?
+	// TODO resolve quotes
+	// TODO normalize (resolve aliases) ?
+
 	token_display_stdout(tokens);
 
 	// resolve here-doc in parser after initial nodes are made
 	// convert the "<< {DELIM}" to a "< {temp.filename}" node.
 
-	(void)shell;
 	return (1);
 }

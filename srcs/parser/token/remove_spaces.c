@@ -26,27 +26,6 @@ static void	rm(t_list **tokens, t_list **node, t_list **prev)
 	ft_lstdelone(temp, token_del);
 }
 
-/*
-** quote_is_type() is used to prevent
-** remove_spaces() from removing spaces
-** in between quotes of the same type.
-*/
-
-static bool	quote_is_type(bool match_type, t_quote *quote, t_token_type type)
-{
-	bool	type_matches;
-	bool	is_quote_type;
-
-	type_matches = (quote->type == type);
-	is_quote_type = (type == TOK_QUOTE || type == TOK_DQUOTE);
-	if (!match_type && is_quote_type)
-	{
-		quote->type = type;
-		return (true);
-	}
-	return (match_type && type_matches && is_quote_type);
-}
-
 /* remove spaces from the token list ignoring those between quotes. */
 void	remove_spaces(t_list **tokens)
 {

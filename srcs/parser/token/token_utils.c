@@ -59,6 +59,27 @@ t_token	*get_next_token(t_lexer *lexer)
 	return (token_new_word(lexer));
 }
 
+/*
+** quote_is_type() is used to prevent
+** remove_spaces() from removing spaces
+** in between quotes of the same type.
+*/
+
+bool	quote_is_type(bool match_type, t_quote *quote, t_token_type type)
+{
+	bool	type_matches;
+	bool	is_quote_type;
+
+	type_matches = (quote->type == type);
+	is_quote_type = (type == TOK_QUOTE || type == TOK_DQUOTE);
+	if (!match_type && is_quote_type)
+	{
+		quote->type = type;
+		return (true);
+	}
+	return (match_type && type_matches && is_quote_type);
+}
+
 void	token_display_stdout(t_list *tokens) // TODO not norm
 {
 	printf("[list size: %d]\n[type  :  token]\n", ft_lstsize(tokens));

@@ -41,12 +41,13 @@ typedef struct s_lexer
 	size_t		idx;
 }	t_lexer;
 
-int		redirs_merge(t_list *tokens);
+int		redir_merge(t_list *tokens);
+int		validate_pipes(t_list *tokens);
 int		correct_dollar(t_list *tokens);
+int		resolve_quotes(t_list **tokens);
 
 t_token	*get_next_token(t_lexer *lexer);
 t_list	*tokenize(const char *input_string);
-int		evaluate(t_list **tokens);
 
 void	token_display_stdout(t_list *tokens);
 bool	token_is_word_end(int c);
@@ -57,6 +58,7 @@ typedef struct s_quote
 	t_token_type	type;
 }	t_quote;
 
+bool	quote_is_type(bool match_type, t_quote *quote, t_token_type type);
 void	remove_spaces(t_list **tokens);
 
 void	token_del(void *token);
