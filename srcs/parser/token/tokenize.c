@@ -17,7 +17,7 @@
 ** where a single quote ' or a double quote " is not
 ** properly closed by a matching quote of the same kind.
 */
-static bool	has_paired_quotes(const char *str)
+bool	has_paired_quotes(const char *str)
 {
 	char	*ptr;
 	int		idx;
@@ -34,7 +34,7 @@ static bool	has_paired_quotes(const char *str)
 				return (false);
 			if (!has_paired_quotes(ptr + 1))
 				return (false);
-			idx += (int)(ptr - str);
+			idx += (int)(ptr - (str + idx));
 		}
 		idx++;
 	}

@@ -6,6 +6,9 @@
 # include <stdio.h>
 # include <stdbool.h>
 
+# ifndef SYS_ERROR
+#  define SYS_ERROR -1
+# endif
 # define PARSE_FAIL 0
 
 typedef enum e_token_type
@@ -40,6 +43,8 @@ typedef struct s_lexer
 	size_t		string_len;
 	size_t		idx;
 }	t_lexer;
+
+bool	has_paired_quotes(const char *str);
 
 int		redir_merge(t_list *tokens);
 int		validate_pipes(t_list *tokens);

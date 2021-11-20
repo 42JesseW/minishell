@@ -87,7 +87,7 @@ t_node		*node_new_def(void);
 void		*node_new_cpy(void *cpy);
 t_node		*node_new_val(char **cmd, t_list *redir);
 
-int			parse_input_string(const char *input_string, t_shell *shell);	// TODO testcase
+int			parse_input_string(char *input_string, t_shell *shell);	// TODO testcase
 int			resolve_dollar(t_shell *shell, t_list **tokens);
 
 #endif

@@ -78,7 +78,7 @@ static int	resolve(t_list **tokens, t_list *from, const char *kv[2])
 ** if its inside of a nested quote: "'$ENV'"
 */
 
-int	resolve_dollar(t_shell *shell, t_list **tokens)	// TODO testcase
+int	resolve_dollar(t_shell *shell, t_list **tokens)
 {
 	t_list		*node;
 	t_list		*prev;
