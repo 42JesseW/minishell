@@ -12,49 +12,37 @@
 
 #include <minishell.h>
 
-static const char	**get_kv(t_shell *shell, t_list *node, const char *kv[2])
-{
-	kv[0] = ((t_token *)node->next->content)->token;
-	kv[1] = (char *)environ_get(shell->environ, kv[0]);
-	return (kv);
-}
-
 /*
 ** resolve() should do the following:
-**	1. Relink the list
-**	2. remove the TOK_DOLLAR node
+**	1. unlink the TOK_DOLLAR node
+**	2. relink {node} pointer for outer loop
 **	3. modify TOK_WORD
 **
 ** If the key is NULL or pair.val from
 ** the found environment variable is
 ** NULL, then just create an empty string.
 */
-static int	resolve(t_list **tokens, t_list *from, const char *kv[2])
+static int	resolve(t_shell *shell, t_list **tokens, t_list **node)
 {
-	t_list	*temp;
-	t_list	*word;
-	char	*token;
+	t_token		*token;
+	t_list		*word;
+	const char	*kv[2];
+	char		*token_string;
 
-	if (!from)
-	{
-		temp = *tokens;
-		*tokens = (*tokens)->next;
-	}
-	else
-	{
-		temp = from->next;
-		from->next = temp->next;
-	}
-	word = temp->next;
-	ft_lstdelone(temp, token_del);
+	word = (*node)->next;
+	ft_lstunlink(tokens, *node);
+	*node = word;
+	token = (t_token *)word->content;
+	kv[0] = token->token;
+	kv[1] = environ_get(shell->environ, kv[0]);
 	if (!kv[0] || !kv[1])
-		token = ft_strdup("");
+		token_string = ft_strdup("");
 	else
-		token = ft_strdup(kv[1]);
-	if (!token)
+		token_string = ft_strdup(kv[1]);
+	if (!token_string)
 		return (SYS_ERROR);
-	free(((t_token *)word->content)->token);
-	((t_token *)word->content)->token = token;
+	free(token->token);
+	token->token = token_string;
 	return (1);
 }
 
@@ -80,18 +68,15 @@ static int	resolve(t_list **tokens, t_list *from, const char *kv[2])
 
 int	resolve_dollar(t_shell *shell, t_list **tokens)
 {
-	t_list		*node;
-	t_list		*prev;
-	t_token		*token;
-	t_quote		quote;
-	const char	*kv[2];
+	t_list	*node;
+	t_token	*token;
+	t_quote	quote;
 
-	prev = NULL;
 	node = *tokens;
 	quote = (t_quote){.between = false, .type = TOK_QUOTE};
 	while (node)
 	{
-		token = (t_token *)node->content;			// TODO discuss readability
+		token = (t_token *)node->content;
 		if (!quote.between && quote_is_type(false, &quote, token->type))
 			quote.between = true;
 		else if (quote.between && quote_is_type(true, &quote, token->type))
@@ -99,11 +84,11 @@ int	resolve_dollar(t_shell *shell, t_list **tokens)
 		if ((!quote.between || (quote.between && quote.type == TOK_DQUOTE))
 			&& token->type == TOK_DOLLAR)
 		{
-			if (resolve(tokens, prev, get_kv(shell, node, kv)) < 0)
+			if (resolve(shell, tokens, &node) < 0)
 				return (SYS_ERROR);
 		}
-		prev = node;
-		node = node->next;
+		else
+			node = node->next;
 	}
 	return (1);
 }

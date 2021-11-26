@@ -21,16 +21,25 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/environ/pair/pair_join.c \
 			  shell/environ/environ_from_envp.c \
 			  shell/environ/environ_to_envp.c \
+			  shell/environ/environ_get.c \
 			  shell/shell_init.c \
 			  shell/shell_destroy.c \
 			  parser/node/node_del.c \
 			  parser/node/node_new.c \
 			  parser/redir/redir_del.c \
 			  parser/redir/redir_new.c \
+			  parser/redir/redir_merge.c \
+			  parser/redir/redir_type.c \
 			  parser/token/token_new.c \
 			  parser/token/token_del.c \
 			  parser/token/token_utils.c \
 			  parser/token/tokenize.c \
+			  parser/token/correct_dollar.c \
+			  parser/token/remove_spaces.c \
+			  parser/token/validate_pipes.c \
+			  parser/token/resolve_quotes.c \
+			  parser/token/normalize.c \
+			  parser/resolve_dollar.c \
 			  parser/parse_input_string.c \
 			  main.c
 

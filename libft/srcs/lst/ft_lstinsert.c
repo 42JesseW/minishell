@@ -18,6 +18,8 @@ static void	link_node(t_list *prev, t_list *next, t_list *node)
 	prev->next = node;
 }
 
+#include <stdio.h>
+
 /* insert node in list starting from root at position idx */
 void	ft_lstinsert(t_list **root, t_list *node, int idx)	// TODO testcase
 {

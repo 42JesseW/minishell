@@ -12,99 +12,19 @@
 
 #include <minishell.h>
 
-void	normalize_part(t_list **tokens, t_list *start, t_list *end)
-{
-
-}
-
-t_list	*ft_lst_at(t_list *root, int idx)
-{
-	t_list	*traverse;
-
-	traverse = root;
-	while (traverse && idx > 0)
-	{
-		traverse = traverse->next;
-		idx--;
-	}
-	return (traverse);
-}
-
 /*
-** normalize() has two main jobs:
-**	1. It converts aliased combinations to a
-**	   standard configuration. These are some examples:
-**	   [<] [FILE] [cat] 					-> [cat] [<] [FILE]
-**	   [<] [FILE1] [>] [FILE2] [cat]		-> [cat] [<] [FILE1] [>] [FILE2]
-**	   [>] [FILE1] [cat] [<] [FILE2]		-> [cat] [>] [FILE1] [<] [FILE2]
-**	   [<] [FILE] [cat] [-e]				-> [cat] [-e] [<] [FILE]
-**	   [<] [FILE1] [cat] [-e] [>] [FILE2]	-> [cat] [-e] [<] [FILE1] [>] [FILE2]
-**	   [cat] [-e] [cat] [<] [FILE1] [>] [FILE2] [>] [FILE3] [cat]	-> [cat -e cat < FILE1 > FILE2 > FILE3]
-**	2. It adds empty TOK_WORD tokens to REDIR + WORD combinations
-**	   - i.e. "< IN", which is TOK_LESS->TOK_WORD to TOK_WORD->TOK_LESS->TOK_WORD
-**	   This is to help creating the CMD nodes during the grouping phase.
+**	EXAMPLES:
+**	- [<] [word] [word]
+**	- [word] [<] [word] [word]
+**	- [<] [word] [word] [>] [word] [word]
 **
-** in all cases the actual program(s) (with flags) is (are)
-** moved to the front of the total command line. This is to
-** keep the order correct.
-**
-** since a command line can be broken up into sub
-** commands using pipes, and normalization only applies
-** to redir nodes, normalize() uses normalize_part() to
-** normalize each sub command line.
-**	// TODO each sub command can be normalized recursively
+**	TESTS: // TODO
+**	- [cat < Makefile -e > FILE1 -b > FILE2]
+**	- [cat -e OUT1 < OUT2 OUT]
+**	- [< OUT cat -e]
 */
 
-void	normalize(t_list **tokens)
-{
-	t_list	*node;
-	t_list	*start;
-	int		idx;
 
-	idx = 0;
-	start = NULL;
-	node = *tokens;
-	while (node)
-	{
-		if (!node->next || ((t_token *)node->next->content)->type == TOK_PIPE)
-		{
-			normalize_part(tokens, start, node);
-			start = ft_lst_at(*tokens, idx + 2);
-			if (!start)
-				return ;
-			node = start;
-			idx += 2;
-		}
-		else
-		{
-			node = node->next;
-			idx++;
-		}
-	}
-}
-
-/*
-** environ_get() returns a pointer to the string
-** held by the t_pair structure if key matches
-** pair.key of an existing environment variable.
-*/
-const char	*environ_get(t_list *environ, const char *key)
-{
-	t_list	*traverse;
-	t_pair	*pair;
-
-	if (!environ || !key)
-		return (NULL);
-	traverse = environ;
-	while (traverse)
-	{
-		pair = (t_pair *)traverse->content;
-		if (ft_strncmp(pair->key, key, ft_strlen(key)) == 0)
-			return (pair->val);
-		traverse = traverse->next;
-	}
-	return (NULL);
-}
 
 /*
 ** TESTS // TODO resolving quotes:
@@ -173,7 +93,7 @@ int	parse_input_string(char *input_string, t_shell *shell)
 		return (0);						// TODO some exit code struct?
 	if (resolve_quotes(&tokens) == SYS_ERROR)
 		return (0);
-	// TODO normalize (resolve aliases) ?
+	normalize(&tokens);
 
 	token_display_stdout(tokens);
 

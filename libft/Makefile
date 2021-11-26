@@ -92,6 +92,9 @@ SRC =			ft_atof.c \
 				lst/ft_lstlast.c \
 				lst/ft_lstnew.c \
 				lst/ft_lstsize.c \
+				lst/ft_lstunlink.c \
+				lst/ft_lstinsert.c \
+				lst/ft_lstget.c \
 				lst/ft_lstclear.c \
 				lst/ft_lstiter.c \
 				lst/ft_lstmap.c \

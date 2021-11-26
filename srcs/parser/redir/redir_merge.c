@@ -12,11 +12,6 @@
 
 #include <minishell.h>
 
-static bool	redir_is_single(t_token_type type)
-{
-	return (type == TOK_LESS || type == TOK_GREAT);
-}
-
 /* merge two redir tokens. fails if two different redir types */
 static int	merge(t_list *redir1, t_list *redir2)
 {
@@ -48,6 +43,7 @@ static int	merge(t_list *redir1, t_list *redir2)
 
 static int	scan_redirs(t_list *scan_from, t_list **merge_node)
 {
+	t_token	*token;
 	t_list	*prev;
 	t_list	*node;
 	int		count;
@@ -55,8 +51,11 @@ static int	scan_redirs(t_list *scan_from, t_list **merge_node)
 	count = 0;
 	prev = NULL;
 	node = scan_from;
-	while (node && redir_is_single(((t_token *)node->content)->type))
+	while (node)
 	{
+		token = (t_token *)node->content;
+		if (!is_redir_type(token->type, REDIR_SINGLE))
+			break ;
 		prev = node;
 		node = node->next;
 		count++;
@@ -86,7 +85,7 @@ int	redir_merge(t_list *tokens)
 	while (node)
 	{
 		token = (t_token *)node->content;
-		if (redir_is_single(token->type))
+		if (is_redir_type(token->type, REDIR_SINGLE))
 		{
 			count = scan_redirs(node, &merge_node);
 			if (count > 2 || (count == 2 && !merge(node, merge_node)))	// TODO syntax error

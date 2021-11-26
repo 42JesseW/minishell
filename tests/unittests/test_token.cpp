@@ -567,6 +567,8 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "No dollars") {
 TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar no resolve") {
 	init_tokens("$|$");
 	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	for (t_list *cur = tokens; cur != NULL; cur = cur->next)
+		CHECK(((t_token *)cur->content)->type != TOK_DOLLAR);
 	ft_lstclear(&tokens, token_del);
 	shell_destroy(&shell);
 }
@@ -812,6 +814,7 @@ class ResolveQuotesFixture : public BaseFixture
 protected:
 	t_shell	*shell;
 	char	*_input_string;
+
 public:
 	ResolveQuotesFixture() : _input_string(NULL)
 	{
@@ -947,6 +950,245 @@ TEST_CASE_METHOD(ResolveQuotesFixture, "Resolving quoted environment variables")
 		if (idx == 13)
 			CHECK(strncmp(((t_token *)node->content)->token, "$LESS", 5) == 0);
 	}
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+void	check_nodes(t_list *root, int check_idx, char *check_str, char *str[])
+{
+	t_list	*cur;
+	int		idx;
+	int		cur_idx;
+
+	idx = 0;
+	cur = root;
+	cur_idx = 0;
+	for (; str[idx]; cur = cur->next)
+	{
+		if (cur_idx == check_idx)
+			CHECK(strncmp((char*)cur->content, check_str, strlen(check_str)) == 0);
+		else
+		{
+			CHECK(strncmp((char*)cur->content, str[idx], strlen(str[idx])) == 0);
+			idx++;
+		}
+		cur_idx++;
+	}
+}
+
+TEST_CASE("ft_lstinsert / ft_lstunlink") {
+	t_list	*list;
+	t_list	*node;
+	char	*str[] = {strdup("One"), strdup("Two"), strdup("three"), NULL};
+	char	*s = strdup("NEW");
+
+	list = NULL;
+	for (int idx = 0; str[idx]; idx++)
+	{
+		node = ft_lstnew(str[idx]);
+		REQUIRE(node != NULL);
+		ft_lstadd_back(&list, node);
+	}
+	REQUIRE(ft_lstsize(list) == 3);
+	node = ft_lstnew(s);
+	REQUIRE(node != NULL);
+	/* insert and unlink at start */
+	ft_lstinsert(&list, node, 0);
+	REQUIRE(ft_lstsize(list) == 4);
+	check_nodes(list, 0, s, str);
+	node = ft_lstunlink(&list, node);
+	REQUIRE(node != NULL);
+	REQUIRE(ft_lstsize(list) == 3);
+	check_nodes(list, -1, NULL, str);
+	/* insert and unlink in middle */
+	ft_lstinsert(&list, node, 2);
+	REQUIRE(ft_lstsize(list) == 4);
+	check_nodes(list, 2, s, str);
+	node = ft_lstunlink(&list, node);
+	REQUIRE(node != NULL);
+	REQUIRE(ft_lstsize(list) == 3);
+	check_nodes(list, -1, NULL, str);
+	/* insert and unlink at end */
+	ft_lstinsert(&list, node, 3);
+	REQUIRE(ft_lstsize(list) == 4);
+	check_nodes(list, 3, s, str);
+	check_nodes(list, 3, s, str);
+	node = ft_lstunlink(&list, node);
+	REQUIRE(node != NULL);
+	REQUIRE(ft_lstsize(list) == 3);
+	check_nodes(list, -1, NULL, str);
+	ft_lstclear(&list, free);
+	ft_lstdelone(node, free);
+}
+
+class NormalizeFixture : public BaseFixture
+{
+protected:
+	t_shell	*shell;
+	char	*_input_string;
+public:
+	NormalizeFixture() : _input_string(NULL)
+	{
+		shell = shell_init(envp, &_input_string);
+		REQUIRE(shell != NULL);
+	}
+
+	void	init_tokens(const char *input_string) override {
+		tokens = tokenize(input_string);
+		REQUIRE(tokens != NULL);
+		REQUIRE(redir_merge(tokens));
+		REQUIRE(correct_dollar(tokens));
+		remove_spaces(&tokens);
+		REQUIRE(validate_pipes(tokens));
+		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
+	}
+};
+
+TEST_CASE_METHOD(NormalizeFixture, "No normalisation"){
+	char	cmd[] = "cat < Makefile";
+	char	**split = ft_strsplit(cmd, ' ');
+	t_list	*cur;
+
+	init_tokens(cmd);
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 3);
+	cur = tokens;
+	for (int idx = 0; split[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(((t_token *)cur->content)->token, split[idx], strlen(split[idx])) == 0);
+	ft_strarrfree(&split);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "simple-one") {
+	char	*types[] = {"cat", "<", "Makefile", NULL};
+	t_list	*cur;
+
+	init_tokens("< Makefile cat");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 3);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "simple-two") {
+	char	*types[] = {"cat", "<", "Makefile", ">", "OUT", NULL};
+	t_list	*cur;
+
+	init_tokens("< Makefile > OUT cat");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 5);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "simple-three") {
+	char	*types[] = {"cat", "-e", ">", "OUT", "<", "Makefile", NULL};
+	t_list	*cur;
+
+	init_tokens("> OUT cat -e < Makefile");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 6);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "simple-multiple-one") {
+	char	*types[] = {"cat", "-e", "<", "Makefile", ">", "OUT", NULL};
+	t_list	*cur;
+
+	init_tokens("< Makefile > OUT cat -e");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 6);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "simple-multiple-two") {
+	char	*types[] = {"cat", "-e", "<", "Makefile", ">", "OUT", NULL};
+	t_list	*cur;
+
+	init_tokens("cat < Makefile > OUT -e");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 6);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "simple-multiple-three") {
+	char	*types[] = {"cat", "-e", "-b", "<", "Makefile", ">", "OUT", NULL};
+	t_list	*cur;
+
+	init_tokens("cat < Makefile > OUT -e -b");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 7);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "simple-multiple-four") {
+	char	*types[] = {"cat", "-e", "-b", "<", "Makefile", ">", "FILE1", ">", "FILE2", NULL};
+	t_list	*cur;
+
+	init_tokens("cat < Makefile -e > FILE1 -b > FILE2");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 9);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "with pipes") {
+	char	*types[] = {"cat", "<", "Makefile", "|", "cat", ">", "OUT", NULL};
+	t_list	*cur;
+
+	init_tokens("< Makefile cat | > OUT cat");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 7);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(NormalizeFixture, "multiple flags") {
+	char	*types[] = {
+		"cat", "-e", "-b", "<",
+		"Makefile", ">", "FILE1",
+		">", "FILE2", "|", "cat",
+		"-e", ">", "OUT1", ">",
+		"OUT2", NULL
+	};
+	t_list	*cur;
+
+	init_tokens("cat < Makefile -e > FILE1 -b > FILE2 | > OUT1 > OUT2 cat -e");
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == ft_strarrlen(types));
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
 	ft_lstclear(&tokens, token_del);
 	shell_destroy(&shell);
 }

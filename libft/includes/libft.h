@@ -39,6 +39,14 @@ void				ft_lstadd_back(t_list **lst, t_list *node);
 
 int					ft_lstsize(t_list *lst);
 
+t_list				*ft_lstunlink(t_list **root, t_list *node);
+
+void				ft_lstinsert(t_list **root, t_list *node, int idx);
+
+t_list				*ft_lstget_node(t_list *root, int idx);
+
+int					ft_lstget_idx(t_list *root, t_list *node);
+
 void				ft_lstdelone(t_list *lst, void (*del)(void *));
 
 void				ft_lstclear(t_list **lst, void (*del)(void *));

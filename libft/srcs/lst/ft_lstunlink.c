@@ -20,12 +20,17 @@ t_list	*ft_lstunlink(t_list **root, t_list *node)	// TODO testcase
 
 	if (!root || !(*root))
 		return (NULL);
+	prev = NULL;
 	traverse = *root;
 	while (traverse)
 	{
 		if (traverse == node)
 		{
-			prev->next = traverse->next;
+			if (!prev)
+				*root = traverse->next;
+			else
+				prev->next = traverse->next;
+			traverse->next = NULL;
 			return (traverse);
 		}
 		prev = traverse;
