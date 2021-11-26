@@ -5,7 +5,7 @@ set(HEADERS catch.hpp)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 
-include_directories(${PROJECT_SOURCE_DIR}/includes .)
+include_directories(${PROJECT_SOURCE_DIR}/includes . unittests)
 
 file(GLOB_RECURSE TEST_SOURCES ../srcs/shell/*.c ../srcs/shell/**/*.c ../srcs/parser/*.c ../srcs/parser/**/*.c)
 
