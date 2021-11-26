@@ -90,9 +90,6 @@ void	normalize_part(t_list **tokens, t_bound *bound)
 **	   [<] [FILE] [cat] [-e]					-> [cat] [-e] [<] [FILE]
 **	   [<] [FILE1] [cat] [-e] [>] [FILE2]		-> [cat] [-e] [<] [FILE1] [>] [FILE2]
 **	   [cat] [<] [FILE] [-e]					-> [cat] [-e] [<] [FILE]
-**	2. It adds empty TOK_WORD tokens to REDIR + WORD combinations
-**	   - i.e. "< IN", which is TOK_LESS->TOK_WORD to TOK_WORD->TOK_LESS->TOK_WORD
-**	   This is to help creating the CMD nodes during the grouping phase.
 **
 ** in all cases the actual program(s) (with flags) is (are)
 ** moved to the front of the total command line. This is to

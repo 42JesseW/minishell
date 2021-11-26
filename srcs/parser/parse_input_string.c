@@ -13,25 +13,17 @@
 #include <minishell.h>
 
 /*
-**	EXAMPLES:
-**	- [<] [word] [word]
-**	- [word] [<] [word] [word]
-**	- [<] [word] [word] [>] [word] [word]
-**
-**	TESTS: // TODO
-**	- [cat < Makefile -e > FILE1 -b > FILE2]
-**	- [cat -e OUT1 < OUT2 OUT]
-**	- [< OUT cat -e]
-*/
-
-
-
-/*
 ** TESTS // TODO resolving quotes:
 **	- export TEST="cat -e";ls|"$TEST"
 **	- export TEST="cat -e";ls|$TEST
 **	- ""<OUT2	-> char **cmd should not be NULL
 **	- <OUT2		-> char **cmd should be NULl because empty TOK_WORD
+*/
+
+/*
+**	2. It adds empty TOK_WORD tokens to REDIR + WORD combinations	// TODO
+**	   - i.e. "< IN", which is TOK_LESS->TOK_WORD to TOK_WORD->TOK_LESS->TOK_WORD
+**	   This is to help creating the CMD nodes during the grouping phase.
 */
 
 /*
