@@ -12,6 +12,98 @@
 
 #include <minishell.h>
 
+static int	error_with_cleanup(t_list **tokens)
+{
+	ft_lstclear(tokens, token_del);
+	return (SYS_ERROR);
+}
+
+static int	init_cmd_nodes(t_shell *shell, t_list **cmd_node)
+{
+	t_list	*cmd;
+	t_node	*node;
+
+	node = node_new_def();
+	cmd = ft_lstnew(node);
+	if (!cmd || !cmd->content)
+	{
+		ft_lstdelone(cmd, node_del);
+		return (SYS_ERROR);
+	}
+	shell->cmd_nodes = cmd;
+	*cmd_node = NULL;
+	return (1);
+}
+
+static int	reset_cmd_node(t_shell *shell, t_list **cmd_node)
+{
+	t_list	*cmd;
+	t_node	*node;
+
+	cmd = *cmd_node;
+	ft_lstadd_back(&shell->cmd_nodes, cmd);
+	node = node_new_def();
+	*cmd_node = ft_lstnew(node);
+	if (!(*cmd_node) || !(*cmd_node)->content)
+	{
+		ft_lstdelone((*cmd_node), node_del);
+		return (SYS_ERROR);
+	}
+	return (1);
+}
+
+static void	move_and_unlink_token(t_list **tokens, t_list **node)
+{
+	t_list	*unlinked;
+
+	*node = (*node)->next;
+	unlinked = ft_lstunlink(tokens, *tokens);
+	ft_lstdelone(unlinked, token_del);
+}
+
+static int	consume_token(t_list *cmd_node, t_token *token)
+{
+
+}
+
+/*
+** group_tokens() groups the t_token structures
+** into a t_node structure for the executor.
+** Redirects are put into the list t_node.redir.
+** structures and the program, together with
+** its arguments, is stored inside t_node.cmd.
+**
+** tokens are consumed when combined into a
+** single structure. The TOK_PIPE acts as delimiter
+** when consuming tokens.
+*/
+int	group_tokens(t_shell *shell, t_list **tokens)
+{
+	t_list	*cmd_node;
+	t_list	*node;
+	t_token	*token;
+
+	if (init_cmd_nodes(shell, &cmd_node) == SYS_ERROR)
+		return (SYS_ERROR);
+	node = *tokens;
+	while (node)
+	{
+		token = (t_token *)node->content;
+		if (!node->next || token->type == TOK_PIPE)
+		{
+			if (reset_cmd_node(shell, &cmd_node) == SYS_ERROR)
+				return (error_with_cleanup(tokens));
+		}
+		else
+		{
+			if (consume_token(cmd_node, token) == SYS_ERROR)
+				return (error_with_cleanup(tokens));
+		}
+		move_and_unlink_token(tokens, &node);
+	}
+	return (1);
+}
+
 /*
 ** TESTS // TODO resolving quotes:
 **	- export TEST="cat -e";ls|"$TEST"

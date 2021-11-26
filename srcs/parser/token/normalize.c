@@ -74,6 +74,7 @@ void	normalize_part(t_list **tokens, t_bound *bound)
 			{
 				move_to_front(tokens, node, bound);
 				normalize_part(tokens, bound);
+				count = 0;
 			}
 		}
 		node = node->next;

@@ -139,6 +139,21 @@ TEST_CASE_METHOD(NormalizeFixture, "simple-multiple-four") {
 	shell_destroy(&shell);
 }
 
+TEST_CASE_METHOD(NormalizeFixture, "simple-multiple-five") {
+	char	*types[] = {"cat", "-e", "IN1", "IN2", "<", "IN4", ">", "OUT", NULL};
+	t_list	*cur;
+
+	init_tokens("cat < IN4 -e > OUT IN1 IN2");
+	REQUIRE(ft_lstsize(tokens) == 8);
+	normalize(&tokens);
+	REQUIRE(ft_lstsize(tokens) == 8);
+	cur = tokens;
+	for (int idx = 0; types[idx]; idx++, cur = cur->next)
+		CHECK(strncmp(types[idx], ((t_token *)cur->content)->token, strlen(types[idx])) == 0);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
 TEST_CASE_METHOD(NormalizeFixture, "with pipes") {
 	char	*types[] = {"cat", "<", "Makefile", "|", "cat", ">", "OUT", NULL};
 	t_list	*cur;
