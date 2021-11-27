@@ -16,16 +16,16 @@
 
 typedef enum e_token_type
 {
-	TOK_DOLLAR = 0,
+	TOK_LESS,
+	TOK_GREAT,
+	TOK_DGREAT,
+	TOK_DLESS,
+	TOK_DOLLAR,
 	TOK_QUOTE,
 	TOK_SPACE,
 	TOK_PIPE,
-	TOK_LESS,
-	TOK_GREAT,
 	TOK_WORD,
-	TOK_DLESS,
 	TOK_DQUOTE,
-	TOK_DGREAT
 }	t_token_type;
 
 typedef struct s_token_map

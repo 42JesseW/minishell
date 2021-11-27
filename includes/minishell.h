@@ -70,9 +70,9 @@ void		*pair_new_cpy(void *cpy);
 t_pair		*pair_new_kv(const char *key, const char *val);
 t_pair		*pair_new_val(const char *kv);
 
-int			environ_from_envp(t_list **root, const char **envp);	// TODO testcase
-char		**environ_to_envp(t_list *root);						// TODO testcase
-const char	*environ_get(t_list *environ, const char *key);			// TODO testcase
+int			environ_from_envp(t_list **root, const char **envp);
+char		**environ_to_envp(t_list *root);
+const char	*environ_get(t_list *environ, const char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[], char **input_string);
@@ -88,6 +88,7 @@ void		*node_new_cpy(void *cpy);
 t_node		*node_new_val(char **cmd, t_list *redir);
 
 int			parse_input_string(char *input_string, t_shell *shell);	// TODO testcase
+int			group_tokens(t_shell *shell, t_list **tokens);
 int			resolve_dollar(t_shell *shell, t_list **tokens);
 
 #endif

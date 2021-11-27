@@ -31,6 +31,8 @@ int	environ_from_envp(t_list **root, const char **envp)
 	t_list	*env;
 	int		idx;
 
+	if (!envp)
+		return (EXIT_SUCCESS);
 	idx = 0;
 	while (envp[idx])
 	{

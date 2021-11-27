@@ -28,7 +28,7 @@ const char	*environ_get(t_list *environ, const char *key)
 	while (traverse)
 	{
 		pair = (t_pair *)traverse->content;
-		if (ft_strncmp(pair->key, key, ft_strlen(key)) == 0)
+		if (ft_strcmp(pair->key, key) == 0)
 			return (pair->val);
 		traverse = traverse->next;
 	}

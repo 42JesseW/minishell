@@ -408,3 +408,163 @@ TEST_CASE("ft_lstinsert / ft_lstunlink") {
 	ft_lstclear(&list, free);
 	ft_lstdelone(node, free);
 }
+
+class ParseBeforeGroupFixture : public BaseFixture
+{
+protected:
+	t_shell	*shell;
+	char	*_input_string;
+
+	typedef struct s_test
+	{
+		char	*input_string;
+		char	*expected_tokens;
+		char	**input_tokens;
+		char	**check_tokens;
+	}	t_test;
+
+private:
+	char	**get_input_tokens()
+	{
+		t_list	*node;
+		t_token	*token;
+		int		idx;
+		char	**input_tokens;
+
+		idx = 0;
+		node = tokens;
+		input_tokens = (char **)malloc(sizeof(char *) * (ft_lstsize(tokens) + 1));
+		REQUIRE(input_tokens != NULL);
+		while (node)
+		{
+			token = (t_token *)node->content;
+			input_tokens[idx] = strdup(token->token);
+			REQUIRE(input_tokens[idx] != NULL);
+			node = node->next;
+			idx++;
+		}
+		input_tokens[idx] = NULL;
+		return (input_tokens);
+	}
+
+public:
+	ParseBeforeGroupFixture() : _input_string(NULL)
+	{
+		shell = shell_init(envp, &_input_string);
+		REQUIRE(shell != NULL);
+	}
+
+	void	init_test(t_test *test)
+	{
+		init_tokens(test->input_string);
+		REQUIRE(tokens != NULL);
+		test->input_tokens = get_input_tokens();
+		test->check_tokens = ft_strsplit(test->expected_tokens, ' ');
+		REQUIRE(test->check_tokens != NULL);
+	}
+
+	void	do_test(t_test *test)
+	{
+		for (int idx = 0; test->check_tokens[idx]; idx++)
+			CHECK(strncmp(test->check_tokens[idx], test->input_tokens[idx], strlen(test->check_tokens[idx])) == 0);
+	}
+
+	void	rm_test(t_test *test)
+	{
+		ft_lstclear(&tokens, token_del);
+		ft_strarrfree(&test->input_tokens);
+		ft_strarrfree(&test->check_tokens);
+		test->input_string = NULL;
+		test->expected_tokens = NULL;
+	}
+
+	void	init_tokens(const char *input_string) override {
+		tokens = tokenize(input_string);
+		REQUIRE(tokens != NULL);
+		REQUIRE(redir_merge(tokens));
+		REQUIRE(correct_dollar(tokens));
+		remove_spaces(&tokens);
+		REQUIRE(validate_pipes(tokens));
+		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
+		normalize(&tokens);
+	}
+};
+
+TEST_CASE_METHOD(ParseBeforeGroupFixture, "Valid combinations of tokens") {
+	t_test	tests[] = {
+			(t_test){"cat < Makefile", "cat < Makefile", NULL, NULL},
+			(t_test){"< Makefile", "< Makefile", NULL, NULL},
+			(t_test){"< Makefile cat", "cat < Makefile", NULL, NULL},
+			(t_test){"< Makefile cat -e", "cat -e < Makefile", NULL, NULL},
+			(t_test){"cat < Makefile -e -b", "cat -e -b < Makefile", NULL, NULL},
+			(t_test){"cat < Makefile -e -b", "cat -e -b < Makefile", NULL, NULL},
+			(t_test){"cat < Makefile -e > OUT -b -s", "cat -e -b -s < Makefile > OUT", NULL, NULL},
+			(t_test){"> OUT1 < IN1 cat -e > OUT2 -b -s < IN2", "cat -e -b -s > OUT1 < IN1 > OUT2 < IN2", NULL, NULL},
+			(t_test){NULL, NULL, NULL, NULL}
+	};
+
+	for (int idx = 0; tests[idx].input_string; idx++)
+	{
+		init_test(&tests[idx]);
+		do_test(&tests[idx]);
+		rm_test(&tests[idx]);
+	}
+}
+
+class GroupTokensFixture : public BaseFixture
+{
+protected:
+	t_shell	*shell;
+	char	*_input_string;
+public:
+	GroupTokensFixture() : _input_string(NULL)
+	{
+		shell = shell_init(envp, &_input_string);
+		REQUIRE(shell != NULL);
+	}
+
+	void	init_tokens(const char *input_string) override {
+		tokens = tokenize(input_string);
+		REQUIRE(tokens != NULL);
+		REQUIRE(redir_merge(tokens));
+		REQUIRE(correct_dollar(tokens));
+		remove_spaces(&tokens);
+		REQUIRE(validate_pipes(tokens));
+		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
+		normalize(&tokens);
+	}
+};
+
+static char	*redir_map[] = {"<", ">", ">>", "<<"};
+
+void	nodes_print_stdout(t_list *cmd_nodes)
+{
+	t_node	*node;
+	t_redir	*redir;
+
+	for (t_list *cur = cmd_nodes; cur != NULL; cur = cur->next)
+	{
+		node = (t_node *)cur->content;
+		printf("--------------------\n");
+		printf("|%9s %-8s|\n", "cmd", " ");
+		for (int idx = 0; node->cmd[idx]; idx++)
+			printf("|%6d | %-9s|\n", idx, node->cmd[idx]);
+		printf("--------------------\n");
+		printf("|[%5s | %8s]|\n", "type", "filename");
+		for (t_list *r = node->redir; r != NULL; r = r->next)
+		{
+			redir = (t_redir *)r->content;
+			printf("||%5s | %-8s||\n", redir_map[redir->type], redir->file);
+		}
+		printf("--------------------\n");
+		printf("%5s\n%10s\n", "|", "ᐯ");
+	}
+}
+
+TEST_CASE_METHOD(GroupTokensFixture, "One simple node") {
+	init_tokens("cat -e -b -s < IN1 > OUT1 < IN2 > OUT2");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	nodes_print_stdout(shell->cmd_nodes);
+}

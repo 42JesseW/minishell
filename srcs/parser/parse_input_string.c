@@ -18,37 +18,22 @@ static int	error_with_cleanup(t_list **tokens)
 	return (SYS_ERROR);
 }
 
-static int	init_cmd_nodes(t_shell *shell, t_list **cmd_node)
+/* initialize shell.cmd_nodes by creating a new empty node */
+static int	init_cmd_nodes(t_list **cmd_node)
 {
 	t_list	*cmd;
 	t_node	*node;
 
 	node = node_new_def();
+	if (!node)
+		return (SYS_ERROR);
 	cmd = ft_lstnew(node);
-	if (!cmd || !cmd->content)
+	if (!cmd)
 	{
-		ft_lstdelone(cmd, node_del);
+		node_del(node);
 		return (SYS_ERROR);
 	}
-	shell->cmd_nodes = cmd;
-	*cmd_node = NULL;
-	return (1);
-}
-
-static int	reset_cmd_node(t_shell *shell, t_list **cmd_node)
-{
-	t_list	*cmd;
-	t_node	*node;
-
-	cmd = *cmd_node;
-	ft_lstadd_back(&shell->cmd_nodes, cmd);
-	node = node_new_def();
-	*cmd_node = ft_lstnew(node);
-	if (!(*cmd_node) || !(*cmd_node)->content)
-	{
-		ft_lstdelone((*cmd_node), node_del);
-		return (SYS_ERROR);
-	}
+	*cmd_node = cmd;
 	return (1);
 }
 
@@ -61,9 +46,183 @@ static void	move_and_unlink_token(t_list **tokens, t_list **node)
 	ft_lstdelone(unlinked, token_del);
 }
 
-static int	consume_token(t_list *cmd_node, t_token *token)
+/*
+** is_redir_file() checks if TOK_WORD does not
+** belong to redir.file. This would be the case
+** if redir.file is still NULL since every valid
+** redirect must have a corresponding TOK_WORD.
+**
+** If above condition is true, *last_redir will
+** point to the the last redir structure in the
+** list held by {node}.
+*/
+static bool	is_redir_file(t_node *node, t_redir **last_redir)
 {
+	t_redir	*redir;
+	t_list	*last;
 
+	redir = NULL;
+	last = ft_lstlast(node->redir);
+	if (last)
+	{
+		redir = (t_redir *)last->content;
+		if (!redir->file)
+		{
+			*last_redir = redir;
+			return (true);
+		}
+	}
+	return (false);
+}
+
+static char	**allocate_new_cmd(t_list *token_node)
+{
+	t_list	*node;
+	int		word_amount;
+	char	**cmd;
+
+	word_amount = 0;
+	node = token_node;
+	while (((t_token *)node->content)->type == TOK_WORD)
+	{
+		node = node->next;
+		word_amount++;
+	}
+	cmd = (char **)malloc(sizeof(char *) * (word_amount + 1));
+	if (!cmd)
+		return (NULL);
+	while (word_amount >= 0)
+	{
+		cmd[word_amount] = NULL;
+		word_amount--;
+	}
+	return (cmd);
+}
+
+static int	consume_word_token(t_node *node, t_list *token_node, int *word_idx)
+{
+	t_token	*token;
+	t_redir	*redir;
+
+	redir = NULL;
+	token = (t_token *)token_node->content;
+	if (is_redir_file(node, &redir))
+	{
+		redir->file = ft_strdup(token->token);
+		if (!redir->file)
+			return (SYS_ERROR);
+	}
+	else
+	{
+		if (!node->cmd)
+		{
+			node->cmd = allocate_new_cmd(token_node);
+			if (!node->cmd)
+				return (SYS_ERROR);
+		}
+		node->cmd[(*word_idx)] = ft_strdup(token->token);
+		if (!node->cmd[(*word_idx)])
+			return (SYS_ERROR);
+		(*word_idx)++;
+	}
+	return (1);
+}
+
+/* token.type (t_token_type) maps directly to node.type (t_redir_type). */
+static int	consume_redir_token(t_node *node, t_token *token)
+{
+	t_list	*redir_node;
+	t_redir	*redir;
+
+	redir = redir_new_val((t_redir_type)token->type, NULL);
+	if (!redir)
+		return (SYS_ERROR);
+	redir_node = ft_lstnew(redir);
+	if (!redir_node)
+	{
+		redir_del(redir);
+		return (SYS_ERROR);
+	}
+	ft_lstadd_back(&node->redir, redir_node);
+	return (1);
+}
+
+/*
+** consume_token() adds data to the new cmd_node
+** based on the token type. TOK_WORD tokens are
+** added to node.cmd and redirect tokens are added
+** to the list node.redir.
+**
+** For TOK_WORD nodes the following is checked:
+**	1.	Is node.cmd already allocated
+**	(false)
+**		1. Scan forward and count TOK_WORD.
+**		2. Allocate for that many strings
+**		3. Copy first TOK_WORD into node.cmd
+**		4. Increment word_idx
+**	(true)
+**		1. Copy TOK_WORD into node.cmd
+**		2. Increment word_idx
+*/
+static int	consume_token(t_list *cmd_node, t_list *token_node)
+{
+	t_token		*token;
+	t_node		*node;
+	static int	word_idx = 0;
+
+	node = (t_node *)cmd_node->content;
+	if (!node->cmd && !node->redir)
+		word_idx = 0;
+	token = (t_token *)token_node->content;
+	if (is_redir_type(token->type, REDIR_ALL))
+	{
+		if (consume_redir_token(node, token) == SYS_ERROR)
+			return (SYS_ERROR);
+	}
+	if (token->type == TOK_WORD)
+	{
+		if (consume_word_token(node, token_node, &word_idx) == SYS_ERROR)
+			return (SYS_ERROR);
+	}
+	return (1);
+}
+
+/*
+** reset_cmd_node() does the following:
+**	1. Check if we're at the last token
+**	(true)
+**		1. consume the last token so its added to
+**		   to the node structure.
+**	(false)
+**		1. create a new node structure that can be
+**		   filled with more tokens.
+**	2. In all cases, the *cmd_node is added to the
+**	   the list of nodes in shell.cmd_nodes
+*/
+static int	reset_cmd_node(t_shell *shell, t_list **cmd_node, t_list *token_node)
+{
+	t_list	*cmd;
+	t_node	*node;
+
+	if (!token_node->next)
+	{
+		if (consume_token((*cmd_node), token_node) == SYS_ERROR)
+			return (SYS_ERROR);
+	}
+	cmd = *cmd_node;
+	ft_lstadd_back(&shell->cmd_nodes, cmd);
+	*cmd_node = NULL;
+	if (!token_node->next)
+	{
+		node = node_new_def();
+		*cmd_node = ft_lstnew(node);
+		if (!(*cmd_node) || !(*cmd_node)->content)
+		{
+			ft_lstdelone((*cmd_node), node_del);
+			return (SYS_ERROR);
+		}
+	}
+	return (1);
 }
 
 /*
@@ -80,26 +239,26 @@ static int	consume_token(t_list *cmd_node, t_token *token)
 int	group_tokens(t_shell *shell, t_list **tokens)
 {
 	t_list	*cmd_node;
-	t_list	*node;
+	t_list	*token_node;
 	t_token	*token;
 
-	if (init_cmd_nodes(shell, &cmd_node) == SYS_ERROR)
+	if (init_cmd_nodes(&cmd_node) == SYS_ERROR)
 		return (SYS_ERROR);
-	node = *tokens;
-	while (node)
+	token_node = *tokens;
+	while (token_node)
 	{
-		token = (t_token *)node->content;
-		if (!node->next || token->type == TOK_PIPE)
+		token = (t_token *)token_node->content;
+		if (!token_node->next || token->type == TOK_PIPE)
 		{
-			if (reset_cmd_node(shell, &cmd_node) == SYS_ERROR)
+			if (reset_cmd_node(shell, &cmd_node, token_node) == SYS_ERROR)
 				return (error_with_cleanup(tokens));
 		}
 		else
 		{
-			if (consume_token(cmd_node, token) == SYS_ERROR)
+			if (consume_token(cmd_node, token_node) == SYS_ERROR)
 				return (error_with_cleanup(tokens));
 		}
-		move_and_unlink_token(tokens, &node);
+		move_and_unlink_token(tokens, &token_node);
 	}
 	return (1);
 }

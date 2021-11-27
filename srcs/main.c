@@ -18,7 +18,7 @@ static const char	g_prompt[] = "shelly3.2$ ";
 ** main() has 4 main jobs:
 **	1. checking arguments passed to the program
 **	2. initialising the t_shell struct
-**	3. passing output from the initial readline() call to the lexer
+**	3. passing output from the initial readline() call to the parser
 **	4. passing output from the parser to the executor
 */
 
