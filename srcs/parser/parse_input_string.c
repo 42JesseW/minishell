@@ -12,253 +12,42 @@
 
 #include <minishell.h>
 
-static int	error_with_cleanup(t_list **tokens)
+static int	convert(t_list **redir_root, t_list *redir_node, t_redir *node)
 {
-	ft_lstclear(tokens, token_del);
-	return (SYS_ERROR);
-}
 
-/* initialize shell.cmd_nodes by creating a new empty node */
-static int	init_cmd_nodes(t_list **cmd_node)
-{
-	t_list	*cmd;
-	t_node	*node;
-
-	node = node_new_def();
-	if (!node)
-		return (SYS_ERROR);
-	cmd = ft_lstnew(node);
-	if (!cmd)
-	{
-		node_del(node);
-		return (SYS_ERROR);
-	}
-	*cmd_node = cmd;
-	return (1);
-}
-
-static void	move_and_unlink_token(t_list **tokens, t_list **node)
-{
-	t_list	*unlinked;
-
-	*node = (*node)->next;
-	unlinked = ft_lstunlink(tokens, *tokens);
-	ft_lstdelone(unlinked, token_del);
 }
 
 /*
-** is_redir_file() checks if TOK_WORD does not
-** belong to redir.file. This would be the case
-** if redir.file is still NULL since every valid
-** redirect must have a corresponding TOK_WORD.
+** convert_heredocs() looks for REDIR_DELIM
+** redirects and converts these to REDIR_IN
+** redirects pointing to a temp file.
 **
-** If above condition is true, *last_redir will
-** point to the the last redir structure in the
-** list held by {node}.
+** Since
 */
-static bool	is_redir_file(t_node *node, t_redir **last_redir)
+
+int	convert_heredocs(t_shell *shell)
 {
-	t_redir	*redir;
-	t_list	*last;
-
-	redir = NULL;
-	last = ft_lstlast(node->redir);
-	if (last)
-	{
-		redir = (t_redir *)last->content;
-		if (!redir->file)
-		{
-			*last_redir = redir;
-			return (true);
-		}
-	}
-	return (false);
-}
-
-static char	**allocate_new_cmd(t_list *token_node)
-{
-	t_list	*node;
-	int		word_amount;
-	char	**cmd;
-
-	word_amount = 0;
-	node = token_node;
-	while (((t_token *)node->content)->type == TOK_WORD)
-	{
-		node = node->next;
-		word_amount++;
-	}
-	cmd = (char **)malloc(sizeof(char *) * (word_amount + 1));
-	if (!cmd)
-		return (NULL);
-	while (word_amount >= 0)
-	{
-		cmd[word_amount] = NULL;
-		word_amount--;
-	}
-	return (cmd);
-}
-
-static int	consume_word_token(t_node *node, t_list *token_node, int *word_idx)
-{
-	t_token	*token;
-	t_redir	*redir;
-
-	redir = NULL;
-	token = (t_token *)token_node->content;
-	if (is_redir_file(node, &redir))
-	{
-		redir->file = ft_strdup(token->token);
-		if (!redir->file)
-			return (SYS_ERROR);
-	}
-	else
-	{
-		if (!node->cmd)
-		{
-			node->cmd = allocate_new_cmd(token_node);
-			if (!node->cmd)
-				return (SYS_ERROR);
-		}
-		node->cmd[(*word_idx)] = ft_strdup(token->token);
-		if (!node->cmd[(*word_idx)])
-			return (SYS_ERROR);
-		(*word_idx)++;
-	}
-	return (1);
-}
-
-/* token.type (t_token_type) maps directly to node.type (t_redir_type). */
-static int	consume_redir_token(t_node *node, t_token *token)
-{
+	t_list	*cmd_node;
+	t_node	*node;
 	t_list	*redir_node;
 	t_redir	*redir;
 
-	redir = redir_new_val((t_redir_type)token->type, NULL);
-	if (!redir)
-		return (SYS_ERROR);
-	redir_node = ft_lstnew(redir);
-	if (!redir_node)
+	cmd_node = shell->cmd_nodes;
+	while (cmd_node)
 	{
-		redir_del(redir);
-		return (SYS_ERROR);
-	}
-	ft_lstadd_back(&node->redir, redir_node);
-	return (1);
-}
-
-/*
-** consume_token() adds data to the new cmd_node
-** based on the token type. TOK_WORD tokens are
-** added to node.cmd and redirect tokens are added
-** to the list node.redir.
-**
-** For TOK_WORD nodes the following is checked:
-**	1.	Is node.cmd already allocated
-**	(false)
-**		1. Scan forward and count TOK_WORD.
-**		2. Allocate for that many strings
-**		3. Copy first TOK_WORD into node.cmd
-**		4. Increment word_idx
-**	(true)
-**		1. Copy TOK_WORD into node.cmd
-**		2. Increment word_idx
-*/
-static int	consume_token(t_list *cmd_node, t_list *token_node)
-{
-	t_token		*token;
-	t_node		*node;
-	static int	word_idx = 0;
-
-	node = (t_node *)cmd_node->content;
-	if (!node->cmd && !node->redir)
-		word_idx = 0;
-	token = (t_token *)token_node->content;
-	if (is_redir_type(token->type, REDIR_ALL))
-	{
-		if (consume_redir_token(node, token) == SYS_ERROR)
-			return (SYS_ERROR);
-	}
-	if (token->type == TOK_WORD)
-	{
-		if (consume_word_token(node, token_node, &word_idx) == SYS_ERROR)
-			return (SYS_ERROR);
-	}
-	return (1);
-}
-
-/*
-** reset_cmd_node() does the following:
-**	1. Check if we're at the last token
-**	(true)
-**		1. consume the last token so its added to
-**		   to the node structure.
-**	(false)
-**		1. create a new node structure that can be
-**		   filled with more tokens.
-**	2. In all cases, the *cmd_node is added to the
-**	   the list of nodes in shell.cmd_nodes
-*/
-static int	reset_cmd_node(t_shell *shell, t_list **cmd_node, t_list *token_node)
-{
-	t_list	*cmd;
-	t_node	*node;
-
-	if (!token_node->next)
-	{
-		if (consume_token((*cmd_node), token_node) == SYS_ERROR)
-			return (SYS_ERROR);
-	}
-	cmd = *cmd_node;
-	ft_lstadd_back(&shell->cmd_nodes, cmd);
-	*cmd_node = NULL;
-	if (!token_node->next)
-	{
-		node = node_new_def();
-		*cmd_node = ft_lstnew(node);
-		if (!(*cmd_node) || !(*cmd_node)->content)
+		node = (t_node *)cmd_node->content;
+		redir_node = node->redir;
+		while (redir_node)
 		{
-			ft_lstdelone((*cmd_node), node_del);
-			return (SYS_ERROR);
+			redir = (t_redir *)redir_node->content;
+			if (redir->type == REDIR_DELIM)
+			{
+				if (convert(&node->redir, redir_node, redir) == SYS_ERROR)
+					return (SYS_ERROR);
+			}
+			redir_node = redir_node->next;
 		}
-	}
-	return (1);
-}
-
-/*
-** group_tokens() groups the t_token structures
-** into a t_node structure for the executor.
-** Redirects are put into the list t_node.redir.
-** structures and the program, together with
-** its arguments, is stored inside t_node.cmd.
-**
-** tokens are consumed when combined into a
-** single structure. The TOK_PIPE acts as delimiter
-** when consuming tokens.
-*/
-int	group_tokens(t_shell *shell, t_list **tokens)
-{
-	t_list	*cmd_node;
-	t_list	*token_node;
-	t_token	*token;
-
-	if (init_cmd_nodes(&cmd_node) == SYS_ERROR)
-		return (SYS_ERROR);
-	token_node = *tokens;
-	while (token_node)
-	{
-		token = (t_token *)token_node->content;
-		if (!token_node->next || token->type == TOK_PIPE)
-		{
-			if (reset_cmd_node(shell, &cmd_node, token_node) == SYS_ERROR)
-				return (error_with_cleanup(tokens));
-		}
-		else
-		{
-			if (consume_token(cmd_node, token_node) == SYS_ERROR)
-				return (error_with_cleanup(tokens));
-		}
-		move_and_unlink_token(tokens, &token_node);
+		cmd_node = cmd_node->next;
 	}
 	return (1);
 }
@@ -337,8 +126,10 @@ int	parse_input_string(char *input_string, t_shell *shell)
 	if (resolve_quotes(&tokens) == SYS_ERROR)
 		return (0);
 	normalize(&tokens);
+	if (group_tokens(shell, &tokens) == SYS_ERROR)
+		return (0);
 
-	token_display_stdout(tokens);
+	nodes_print_stdout(shell->cmd_nodes);
 
 	// resolve here-doc in parser after initial nodes are made
 	// convert the "<< {DELIM}" to a "< {temp.filename}" node.

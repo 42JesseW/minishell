@@ -493,15 +493,15 @@ public:
 
 TEST_CASE_METHOD(ParseBeforeGroupFixture, "Valid combinations of tokens") {
 	t_test	tests[] = {
-			(t_test){"cat < Makefile", "cat < Makefile", NULL, NULL},
-			(t_test){"< Makefile", "< Makefile", NULL, NULL},
-			(t_test){"< Makefile cat", "cat < Makefile", NULL, NULL},
-			(t_test){"< Makefile cat -e", "cat -e < Makefile", NULL, NULL},
-			(t_test){"cat < Makefile -e -b", "cat -e -b < Makefile", NULL, NULL},
-			(t_test){"cat < Makefile -e -b", "cat -e -b < Makefile", NULL, NULL},
-			(t_test){"cat < Makefile -e > OUT -b -s", "cat -e -b -s < Makefile > OUT", NULL, NULL},
-			(t_test){"> OUT1 < IN1 cat -e > OUT2 -b -s < IN2", "cat -e -b -s > OUT1 < IN1 > OUT2 < IN2", NULL, NULL},
-			(t_test){NULL, NULL, NULL, NULL}
+		(t_test){"cat < Makefile", "cat < Makefile", NULL, NULL},
+		(t_test){"< Makefile", "< Makefile", NULL, NULL},
+		(t_test){"< Makefile cat", "cat < Makefile", NULL, NULL},
+		(t_test){"< Makefile cat -e", "cat -e < Makefile", NULL, NULL},
+		(t_test){"cat < Makefile -e -b", "cat -e -b < Makefile", NULL, NULL},
+		(t_test){"cat < Makefile -e -b", "cat -e -b < Makefile", NULL, NULL},
+		(t_test){"cat < Makefile -e > OUT -b -s", "cat -e -b -s < Makefile > OUT", NULL, NULL},
+		(t_test){"> OUT1 < IN1 cat -e > OUT2 -b -s < IN2", "cat -e -b -s > OUT1 < IN1 > OUT2 < IN2", NULL, NULL},
+		(t_test){NULL, NULL, NULL, NULL}
 	};
 
 	for (int idx = 0; tests[idx].input_string; idx++)
@@ -537,34 +537,171 @@ public:
 	}
 };
 
-static char	*redir_map[] = {"<", ">", ">>", "<<"};
-
-void	nodes_print_stdout(t_list *cmd_nodes)
+bool	ft_strarrcmp(char **arr1, char **arr2)
 {
-	t_node	*node;
-	t_redir	*redir;
+	int		idx;
 
-	for (t_list *cur = cmd_nodes; cur != NULL; cur = cur->next)
+	idx = 0;
+	while (arr1[idx] && arr2[idx])
 	{
-		node = (t_node *)cur->content;
-		printf("--------------------\n");
-		printf("|%9s %-8s|\n", "cmd", " ");
-		for (int idx = 0; node->cmd[idx]; idx++)
-			printf("|%6d | %-9s|\n", idx, node->cmd[idx]);
-		printf("--------------------\n");
-		printf("|[%5s | %8s]|\n", "type", "filename");
-		for (t_list *r = node->redir; r != NULL; r = r->next)
-		{
-			redir = (t_redir *)r->content;
-			printf("||%5s | %-8s||\n", redir_map[redir->type], redir->file);
-		}
-		printf("--------------------\n");
-		printf("%5s\n%10s\n", "|", "ᐯ");
+		if (ft_strcmp(arr1[idx], arr2[idx]) != 0)
+			return (false);
+		idx++;
 	}
+	return (!arr1[idx] && !arr2[idx]);
+}
+
+TEST_CASE_METHOD(GroupTokensFixture, "Small edge cases") {
+	init_tokens("  ");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	REQUIRE(shell->cmd_nodes == NULL);
+	ft_lstclear(&tokens, token_del);
+	init_tokens("\"\"<OUT2");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	REQUIRE(shell->cmd_nodes != NULL);
+	REQUIRE(((t_node *)shell->cmd_nodes->content)->cmd[0] != NULL);
+	REQUIRE(((t_node *)shell->cmd_nodes->content)->cmd[0][0] == 0);
+	ft_lstclear(&tokens, token_del);
+	ft_lstclear(&shell->cmd_nodes, node_del);
+	init_tokens("<OUT2");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	REQUIRE(((t_node *)shell->cmd_nodes->content)->cmd == NULL);
+	REQUIRE(ft_lstsize(((t_node *)shell->cmd_nodes->content)->redir) == 1);
+	ft_lstclear(&tokens, token_del);
+	ft_lstclear(&shell->cmd_nodes, node_del);
+	init_tokens("cat<IN1|>OUT");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	REQUIRE(ft_lstsize(((t_node *)shell->cmd_nodes->content)->redir) == 1);
+	REQUIRE(((t_node *)shell->cmd_nodes->next->content)->cmd == NULL);
+	REQUIRE(ft_lstsize(((t_node *)shell->cmd_nodes->next->content)->redir) == 1);
+	ft_lstclear(&tokens, token_del);
+	ft_lstclear(&shell->cmd_nodes, node_del);
+	init_tokens("<IN1|>OUT");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	REQUIRE(((t_node *)shell->cmd_nodes->content)->cmd == NULL);
+	REQUIRE(ft_lstsize(((t_node *)shell->cmd_nodes->content)->redir) == 1);
+	REQUIRE(((t_node *)shell->cmd_nodes->next->content)->cmd == NULL);
+	REQUIRE(ft_lstsize(((t_node *)shell->cmd_nodes->next->content)->redir) == 1);
+	ft_lstclear(&tokens, token_del);
+	ft_lstclear(&shell->cmd_nodes, node_del);
+	nodes_print_stdout(shell->cmd_nodes);
 }
 
 TEST_CASE_METHOD(GroupTokensFixture, "One simple node") {
+	t_node	*node;
+	t_redir	*redir;
+	char	**cmd;
+
+	init_tokens("cat < Makefile");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	for (t_list *cmd_node = shell->cmd_nodes; cmd_node != NULL; cmd_node = cmd_node->next)
+	{
+		node = (t_node *)cmd_node->content;
+		cmd = ft_strsplit("cat", ' ');
+		REQUIRE(cmd != NULL);
+		REQUIRE(ft_strarrcmp(node->cmd, cmd));
+		REQUIRE(ft_lstsize(node->redir) == 1);
+		for (t_list *redir_node = node->redir; redir_node != NULL; redir_node = redir_node->next)
+		{
+			redir = (t_redir *)redir_node->content;
+			CHECK(redir->type == REDIR_IN);
+		}
+		ft_strarrfree(&cmd);
+	}
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(GroupTokensFixture, "One complex node") {
+	t_node			*node;
+	t_redir			*redir;
+	char			**cmd;
+	int				idx;
+	t_redir_type	types[] = {REDIR_IN, REDIR_OUT, REDIR_IN, REDIR_OUT};
+
 	init_tokens("cat -e -b -s < IN1 > OUT1 < IN2 > OUT2");
 	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
-	nodes_print_stdout(shell->cmd_nodes);
+	for (t_list *cmd_node = shell->cmd_nodes; cmd_node != NULL; cmd_node = cmd_node->next)
+	{
+		node = (t_node *)cmd_node->content;
+		cmd = ft_strsplit("cat -e -b -s", ' ');
+		REQUIRE(cmd != NULL);
+		REQUIRE(ft_strarrcmp(node->cmd, cmd));
+		REQUIRE(ft_lstsize(node->redir) == 4);
+		idx = 0;
+		for (t_list *redir_node = node->redir; redir_node != NULL; redir_node = redir_node->next, idx++)
+		{
+			redir = (t_redir *)redir_node->content;
+			CHECK(redir->type == types[idx]);
+		}
+		ft_strarrfree(&cmd);
+	}
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(GroupTokensFixture, "Two simple nodes") {
+	t_node			*node;
+	t_redir			*redir;
+	char			**cmd;
+	int				i, j;
+	int				list_sizes[2] = {1, 1};
+	char			*input_strings[] = {strdup("cat"), strdup("cat -e"), NULL};
+	t_redir_type	types[2][1] = {{REDIR_IN}, {REDIR_OUT}};
+
+	init_tokens("cat < Makefile | cat -e > OUT");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	i = 0;
+	for (t_list *cmd_node = shell->cmd_nodes; cmd_node != NULL; cmd_node = cmd_node->next, i++)
+	{
+		node = (t_node *)cmd_node->content;
+		cmd = ft_strsplit(input_strings[i], ' ');
+		REQUIRE(cmd != NULL);
+		REQUIRE(ft_strarrcmp(node->cmd, cmd));
+		REQUIRE(ft_lstsize(node->redir) == list_sizes[i]);
+		j = 0;
+		for (t_list *redir_node = node->redir; redir_node != NULL; redir_node = redir_node->next, j++)
+		{
+			redir = (t_redir *)redir_node->content;
+			CHECK(redir->type == types[i][j]);
+		}
+		ft_strarrfree(&cmd);
+	}
+	for (int idx = 0; input_strings[idx]; idx++)
+		free(input_strings[idx]);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
+}
+
+TEST_CASE_METHOD(GroupTokensFixture, "Two complex nodes") {
+	t_node			*node;
+	t_redir			*redir;
+	char			**cmd;
+	int				i, j;
+	int				list_sizes[2] = {4, 0};
+	char			*input_strings[] = {strdup("cat -e -b -s"), strdup("grep -A 2 -B 4 -n test"), NULL};
+	t_redir_type	types[2][4] = {{REDIR_IN, REDIR_OUT, REDIR_IN, REDIR_OUT}, {}};
+
+	init_tokens("cat -e -b -s < IN1 > OUT1 < IN2 > OUT2 | grep -A 2 -B 4 -n 'test'");
+	REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
+	i = 0;
+	for (t_list *cmd_node = shell->cmd_nodes; cmd_node != NULL; cmd_node = cmd_node->next, i++)
+	{
+		node = (t_node *)cmd_node->content;
+		cmd = ft_strsplit(input_strings[i], ' ');
+		REQUIRE(cmd != NULL);
+		REQUIRE(ft_strarrcmp(node->cmd, cmd));
+		REQUIRE(ft_lstsize(node->redir) == list_sizes[i]);
+		j = 0;
+		for (t_list *redir_node = node->redir; redir_node != NULL; redir_node = redir_node->next, j++)
+		{
+			redir = (t_redir *)redir_node->content;
+			CHECK(redir->type == types[i][j]);
+		}
+		ft_strarrfree(&cmd);
+	}
+	for (int idx = 0; input_strings[idx]; idx++)
+		free(input_strings[idx]);
+	ft_lstclear(&tokens, token_del);
+	shell_destroy(&shell);
 }

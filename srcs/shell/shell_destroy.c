@@ -22,6 +22,7 @@ void	shell_destroy(t_shell **shell)
 	if (p)
 	{
 		ft_lstclear(&p->environ, pair_del);
+		ft_lstclear(&p->cmd_nodes, node_del);
 		free(p);
 	}
 	*shell = NULL;

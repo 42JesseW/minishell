@@ -26,6 +26,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/shell_destroy.c \
 			  parser/node/node_del.c \
 			  parser/node/node_new.c \
+			  parser/node/node_utils.c \
 			  parser/redir/redir_del.c \
 			  parser/redir/redir_new.c \
 			  parser/redir/redir_merge.c \
@@ -39,6 +40,8 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/token/validate_pipes.c \
 			  parser/token/resolve_quotes.c \
 			  parser/token/normalize.c \
+			  parser/token/consume_token.c \
+			  parser/token/group_tokens.c \
 			  parser/resolve_dollar.c \
 			  parser/parse_input_string.c \
 			  main.c
