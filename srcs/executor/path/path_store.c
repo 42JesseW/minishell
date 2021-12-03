@@ -10,11 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// Nadenken over generieke foutafhandeling: printf errors vervangen
-
 #include <exe.h>
 
-void	store_paths(const char *str_paths, t_exe *exe, t_shell *shell)
+// DESCRIPTION FOLLOWS
+
+void	store_paths(const char *str_paths, t_exe *exe)
 {
 	int		idx;
 	char	**split_paths;
@@ -22,7 +22,7 @@ void	store_paths(const char *str_paths, t_exe *exe, t_shell *shell)
 
 	split_paths = ft_strsplit(str_paths, ':');
 	if (!split_paths)
-		printf("Error - Malloc failed");
+		printf("Error - Malloc failed"); // error handling
 	idx = 0;
 	while (split_paths[idx] != NULL)
 	{
@@ -38,6 +38,8 @@ void	store_paths(const char *str_paths, t_exe *exe, t_shell *shell)
 	ft_strarrfree(&split_paths);
 }
 
+// DESCRIPTION FOLLOWS
+
 int	init_paths(t_exe *exe, t_shell *shell)
 {
 	t_pair	*pair;
@@ -47,7 +49,7 @@ int	init_paths(t_exe *exe, t_shell *shell)
 		pair = shell->environ->content;
 		if (ft_strncmp(pair->key, "PATH", 4) == 0)
 		{
-			store_paths(pair->val, exe, shell);
+			store_paths(pair->val, exe);
 			return (0);
 		}
 		else
