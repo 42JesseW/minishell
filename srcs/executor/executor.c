@@ -38,7 +38,7 @@ void prepare_execution(t_exe *exe, t_shell *shell)
 	else
 		fork_process(0, amount_cmds, exe, shell->cmd_nodes->content);
 	idx = 0;
-	while (idx < amount_cmds)
+	while (idx < amount_cmds) // hier gaat er iets fout bij 3: hij loopt niet verder dan 1
 	{
 		waitpid(exe->pids[idx], NULL, 0); // later in aparte functie ivm exitcodes
 		idx++;
@@ -86,10 +86,16 @@ int	main(int argc, char **argv, const char *envp[]) //temp
 //			{"ls", "-l", NULL},
 //			{"wc", "-l", NULL}
 //	};
-	char 	*cmd[3][3] = {
+//	char 	*cmd[3][3] = {
+//			{"ls", "-l", NULL},
+//			{"wc", "-l", NULL},
+//			{"echo", "cat", NULL},
+//	};
+	char 	*cmd[4][3] = {
 			{"ls", "-l", NULL},
 			{"wc", "-l", NULL},
 			{"echo", "cat", NULL},
+			{"wc", "-l", NULL},
 	};
 
 	idx = 0;
@@ -98,7 +104,7 @@ int	main(int argc, char **argv, const char *envp[]) //temp
 	environ_from_envp(&environ, (const char **) envp);
 	shell->environ = environ;
 	shell->cmd_nodes = NULL;
-	while (idx < 3)
+	while (idx < 4)
 	{
 		cmd_node = (t_node *) malloc(sizeof(t_node));
 		cmd_node->cmd = cmd[idx];

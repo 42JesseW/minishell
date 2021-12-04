@@ -10,15 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// hier moeten de redirects nog ingeschreven worden
-
 # include <exe.h>
 
 void	dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
 	if (idx != (amount_cmds - 1)) // als het niet het laatste cmd is
 		dup_pipe_write(idx, exe);
-	else if (idx != 0) // als het niet het eerste cmd is
+	if (idx != 0) // als het niet het eerste cmd is
 	{
 		idx--;
 		dup_pipe_read(idx, exe);
