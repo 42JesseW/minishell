@@ -12,6 +12,15 @@
 
 #include <minishell.h>
 
+/*
+** DESCRIPTION
+**	- Finds the path to the folder from where the cmd can be executed
+**    and executes it
+** JOBS
+** 1. Finds the path to the folder from where the cmd can be executed
+** 2. Execute the cmd
+*/
+
 void	execute_cmd(char **cmd, t_exe *exe)
 {
 	char	*path;

@@ -21,11 +21,11 @@ void	malloc_fds(t_exe *exe, int amount_pipes)
 {
 	int	idx;
 
-	exe->pipe_fds = (int **)malloc(sizeof(int *) * amount_pipes + 1);
+	exe->pipe_fds = (int **)malloc(sizeof(int *) * (amount_pipes + 1));
 	if (!exe->pipe_fds)
 		printf("Error - Malloc failed");
 	idx = 0;
-	while (idx < (amount_pipes))
+	while (idx < amount_pipes)
 	{
 		exe->pipe_fds[idx] = (int *) malloc(sizeof(int) * 2);
 		if (!exe->pipe_fds[idx])
@@ -35,5 +35,5 @@ void	malloc_fds(t_exe *exe, int amount_pipes)
 		}
 		idx++;
 	}
-	exe->pipe_fds[amount_pipes + 1] = NULL;
+	exe->pipe_fds[amount_pipes] = NULL;
 }

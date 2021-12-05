@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   dup_cmd.c                                          :+:    :+:            */
+/*   pipe_free_fds.c                                    :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: annaheister <annaheister@student.codam.nl>   +#+                     */
+/*   By: aheister <aheister@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/12/02 19:21:21 by annaheister   #+#    #+#                 */
-/*   Updated: 2021/12/02 19:21:21 by annaheister   ########   odam.nl         */
+/*   Created: 2021/12/05 16:18:31 by aheister      #+#    #+#                 */
+/*   Updated: 2021/12/05 16:18:31 by aheister      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,18 @@
 
 /*
 ** DESCRIPTION
-**	-  Moet nog aangevuld worden voor situatie met redirects
+**	- Frees the allocated memory for the pipe_fds
 */
 
-void	dup_cmd(t_exe *exe, t_node *cmd_node)
+void	free_fds(t_exe *exe)
 {
-	execute_cmd(cmd_node->cmd, exe);
+	int	idx;
+
+	idx = 0;
+	while (exe->pipe_fds[idx])
+	{
+		free(exe->pipe_fds[idx]);
+		idx++;
+	}
+	free(exe->pipe_fds);
 }

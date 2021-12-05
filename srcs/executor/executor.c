@@ -14,12 +14,13 @@
 
 /*
 ** DESCRIPTION
-**	-
+**	- Decides to call the piping functions if there is more than 1 cmd
+**  or the cmd executor function if it is only one cmd
 ** JOBS
-** 1.
-** 2.
-** 3.
-** 4.
+** 1. Prepares the memory to store the pids of fork(s)
+** 2. Prepares the memory to store the pipe_fds if there are 1+ cmds
+** 3. Initiates the piping route if there are 1+ cmds
+** 4. Initiates the cmd executor route if there is just 1 cmd
 */
 
 void	prepare_execution(t_exe *exe, t_shell *shell)
@@ -45,19 +46,17 @@ void	prepare_execution(t_exe *exe, t_shell *shell)
 		idx++;
 	}
 	free(exe->pids);
-	//Hier nog een free array voor de pipe_fds
+	free_fds(exe);
 }
 
 /*
 ** DESCRIPTION
-**	- Initiates the exe struct, fills it with the environmental path,
-**  and decides to call the piping functions if there is more than 1 cmd
-**  or the cmd executor function if it is only one cmd
+**	- Initiates the exe struct, fills it with the environmental path
+**  and sends everything to the prepare_execution function
 ** JOBS
 ** 1. Prepares the memory for the exe struct
 ** 2. Takes care of the storage of the environmental path
-** 3. Initiates the piping route if there are 1+ cmds
-** 4. Initiates the cmd executor route if there is just 1 cmd
+** 3. All information is send to the prepare_execution function
 */
 
 void	init_exe(t_shell *shell)
@@ -73,48 +72,3 @@ void	init_exe(t_shell *shell)
 		printf("Error - Initialization of path failed\n");
 	prepare_execution(exe, shell);
 }
-
-//int	main(int argc, char **argv, const char *envp[]) //temp
-//{
-//	t_shell	*shell;
-//	t_list	*environ;
-//	t_node	*cmd_node;
-//	int 	idx;
-//	char 	*cmd[1][3] = {
-//			{"echo", "cat", NULL}
-//	};
-//		char 	*cmd[2][3] = {
-//			{"ls", "-l", NULL},
-//			{"wc", "-l", NULL}
-//	};
-//	char 	*cmd[3][3] = {
-//			{"ls", "-l", NULL},
-//			{"wc", "-l", NULL},
-//			{"echo", "cat", NULL},
-//	};
-//	char 	*cmd[4][3] = {
-//			{"ls", "-l", NULL},
-//			{"wc", "-l", NULL},
-//			{"echo", "cat", NULL},
-//			{"wc", "-l", NULL},
-//	};
-//
-//	idx = 0;
-//	environ = NULL;
-//	shell = (t_shell *) malloc(sizeof(t_shell));
-//	environ_from_envp(&environ, (const char **) envp);
-//	shell->environ = environ;
-//	shell->cmd_nodes = NULL;
-//	while (idx < 4)
-//	{
-//		cmd_node = (t_node *) malloc(sizeof(t_node));
-//		cmd_node->cmd = cmd[idx];
-//		cmd_node->redir = NULL;
-//		ft_lstadd_back(&shell->cmd_nodes, ft_lstnew(cmd_node));
-//		idx++;
-//	}
-//	init_exe(shell);
-//	return (0);
-//}
-
-//gcc -Iincludes -Ilibft/includes -Llibft -lft srcs/executor/dup/dup_cmd.c srcs/executor/dup/dup_pipes.c srcs/executor/execute/execute.c srcs/executor/fork/fork.c srcs/executor/pipe/pipe.c srcs/executor/pipe/pipe_close.c srcs/executor/pipe/pipe_malloc_fds.c srcs/executor/path/path_of_cmd.c srcs/executor/path/path_store.c srcs/executor/executor.c srcs/shell/environ/environ_from_envp.c srcs/shell/environ/environ_to_envp.c srcs/shell/environ/pair/pair_new.c srcs/shell/environ/pair/pair_join.c srcs/shell/environ/pair/pair_del.c

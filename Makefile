@@ -53,6 +53,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  executor/path/path_store.c \
 			  executor/pipe/pipe.c \
 			  executor/pipe/pipe_close.c \
+			  executor/pipe/pipe_free_fds.c \
 			  executor/pipe/pipe_malloc_fds.c \
 			  executor/executor.c \
 			  main.c

@@ -12,6 +12,11 @@
 
 #include <minishell.h>
 
+/*
+** DESCRIPTION
+**	- Closes the (unused) pipe_ends of the parent
+*/
+
 void	close_pipe_ends(int **pipes_fds, int idx)
 {
 	if (idx != 0)

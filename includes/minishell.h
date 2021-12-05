@@ -118,6 +118,7 @@ void	prepare_execution(t_exe *exe, t_shell *shell);
 // PIPING
 void 	malloc_fds(t_exe *exe, int amount_cmds);
 void	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
+void 	free_fds(t_exe *exe);
 
 
 // DUPPING
