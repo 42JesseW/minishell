@@ -12,6 +12,7 @@
 
 #include <parser.h>
 
+/* Default constructor for t_node structure */
 t_node	*node_new_def(void)
 {
 	t_node	*node;
@@ -20,12 +21,15 @@ t_node	*node_new_def(void)
 	if (!node)
 		return (NULL);
 	node->cmd = NULL;
-	node->next = NULL;
 	node->redir = NULL;
 	return (node);
 }
 
-t_node	*node_new_val(char **cmd, t_redir *redir)
+/*
+** Construct t_node with its properties initialised
+** Ownership of t_list structure is transferred to node.
+*/
+t_node	*node_new_val(char **cmd, t_list *redir)
 {
 	t_node	*node;
 
@@ -35,32 +39,37 @@ t_node	*node_new_val(char **cmd, t_redir *redir)
 	node->cmd = NULL;
 	if (cmd)
 		node->cmd = ft_strarrdup(cmd);
-	node->redir = redir_lst_dup(redir);
+	node->redir = redir;
 	if ((cmd && !node->cmd) || (redir && !node->redir))
 	{
 		node_del(&node);
 		return (NULL);
 	}
-	node->next = NULL;
 	return (node);
 }
 
-t_node	*node_new_cpy(t_node *cpy)
+/*
+** Construct t_node using information from another node structure
+** New node copies all information, including the t_list structure.
+** This means ownership of pointers is kept with the original creator.
+*/
+void	*node_new_cpy(void *cpy)
 {
 	t_node	*node;
+	t_node	*copy;
 
 	node = (t_node *)malloc(sizeof(t_node));
 	if (!node)
 		return (NULL);
+	copy = cpy;
 	node->cmd = NULL;
-	if (cpy->cmd)
-		node->cmd = ft_strarrdup(cpy->cmd);
-	node->redir = redir_lst_dup(cpy->redir);
-	if ((cpy->cmd && !node->cmd) && (cpy->redir && !node->redir))
+	if (copy->cmd)
+		node->cmd = ft_strarrdup(copy->cmd);
+	node->redir = ft_lstmap(copy->redir, redir_new_cpy, redir_del);
+	if ((copy->cmd && !node->cmd) && (copy->redir && !node->redir))
 	{
 		node_del(&node);
 		return (NULL);
 	}
-	node->next = NULL;
 	return (node);
 }

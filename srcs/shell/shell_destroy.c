@@ -21,7 +21,7 @@ void	shell_destroy(t_shell **shell)
 	p = *shell;
 	if (p)
 	{
-		env_lst_del(&p->environ);
+		ft_lstclear(&p->environ, pair_del);
 		free(p);
 	}
 	*shell = NULL;

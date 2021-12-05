@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   pair_del.c                                         :+:    :+:            */
+/*   pipe_close.c                                       :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
+/*   By: annaheister <annaheister@student.codam.nl>   +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/05 16:52:59 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/11/05 16:52:59 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/11/27 15:12:32 by annaheister   #+#    #+#                 */
+/*   Updated: 2021/11/27 15:12:32 by annaheister   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+# include <exe.h>
 
-void	pair_del(t_pair **pair)
+void	close_pipe_ends(int **pipes_fds, int idx)
 {
-	t_pair	*p;
-
-	p = *pair;
-	if (p)
+	if (idx != 0)
 	{
-		free(p->key);
-		free(p->val);
+		idx--;
+		close(pipes_fds[idx][0]);
+		close(pipes_fds[idx][1]);
 	}
-	free(p);
-	*pair = NULL;
 }

@@ -1,26 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   env_del.c                                          :+:    :+:            */
+/*   dup_cmd.c                                          :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
+/*   By: annaheister <annaheister@student.codam.nl>   +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/05 16:37:06 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/11/05 16:37:06 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/12/02 19:21:21 by annaheister   #+#    #+#                 */
+/*   Updated: 2021/12/02 19:21:21 by annaheister   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
-//test
-void	env_del(t_env **env)
-{
-	t_env	*p;
+// hier moeten nog de redirects ingeschreven worden
 
-	p = *env;
-	if (p)
-	{
-		pair_del(&p->pair);
-		free(p);
-	}
-	*env = NULL;
+# include <exe.h>
+
+void	dup_cmd(t_exe *exe, t_node *cmd_node)
+{
+//	exe->fd_in = dup(STDIN_FILENO);
+//	exe->fd_out = dup(STDOUT_FILENO);
+	execute_cmd(cmd_node->cmd, exe);
 }
+

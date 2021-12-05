@@ -36,56 +36,39 @@ typedef struct s_redir
 {
 	t_redir_type	type;
 	char			*file;
-	struct s_redir	*next;
 }	t_redir;
 
 /* cmd node for linked list */
 typedef struct s_node
 {
-	char			**cmd;
-	t_redir			*redir;
-	struct s_node	*next;
+	char	**cmd;
+	t_list	*redir;
 }	t_node;
 
+/* key pair representing an environment variable */
 typedef struct s_pair
 {
 	char	*key;
 	char	*val;
 }	t_pair;
 
-typedef struct s_env
-{
-	struct s_env	*next;
-	t_pair			*pair;
-}	t_env;
-
 typedef struct s_shell
 {
-	t_env	*environ;
+	t_list	*environ;
+	t_list	*cmd_nodes;
 }	t_shell;
 
-void		pair_del(t_pair **pair);
+void		pair_del(void *pair);
 
 char		*pair_join(t_pair *pair);
 
 t_pair		*pair_new_def(void);
-t_pair		*pair_new_cpy(t_pair *cpy);
+void		*pair_new_cpy(void *cpy);
 t_pair		*pair_new_kv(const char *key, const char *val);
 t_pair		*pair_new_val(const char *kv);
 
-int			env_from_envp(t_env **root, const char **envp);
-char		**env_to_envp(t_env *root);
-
-void		env_del(t_env **env);
-
-t_env		*env_new_def(void);
-t_env		*env_new_cpy(t_env *cpy);
-t_env		*env_new_val(t_pair *pair);
-
-void		env_lst_del(t_env **root);
-int			env_lst_len(t_env *root);
-t_env		*env_lst_get(t_env **root, char *key);
-t_env		*env_lst_put(t_env **root, t_env *env);
+int			environ_from_envp(t_list **root, const char **envp);
+char		**environ_to_envp(t_list *root);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[], char **input_line);

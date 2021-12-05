@@ -21,27 +21,27 @@ t_redir	*redir_new_def(void)
 		return (NULL);
 	redir->file = NULL;
 	redir->type = REDIR_IN;
-	redir->next = NULL;
 	return (redir);
 }
 
-t_redir	*redir_new_cpy(t_redir *cpy)
+void	*redir_new_cpy(void *cpy)
 {
 	t_redir	*redir;
+	t_redir	*copy;
 
 	redir = (t_redir *)malloc(sizeof(t_redir));
 	if (!redir)
 		return (NULL);
-	redir->type = cpy->type;
+	copy = cpy;
+	redir->type = copy->type;
 	redir->file = NULL;
-	if (cpy->file)
-		redir->file = ft_strdup(cpy->file);
-	if (cpy->file && !redir->file)
+	if (copy->file)
+		redir->file = ft_strdup(copy->file);
+	if (copy->file && !redir->file)
 	{
 		redir_del(&redir);
 		return (NULL);
 	}
-	redir->next = cpy->next;
 	return (redir);
 }
 
@@ -61,6 +61,5 @@ t_redir	*redir_new_val(t_redir_type type, const char *file)
 		redir_del(&redir);
 		return (NULL);
 	}
-	redir->next = NULL;
-	return (NULL);
+	return (redir);
 }
