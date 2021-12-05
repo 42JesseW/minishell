@@ -105,10 +105,6 @@ typedef struct s_exe
 	t_list	*paths;
 	int		**pipe_fds;
 	pid_t 	*pids;
-<<<<<<< HEAD
-=======
-	int 	fd_in;
->>>>>>> 84bdb923ce288b9dbaac9429fb19253f32cb83a7
 	int 	fd_out;
 	char 	**envp; //temp
 }	t_exe;
