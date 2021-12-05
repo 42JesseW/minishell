@@ -18,8 +18,8 @@
 **    and cleans up after the loop
 ** JOBS
 ** 1. Prepares the memory for the pipe fds and the pids
-** 2. Initiates the pipe_loop
-** 3. Waits for the terminated children in the pipe_loop
+** 2. Initiates the pipe_loop or directly the fork_process
+** 3. Waits for the terminated children of the forking
 ** 4. Frees the memory for the pipe fds and the pids
 */
 
@@ -38,7 +38,7 @@ void prepare_execution(t_exe *exe, t_shell *shell)
 	else
 		fork_process(0, amount_cmds, exe, shell->cmd_nodes->content);
 	idx = 0;
-	while (idx < amount_cmds) // hier gaat er iets fout bij 3: hij loopt niet verder dan 1
+	while (idx < amount_cmds)
 	{
 		waitpid(exe->pids[idx], NULL, 0); // later in aparte functie ivm exitcodes
 		idx++;
@@ -116,5 +116,5 @@ int	main(int argc, char **argv, const char *envp[]) //temp
 	return (0);
 }
 
-//gcc -Iincludes -Ilibft/includes -Llibft -lft srcs/executor/dup/dup.c srcs/executor/dup/dup_cmd.c srcs/executor/dup/dup_pipes.c srcs/executor/execute/execute.c srcs/executor/fork/fork.c srcs/executor/pipe/pipe.c srcs/executor/pipe/pipe_close.c srcs/executor/pipe/pipe_malloc_fds.c srcs/executor/path/path_of_cmd.c srcs/executor/path/path_store.c srcs/executor/executor.c srcs/shell/environ/environ_from_envp.c srcs/shell/environ/environ_to_envp.c srcs/shell/environ/pair/pair_new.c srcs/shell/environ/pair/pair_join.c srcs/shell/environ/pair/pair_del.c
+//gcc -Iincludes -Ilibft/includes -Llibft -lft srcs/executor/dup/dup_cmd.c srcs/executor/dup/dup_pipes.c srcs/executor/execute/execute.c srcs/executor/fork/fork.c srcs/executor/pipe/pipe.c srcs/executor/pipe/pipe_close.c srcs/executor/pipe/pipe_malloc_fds.c srcs/executor/path/path_of_cmd.c srcs/executor/path/path_store.c srcs/executor/executor.c srcs/shell/environ/environ_from_envp.c srcs/shell/environ/environ_to_envp.c srcs/shell/environ/pair/pair_new.c srcs/shell/environ/pair/pair_join.c srcs/shell/environ/pair/pair_del.c
 

@@ -15,15 +15,13 @@
 /*
 ** DESCRIPTION
 **	- Executes the piping loop. For each cmd the process
-**    is forked and the cmd is send to the child process
+**    is forked and the cmd is send to the fork_process
 **    to be executed.
 **
 ** JOBS
 ** 1. Creates in a loop the pipe fds for each pipe
       reading from the pipe = pipefd[0], writing to the pipe = pipefd[1]
-** 2. For each cmd_node the process is forked
-** 3. The corresponding cmd content is send to a child process to be executed
-** 4. Pids of the children are stored in exe->pids
+** 2. Each cmd node is send to the forking process to be executed
 */
 
 void pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell)

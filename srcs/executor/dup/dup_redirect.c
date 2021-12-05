@@ -1,34 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   child_process.c                                    :+:    :+:            */
+/*   dup_redirect.c                                     :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: annaheister <annaheister@student.codam.nl>   +#+                     */
+/*   By: aheister <aheister@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/27 15:05:27 by annaheister   #+#    #+#                 */
-/*   Updated: 2021/11/27 15:05:27 by annaheister   ########   odam.nl         */
+/*   Created: 2021/12/05 11:25:38 by aheister      #+#    #+#                 */
+/*   Updated: 2021/12/05 11:25:38 by aheister      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include <exe.h>
-
-void	dup_pipe_write(int idx, t_exe *exe)
-{
-	int fd_out;
-
-	fd_out = dup2(exe->pipe_fds[idx][1], STDOUT_FILENO);
-	if (fd_out == -1)
-		printf("Error - Duplicating fd failed"); // error handling
-}
-
-void	dup_pipe_read(int idx, t_exe *exe)
-{
-	int fd;
-
-	fd = dup2(exe->pipe_fds[idx][0], STDIN_FILENO);
-	if (fd == -1)
-		printf("Error - Duplicating fd failed"); // error handling
-}
 
 // deze functie opent de file voor een redirect
 
