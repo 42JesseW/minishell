@@ -14,7 +14,10 @@
 
 static int	convert(t_list **redir_root, t_list *redir_node, t_redir *node)
 {
-
+	(void)redir_root;
+	(void)redir_node;
+	(void)node;
+	return (1);
 }
 
 /*
