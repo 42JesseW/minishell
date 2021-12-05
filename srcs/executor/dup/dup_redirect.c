@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <exe.h>
+# include <minishell.h>
 
 // deze functie opent de file voor een redirect
 

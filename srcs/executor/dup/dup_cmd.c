@@ -12,7 +12,7 @@
 
 // hier moeten nog de redirects ingeschreven worden
 
-# include <exe.h>
+# include <minishell.h>
 
 void	dup_cmd(t_exe *exe, t_node *cmd_node)
 {

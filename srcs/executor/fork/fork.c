@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <exe.h>
+# include <minishell.h>
 
 void fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {

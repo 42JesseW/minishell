@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <exe.h>
+# include <minishell.h>
 
 void	dup_pipe_write(int idx, t_exe *exe)
 {

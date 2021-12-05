@@ -17,7 +17,7 @@
 ** - absolute path	(starting at /)         -> {/bin/echo}
 */
 
-# include <exe.h>
+# include <minishell.h>
 
 char 	*get_full_path(char *cmd, t_exe *exe)
 {
