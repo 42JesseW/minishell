@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <exe.h>
+#include <minishell.h>
 
 void	execute_cmd(char **cmd, t_exe *exe)
 {

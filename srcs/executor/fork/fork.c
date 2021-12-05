@@ -10,15 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <exe.h>
+#include <minishell.h>
 
-void fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
+void	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid < 0)
-		printf("Error - Fork has failed"); // error handling
+		printf("Error - Fork has failed");
 	else if (pid == 0)
 	{
 		if (amount_cmds > 1)

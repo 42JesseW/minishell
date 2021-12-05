@@ -10,9 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <exe.h>
-
-// DESCRIPTION FOLLOWS
+#include <minishell.h>
 
 void	store_paths(const char *str_paths, t_exe *exe)
 {
@@ -22,7 +20,7 @@ void	store_paths(const char *str_paths, t_exe *exe)
 
 	split_paths = ft_strsplit(str_paths, ':');
 	if (!split_paths)
-		printf("Error - Malloc failed"); // error handling
+		printf("Error - Malloc failed");
 	idx = 0;
 	while (split_paths[idx] != NULL)
 	{
@@ -37,8 +35,6 @@ void	store_paths(const char *str_paths, t_exe *exe)
 	}
 	ft_strarrfree(&split_paths);
 }
-
-// DESCRIPTION FOLLOWS
 
 int	init_paths(t_exe *exe, t_shell *shell)
 {

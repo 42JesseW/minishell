@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
 extern "C" {
-	#include <exe.h>
+	#include <minishell.h>
 }
 
 static const char	*envp[] = {

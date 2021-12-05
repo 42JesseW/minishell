@@ -44,6 +44,16 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/token/group_tokens.c \
 			  parser/resolve_dollar.c \
 			  parser/parse_input_string.c \
+			  executor/dup/dup_cmd.c \
+			  executor/dup/dup_pipes.c \
+			  executor/execute/execute.c \
+			  executor/fork/fork.c \
+			  executor/path/path_of_cmd.c \
+			  executor/path/path_store.c \
+			  executor/pipe/pipe.c \
+			  executor/pipe/pipe_close.c \
+			  executor/pipe/pipe_malloc_fds.c \
+			  executor/executor.c \
 			  main.c
 
 OBJECTS 	= $(addprefix $(OBJECT_DIR)/$(SOURCE_DIR)/, $(SOURCES:.c=.o))
@@ -87,6 +97,7 @@ $(NAME): $(OBJECTS) $(LIBFTLIB)
 $(OBJECT_DIR)/%.o: %.c
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/shell/environ/pair
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/parser/{node,redir,token}
+	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/executor/{dup,execute,fork,path,pipe}
 	@if $(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; then \
 		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
 	else \

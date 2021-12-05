@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <exe.h>
+#include <minishell.h>
 
 void	close_pipe_ends(int **pipes_fds, int idx)
 {

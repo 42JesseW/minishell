@@ -38,6 +38,7 @@ int	main(int argc, char *argv[], const char *envp[])
 		input_string = readline(g_prompt);
 		if (!parse_input_string(input_string, shell))
 			break ;
+		init_exe(shell);
 		ft_lstclear(&shell->cmd_nodes, node_del);
 	}
 	shell_destroy(&shell);

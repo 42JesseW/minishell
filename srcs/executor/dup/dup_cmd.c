@@ -10,14 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// hier moeten nog de redirects ingeschreven worden
-
-# include <exe.h>
+#include <minishell.h>
 
 void	dup_cmd(t_exe *exe, t_node *cmd_node)
 {
-//	exe->fd_in = dup(STDIN_FILENO);
-//	exe->fd_out = dup(STDOUT_FILENO);
 	execute_cmd(cmd_node->cmd, exe);
 }
-
