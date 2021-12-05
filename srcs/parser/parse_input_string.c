@@ -13,51 +13,108 @@
 #include <minishell.h>
 
 /*
-** convert() converts REDIR_DELIM nodes
-** to REDIR_IN nodes in the following way:
-**	1. Read untill EOF character specified in t_redir.file
-**	2. Write data to temp file TMP_FILE_NAME
-**		2.1. Use getcwd() to create a full path
-**			2.1.1 If someone tries to be funny and remove the
-**				  directory in which the program is being run,
-**			      fail the operation.
-**		2.2. If file already exists, truncate it first
+** write_heredoc() reads from STDIN using readline
+** and appends the data to TMP_FILE_NAME using {fd}
+** until the line returned by readline matches the
+** {delimiter} string.
 */
 
-static int	convert(t_list **redir_root, t_list *redir_node, t_redir *node)
+static int	write_heredoc(char *file_path, char *delimiter)
 {
-	char	cwd[PATH_MAX];
-	char	*tmp_file_path;
 	char	*line;
+	ssize_t	ret;
 	int		fd;
 
-	(void)redir_node;
-	(void)redir_root;
-	(void)node;
-	if (!getcwd(cwd, PATH_MAX))
-		return (SYS_ERROR);
-	tmp_file_path = ft_strjoin(cwd, TMP_FILE_NAME);
-	if (!tmp_file_path)
-		return (SYS_ERROR);
-	fd = open(tmp_file_path, O_WRONLY | O_TRUNC | O_CREAT);
+	fd = open(file_path, O_WRONLY | O_APPEND);
 	if (fd == -1)
 		return (SYS_ERROR);
-	line = readline("> ");
-	while (line != NULL)
+	line = readline(HEREDOC_PROMPT);
+	while (line)
 	{
+		if (ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break ;
+		}
+		ret = write(fd, line, ft_strlen(line));
 		free(line);
-		line = readline("> ");
+		if (ret == SYS_ERROR)
+			return (SYS_ERROR);
+		line = readline(HEREDOC_PROMPT);
 	}
 	return (1);
 }
 
 /*
-** convert_heredocs() looks for REDIR_DELIM
-** redirects and converts these to REDIR_IN
-** redirects pointing to a temp file.
+** convert_heredoc() converts REDIR_DELIM nodes
+** to REDIR_IN nodes in the following way:
+**	1. remove the TMP_FILE_NAME file if exists
 */
 
-int	convert_heredocs(t_shell *shell)
+static int	convert_heredoc(t_redir *node)
+{
+	char	file_path[PATH_MAX];
+	char	cwd[PATH_MAX];
+	size_t	cwd_len;
+	int		fd;
+
+	if (!getcwd(cwd, PATH_MAX))
+		return (SYS_ERROR);
+	cwd_len = ft_strlen(cwd);
+	ft_strcpy(file_path, cwd);
+	ft_strlcpy(file_path + cwd_len, TMP_FILE_NAME, ft_strlen(TMP_FILE_NAME));
+	fd = open(file_path, O_WRONLY | O_TRUNC | O_CREAT);
+	if (fd == -1)
+		return (SYS_ERROR);
+	close(fd);
+	if (write_heredoc(file_path, node->file) == SYS_ERROR)
+		return (SYS_ERROR);
+	close(fd);
+	fd = open(file_path, O_RDONLY);
+	if (fd == -1 || unlink(file_path) < 0)
+		return (SYS_ERROR);
+	node->type = REDIR_IN;
+	node->file = ft_strdup(file_path);
+	if (!node->file)
+		return (SYS_ERROR);
+	return (fd);
+}
+
+static int	create_file(t_redir *node)
+{
+	int	mode;
+	int	fd;
+
+	mode = 0644;
+	if (node->type == REDIR_DELIM)
+		fd = convert_heredoc(node);
+	else if (node->type == REDIR_IN)
+		fd = open(node->file, O_RDONLY);
+	else if (node->type == REDIR_OUT)
+		fd = open(node->file, O_CREAT | O_TRUNC | O_WRONLY, mode);
+	else
+		fd = open(node->file, O_CREAT | O_APPEND | O_WRONLY, mode);
+	if (fd == -1)
+		return (SYS_ERROR);
+	return (1);
+}
+
+/*
+** create_redir_files() loops all redir nodes for each cmd_node
+** in shell.cmd_nodes and does the following:
+**	1. REDIR_DELIM is converted to REDIR_IN (see convert_heredoc)
+**	2. Get a file descriptor
+**		2.1 mode based on the t_redir.type :
+**			- REDIR_IN	-> (O_RDONLY)
+**			- REDIR_OUT	-> (O_CREAT | O_TRUNC | O_WRONLY)
+**			- REDIR_APP	-> (O_CREAT | O_APPEND | O_WRONLY)
+**		2.2 file permissions -> 0644
+**		2.3 If REDIR_DELIM, unlink the created file descriptor
+**
+**	3. set t_redir.fd
+*/
+
+int	create_redir_files(t_shell *shell)
 {
 	t_list	*cmd_node;
 	t_node	*node;
@@ -72,11 +129,8 @@ int	convert_heredocs(t_shell *shell)
 		while (redir_node)
 		{
 			redir = (t_redir *)redir_node->content;
-			if (redir->type == REDIR_DELIM)
-			{
-				if (convert(&node->redir, redir_node, redir) == SYS_ERROR)
-					return (SYS_ERROR);
-			}
+			if (create_file(redir) == SYS_ERROR)
+				return (SYS_ERROR);
 			redir_node = redir_node->next;
 		}
 		cmd_node = cmd_node->next;
