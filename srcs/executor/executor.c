@@ -73,12 +73,12 @@ void init_exe(t_shell *shell)
 	prepare_execution(exe, shell);
 }
 
-int	main(int argc, char **argv, const char *envp[]) //temp
-{
-	t_shell	*shell;
-	t_list	*environ;
-	t_node	*cmd_node;
-	int 	idx;
+//int	main(int argc, char **argv, const char *envp[]) //temp
+//{
+//	t_shell	*shell;
+//	t_list	*environ;
+//	t_node	*cmd_node;
+//	int 	idx;
 //	char 	*cmd[1][3] = {
 //			{"echo", "cat", NULL}
 //	};
@@ -91,30 +91,30 @@ int	main(int argc, char **argv, const char *envp[]) //temp
 //			{"wc", "-l", NULL},
 //			{"echo", "cat", NULL},
 //	};
-	char 	*cmd[4][3] = {
-			{"ls", "-l", NULL},
-			{"wc", "-l", NULL},
-			{"echo", "cat", NULL},
-			{"wc", "-l", NULL},
-	};
-
-	idx = 0;
-	environ = NULL;
-	shell = (t_shell *) malloc(sizeof(t_shell));
-	environ_from_envp(&environ, (const char **) envp);
-	shell->environ = environ;
-	shell->cmd_nodes = NULL;
-	while (idx < 4)
-	{
-		cmd_node = (t_node *) malloc(sizeof(t_node));
-		cmd_node->cmd = cmd[idx];
-		cmd_node->redir = NULL;
-		ft_lstadd_back(&shell->cmd_nodes, ft_lstnew(cmd_node));
-		idx++;
-	}
-	init_exe(shell);
-	return (0);
-}
+//	char 	*cmd[4][3] = {
+//			{"ls", "-l", NULL},
+//			{"wc", "-l", NULL},
+//			{"echo", "cat", NULL},
+//			{"wc", "-l", NULL},
+//	};
+//
+//	idx = 0;
+//	environ = NULL;
+//	shell = (t_shell *) malloc(sizeof(t_shell));
+//	environ_from_envp(&environ, (const char **) envp);
+//	shell->environ = environ;
+//	shell->cmd_nodes = NULL;
+//	while (idx < 4)
+//	{
+//		cmd_node = (t_node *) malloc(sizeof(t_node));
+//		cmd_node->cmd = cmd[idx];
+//		cmd_node->redir = NULL;
+//		ft_lstadd_back(&shell->cmd_nodes, ft_lstnew(cmd_node));
+//		idx++;
+//	}
+//	init_exe(shell);
+//	return (0);
+//}
 
 //gcc -Iincludes -Ilibft/includes -Llibft -lft srcs/executor/dup/dup_cmd.c srcs/executor/dup/dup_pipes.c srcs/executor/execute/execute.c srcs/executor/fork/fork.c srcs/executor/pipe/pipe.c srcs/executor/pipe/pipe_close.c srcs/executor/pipe/pipe_malloc_fds.c srcs/executor/path/path_of_cmd.c srcs/executor/path/path_store.c srcs/executor/executor.c srcs/shell/environ/environ_from_envp.c srcs/shell/environ/environ_to_envp.c srcs/shell/environ/pair/pair_new.c srcs/shell/environ/pair/pair_join.c srcs/shell/environ/pair/pair_del.c
 
