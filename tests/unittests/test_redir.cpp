@@ -14,6 +14,7 @@ SCENARIO("creating new t_redir structures") {
 			THEN("members should have the approriate values") {
 				CHECK(redir->file == NULL);
 				CHECK(redir->type == REDIR_IN);
+				CHECK(redir->fd == -1);
 			}
 			redir_del(redir);
 		}
@@ -22,7 +23,7 @@ SCENARIO("creating new t_redir structures") {
 	GIVEN("another t_redir structure"){
 		t_redir	*cpy;
 
-		cpy = redir_new_val(REDIR_OUT, "filename");
+		cpy = redir_new_val(REDIR_OUT, "filename", -1);
 		REQUIRE(cpy != NULL);
 		WHEN("creating a new t_redir structure") {
 			t_redir	*redir;
@@ -32,6 +33,7 @@ SCENARIO("creating new t_redir structures") {
 			THEN("members should have the appropriate values") {
 				CHECK(redir->type == cpy->type);
 				CHECK(strcmp(redir->file, cpy->file) == 0);
+				CHECK(redir->fd == cpy->fd);
 			}
 			redir_del(redir);
 		}
@@ -48,11 +50,12 @@ SCENARIO("creating new t_redir structures") {
 		WHEN("creating a new t_redir structure") {
 			t_redir	*redir;
 
-			redir = redir_new_val(type, file);
+			redir = redir_new_val(type, file, -1);
 			REQUIRE(redir != NULL);
 			THEN("members should have the appropriate values") {
 				CHECK(redir->type == type);
 				CHECK(strcmp(redir->file, file) == 0);
+				CHECK(redir->fd == -1);
 			}
 			redir_del(redir);
 		}

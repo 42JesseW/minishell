@@ -100,7 +100,7 @@ static int	consume_redir_token(t_node *node, t_token *token)
 	t_list	*redir_node;
 	t_redir	*redir;
 
-	redir = redir_new_val((t_redir_type)token->type, NULL);
+	redir = redir_new_val((t_redir_type)token->type, NULL, -1);
 	if (!redir)
 		return (SYS_ERROR);
 	redir_node = ft_lstnew(redir);

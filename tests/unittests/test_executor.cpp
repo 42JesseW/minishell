@@ -36,8 +36,7 @@ static const char	*envp[] = {
 
 TEST_CASE("testing init_exe") {
 	t_shell	*shell;
-	char	*input_line;
 
-	shell = shell_init(envp, &input_line);
+	shell = shell_init(envp);
 	REQUIRE(shell != NULL);
 }

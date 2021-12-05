@@ -413,7 +413,6 @@ class ParseBeforeGroupFixture : public BaseFixture
 {
 protected:
 	t_shell	*shell;
-	char	*_input_string;
 
 	typedef struct s_test
 	{
@@ -448,9 +447,9 @@ private:
 	}
 
 public:
-	ParseBeforeGroupFixture() : _input_string(NULL)
+	ParseBeforeGroupFixture()
 	{
-		shell = shell_init(envp, &_input_string);
+		shell = shell_init(envp);
 		REQUIRE(shell != NULL);
 	}
 
@@ -516,11 +515,11 @@ class GroupTokensFixture : public BaseFixture
 {
 protected:
 	t_shell	*shell;
-	char	*_input_string;
+
 public:
-	GroupTokensFixture() : _input_string(NULL)
+	GroupTokensFixture()
 	{
-		shell = shell_init(envp, &_input_string);
+		shell = shell_init(envp);
 		REQUIRE(shell != NULL);
 	}
 

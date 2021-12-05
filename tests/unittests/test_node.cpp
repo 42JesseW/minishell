@@ -33,7 +33,7 @@ SCENARIO("creating new node structures") {
         root = NULL;
         for (int idx = 0; types[idx] != REDIR_DELIM; idx++)
 		{
-        	redir = redir_new_val(types[idx], file);
+        	redir = redir_new_val(types[idx], file, -1);
         	REQUIRE(redir != NULL);
         	lst = ft_lstnew(redir);
         	REQUIRE(lst != NULL);
@@ -79,7 +79,7 @@ SCENARIO("creating new node structures") {
 		root = NULL;
 		for (int idx = 0; types[idx] != REDIR_DELIM; idx++)
 		{
-			redir = redir_new_val(types[idx], file);
+			redir = redir_new_val(types[idx], file, -1);
 			REQUIRE(redir != NULL);
 			lst = ft_lstnew(redir);
 			REQUIRE(lst != NULL);

@@ -5,12 +5,11 @@ class ResolveQuotesFixture : public BaseFixture
 {
 protected:
 	t_shell	*shell;
-	char	*_input_string;
 
 public:
-	ResolveQuotesFixture() : _input_string(NULL)
+	ResolveQuotesFixture()
 	{
-		shell = shell_init(envp, &_input_string);
+		shell = shell_init(envp);
 		REQUIRE(shell != NULL);
 	}
 

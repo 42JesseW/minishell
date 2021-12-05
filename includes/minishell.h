@@ -18,6 +18,9 @@
 # define B "\e[0;38;2;218;165;32m"
 # define R "\e[m"
 
+# define DEFAULT_PROMPT "shelly3.2$ "
+# define HEREDOC_PROMPT "> "
+
 # include <libft.h>
 # include <parser.h>
 # include <stdio.h>
@@ -40,6 +43,7 @@ typedef struct s_redir
 {
 	t_redir_type	type;
 	char			*file;
+	int				fd;
 }	t_redir;
 
 /* cmd node for linked list */
@@ -77,12 +81,12 @@ char		**environ_to_envp(t_list *root);
 const char	*environ_get(t_list *environ, const char *key);
 
 void		shell_destroy(t_shell **shell);
-t_shell		*shell_init(const char *envp[], char **input_string);
+t_shell		*shell_init(const char *envp[]);
 
 void		redir_del(void *redir);
 t_redir		*redir_new_def(void);
 void		*redir_new_cpy(void *cpy);
-t_redir		*redir_new_val(t_redir_type type, const char *file);
+t_redir		*redir_new_val(t_redir_type type, const char *file, int fd);
 
 void		node_del(void *node);
 t_node		*node_new_def(void);
@@ -101,6 +105,10 @@ typedef struct s_exe
 	t_list	*paths;
 	int		**pipe_fds;
 	pid_t 	*pids;
+<<<<<<< HEAD
+=======
+	int 	fd_in;
+>>>>>>> 84bdb923ce288b9dbaac9429fb19253f32cb83a7
 	int 	fd_out;
 	char 	**envp; //temp
 }	t_exe;
