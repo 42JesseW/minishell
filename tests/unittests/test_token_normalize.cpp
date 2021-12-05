@@ -5,11 +5,11 @@ class NormalizeFixture : public BaseFixture
 {
 protected:
 	t_shell	*shell;
-	char	*_input_string;
+
 public:
-	NormalizeFixture() : _input_string(NULL)
+	NormalizeFixture()
 	{
-		shell = shell_init(envp, &_input_string);
+		shell = shell_init(envp);
 		REQUIRE(shell != NULL);
 	}
 

@@ -19,6 +19,7 @@ t_redir	*redir_new_def(void)
 	redir = (t_redir *)malloc(sizeof(t_redir));
 	if (!redir)
 		return (NULL);
+	redir->fd = -1;
 	redir->file = NULL;
 	redir->type = REDIR_IN;
 	return (redir);
@@ -33,6 +34,7 @@ void	*redir_new_cpy(void *cpy)
 	if (!redir)
 		return (NULL);
 	copy = cpy;
+	redir->fd = copy->fd;
 	redir->type = copy->type;
 	redir->file = NULL;
 	if (copy->file)
@@ -45,13 +47,14 @@ void	*redir_new_cpy(void *cpy)
 	return (redir);
 }
 
-t_redir	*redir_new_val(t_redir_type type, const char *file)
+t_redir	*redir_new_val(t_redir_type type, const char *file, int fd)
 {
 	t_redir	*redir;
 
 	redir = (t_redir *)malloc(sizeof(t_redir));
 	if (!redir)
 		return (NULL);
+	redir->fd = fd;
 	redir->type = type;
 	redir->file = NULL;
 	if (file)

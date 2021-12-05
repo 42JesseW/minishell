@@ -12,11 +12,42 @@
 
 #include <minishell.h>
 
+/*
+** convert() converts REDIR_DELIM nodes
+** to REDIR_IN nodes in the following way:
+**	1. Read untill EOF character specified in t_redir.file
+**	2. Write data to temp file TMP_FILE_NAME
+**		2.1. Use getcwd() to create a full path
+**			2.1.1 If someone tries to be funny and remove the
+**				  directory in which the program is being run,
+**			      fail the operation.
+**		2.2. If file already exists, truncate it first
+*/
+
 static int	convert(t_list **redir_root, t_list *redir_node, t_redir *node)
 {
-	(void)redir_root;
+	char	cwd[PATH_MAX];
+	char	*tmp_file_path;
+	char	*line;
+	int		fd;
+
 	(void)redir_node;
+	(void)redir_root;
 	(void)node;
+	if (!getcwd(cwd, PATH_MAX))
+		return (SYS_ERROR);
+	tmp_file_path = ft_strjoin(cwd, TMP_FILE_NAME);
+	if (!tmp_file_path)
+		return (SYS_ERROR);
+	fd = open(tmp_file_path, O_WRONLY | O_TRUNC | O_CREAT);
+	if (fd == -1)
+		return (SYS_ERROR);
+	line = readline("> ");
+	while (line != NULL)
+	{
+		free(line);
+		line = readline("> ");
+	}
 	return (1);
 }
 
@@ -24,8 +55,6 @@ static int	convert(t_list **redir_root, t_list *redir_node, t_redir *node)
 ** convert_heredocs() looks for REDIR_DELIM
 ** redirects and converts these to REDIR_IN
 ** redirects pointing to a temp file.
-**
-** Since
 */
 
 int	convert_heredocs(t_shell *shell)

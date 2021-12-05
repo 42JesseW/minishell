@@ -30,24 +30,20 @@ static const char	g_prompt_startup[] = "\n"
 **	4. write an awesome ascii snail to STDOUT :)
 */
 
-t_shell	*shell_init(const char *envp[], char **input_string)
+t_shell	*shell_init(const char *envp[])
 {
 	t_shell	*shell;
 	t_list	*environ;
-	char	*line;
 
 	shell = (t_shell *)malloc(sizeof(t_shell));
 	if (!shell)
 		return (NULL);
 	environ = NULL;
-	line = ft_strdup("");
-	if (!line || environ_from_envp(&environ, (const char **) envp) == SYS_ERROR)
+	if (environ_from_envp(&environ, (const char **) envp) == SYS_ERROR)
 	{
-		free(line);
 		shell_destroy(&shell);
 		return (NULL);
 	}
-	*input_string = line;
 	shell->exit_code = 0;
 	shell->environ = environ;
 	shell->cmd_nodes = NULL;

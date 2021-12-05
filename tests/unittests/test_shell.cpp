@@ -37,17 +37,14 @@ static const char	*envp[] = {
 SCENARIO("initialize a shell structure from entrypoint") {
 	GIVEN("an uninitialised input_line and *envp[]") {
 		t_shell	*shell;
-		char	*input_line;
 
 		WHEN("creating a new shell structure") {
-			shell = shell_init(envp, &input_line);
+			shell = shell_init(envp);
 			REQUIRE(shell != NULL);
-			REQUIRE(input_line != NULL);
 			THEN("the members and input_line should have the appropriate values") {
 				char	*kv;
 
 				CHECK(shell->cmd_nodes == NULL);
-				CHECK(strcmp(input_line, "") == 0);
 				CHECK(shell->environ != NULL);
 				int	idx = 0;
 				for (t_list *env = shell->environ; env != NULL; env = env->next, idx++)
