@@ -43,6 +43,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/token/consume_token.c \
 			  parser/token/group_tokens.c \
 			  parser/resolve_dollar.c \
+			  parser/create_redir_files.c \
 			  parser/parse_input_string.c \
 			  executor/dup/dup_cmd.c \
 			  executor/dup/dup_pipes.c \

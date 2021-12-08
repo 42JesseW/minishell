@@ -8,7 +8,7 @@
 
 # define REDIR_ALL 0
 # define REDIR_SINGLE 1
-# define TMP_FILE_NAME "/.shelly_heredoc.tmp"
+# define HEREDOC_FILE "/.shelly_heredoc.tmp"
 
 # ifndef SYS_ERROR
 #  define SYS_ERROR -1
