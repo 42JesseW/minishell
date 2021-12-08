@@ -14,7 +14,7 @@
 
 /*
 ** write_heredoc() reads from STDIN using readline
-** and appends the data to TMP_FILE_NAME using {fd}
+** and appends the data to HEREDOC_FILE using {fd}
 ** until the line returned by readline matches the
 ** {delimiter} string.
 */
@@ -48,7 +48,7 @@ static int	write_heredoc(char *file_path, char *delimiter)
 /*
 ** convert_heredoc() converts REDIR_DELIM nodes
 ** to REDIR_IN nodes in the following way:
-**	1. remove the TMP_FILE_NAME file if exists
+**	1. remove the HEREDOC_FILE file if exists
 */
 
 static int	convert_heredoc(t_redir *node, int mode)

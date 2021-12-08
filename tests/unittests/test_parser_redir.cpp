@@ -2,7 +2,6 @@
 #include <unittest.hpp>
 #include <sstream>
 #include <string>
-#include <iostream>
 #include <fstream>
 #include <sys/stat.h>
 
@@ -129,6 +128,48 @@ TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_APP") {
 	remove(file_name.c_str());
 }
 
+TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_APP (multiple)") {
+	std::string	file_name		= "OUT";
+	std::string	file_data		= "testdata";
+	std::string	cmd				= "echo " + file_data;
+	int			file_amount		= 4;
+	std::vector<std::string>	files(file_amount);
+	std::ifstream				in;
+	std::ofstream				out;
+	std::string					test_data;
+	struct stat					buffer;
+
+	for (int i = 0; i < file_amount; i++) {
+		files[i] = (file_name + std::to_string(i));
+		cmd += (" >> " + files[i]);
+		out.open(files[i]);
+		out << (file_data + std::to_string(i));
+		out.close();
+	}
+	init_tokens(cmd.c_str());
+	REQUIRE(create_redir_files(shell) != SYS_ERROR);
+	int i = 0;
+	for (auto &file : files) {
+		REQUIRE(stat(file.c_str(), &buffer) == 0);
+		/* check if files still have their data */
+		in.open(file, std::ifstream::out);
+		in >> test_data;
+		REQUIRE(test_data == (file_data + std::to_string(i)));
+		in.close();
+		i++;
+	}
+	auto cmd_node = (t_node *)shell->cmd_nodes->content;
+	for (t_list *redir_node = cmd_node->redir; redir_node != NULL; redir_node = redir_node->next) {
+		auto	*redir = (t_redir *)redir_node->content;
+		REQUIRE(redir->fd > 2);
+		errno = 0;
+		/* check if valid file descriptor (i.e. not closed or w/e) */
+		REQUIRE((fcntl(redir->fd, F_GETFD) != -1 && errno != EBADF));
+		REQUIRE(close(redir->fd) == EXIT_SUCCESS);
+		remove(redir->file);
+	}
+}
+
 TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_DELIM") {
 	std::string	delim		= "EOF";
 	std::string	cmd			= "cat << " + delim;
@@ -162,6 +203,58 @@ TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_DELIM") {
 	REQUIRE(strcmp(read_buff, file_data.c_str()) == 0);
 	close(fd);
 	REQUIRE(close(redir_node->fd) == EXIT_SUCCESS);
+	/* reset some stuff */
+	REQUIRE(dup2(old_fd, STDIN_FILENO) == 0);
+	remove(file_name.c_str());
+}
+
+TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_DELIM (multiple)") {
+	std::string	delim		= "EOF";
+	std::string	cmd			= "cat";
+	std::string	file_name	= "IN";
+	std::string	test_data	= "testdata";
+	int			heredocs	= 4;
+	std::string	file_data;
+	char		read_buff[test_data.length() + 2];
+	int			fd;
+	int			old_fd;
+
+	for (int i = 0; i < heredocs; i++) {
+		cmd += (" << " + delim + std::to_string(i));
+	}
+	/* write testdata to file */
+	fd = open(file_name.c_str(), O_CREAT | O_APPEND | O_WRONLY, 0644);
+	REQUIRE(fd != -1);
+	for (int i = 0; i < heredocs; i++) {
+		file_data = (test_data + std::to_string(i) + "\n" + delim + std::to_string(i) + "\n");
+		REQUIRE(write(fd, file_data.c_str(), file_data.length()) != -1);
+	}
+	close(fd);
+
+	/* make sure readline reads from file instead of STDIN */
+	fd = open("IN", O_RDONLY);
+	old_fd = dup(STDIN_FILENO);
+	REQUIRE(dup2(fd, STDIN_FILENO) == 0);
+	init_tokens(cmd.c_str());
+	REQUIRE(create_redir_files(shell) != SYS_ERROR);
+	close(fd);
+
+	/* check all the redir nodes in the t_node structure */
+	auto cmd_node = (t_node *)shell->cmd_nodes->content;
+	REQUIRE(ft_lstsize(cmd_node->redir) == heredocs);
+	int i = 0;
+	for (t_list *redir_node = cmd_node->redir; redir_node != NULL; redir_node = redir_node->next, i++) {
+		auto redir = (t_redir *)redir_node->content;
+		REQUIRE(redir->type == REDIR_IN);
+		REQUIRE(redir->fd > 2);
+		errno = 0;
+		/* check if valid file descriptor (i.e. not closed or w/e) */
+		REQUIRE((fcntl(redir->fd, F_GETFD) != -1 && errno != EBADF));
+		REQUIRE(read(redir->fd, read_buff, test_data.length() + 1) == test_data.length() + 1);
+		read_buff[test_data.length() + 1] = 0;
+		REQUIRE(strcmp((test_data + std::to_string(i)).c_str(), read_buff) == 0);
+		close(redir->fd);
+	}
 	/* reset some stuff */
 	REQUIRE(dup2(old_fd, STDIN_FILENO) == 0);
 	remove(file_name.c_str());

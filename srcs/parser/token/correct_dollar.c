@@ -21,11 +21,11 @@ static bool	is_fail_type(t_token_type type)
 ** correct_dollar() converts TOK_DOLLAR to TOK_WORD if
 ** it is not directly followed by a TOK_WORD. It also
 ** gives a PARSE_FAIL if the TOK_DOLLAR is succeeded by
-** any token other than TOK_WORD or TOK_SPACE including
-** QUOTE tokens since ANSI-C Quoting is not supported:
-** https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html
-** neither is BASHPID ($$)
-** https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
+** any token other than TOK_WORD or TOK_SPACE:
+** - QUOTE tokens since ANSI-C Quoting is not supported:
+** 	 https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html
+** - BASHPID ($$)
+** 	 https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 **
 ** TESTS // TODO
 **	- $>OUT

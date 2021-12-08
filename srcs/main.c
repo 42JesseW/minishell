@@ -35,8 +35,9 @@ int	main(int argc, char *argv[], const char *envp[])
 	{
 		if (!parse_input_string(input_string, shell))
 			break ;
+		add_history(input_string);
 		init_exe(shell);
-		ft_lstclear(&shell->cmd_nodes, node_del);
+		ft_lstclear(&shell->cmd_nodes, node_del);	// TODO move to init_exe?
 		free(input_string);
 		input_string = readline(DEFAULT_PROMPT);
 	}

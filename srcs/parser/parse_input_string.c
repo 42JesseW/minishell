@@ -13,6 +13,21 @@
 #include <minishell.h>
 
 /*
+** validate_pipes()
+** correct_dollar()
+** redir_merge()
+** has_paired_quotes()
+** [bash: syntax error near unexpected token `{token}']
+**	- >
+**	- |
+**	- ...
+** [bash: unimplemented feature `{feature}']
+**	- multiline
+**	- ascii quoting
+**	- bash parent pid
+*/
+
+/*
 ** TESTS // TODO resolving quotes:
 **	- export TEST="cat -e";ls|"$TEST"
 **	- export TEST="cat -e";ls|$TEST
