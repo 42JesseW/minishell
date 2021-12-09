@@ -14,6 +14,8 @@
 
 # define MINISHELL_H
 # define SYS_ERROR -1
+# define NONFATAL 0
+# define SUCCESS 1
 
 # define B "\e[0;38;2;218;165;32m"
 # define R "\e[m"
@@ -67,6 +69,15 @@ typedef struct s_shell
 	t_list	*cmd_nodes;
 }	t_shell;
 
+typedef struct s_exe
+{
+	t_list	*paths;
+	int		**pipe_fds;
+	pid_t	*pids;
+	int		fd_out;
+	char	**envp; //temp
+}	t_exe;
+
 void		pair_del(void *pair);
 
 char		*pair_join(t_pair *pair);
@@ -101,40 +112,30 @@ int			create_redir_files(t_shell *shell);
 
 void		nodes_print_stdout(t_list *cmd_nodes);
 
-typedef struct s_exe
-{
-	t_list	*paths;
-	int		**pipe_fds;
-	pid_t 	*pids;
-	int 	fd_out;
-	char 	**envp; //temp
-}	t_exe;
-
 // INITIALISATION
-void	init_exe(t_shell *shell);
-int		init_paths(t_exe *exe, t_shell *shell);
-void	store_paths(const char *strpaths, t_exe *exe);
-void	prepare_execution(t_exe *exe, t_shell *shell);
+int			init_exe(t_shell *shell);
+int			init_paths(t_exe *exe, t_shell *shell);
+void		store_paths(const char *strpaths, t_exe *exe);
+void		prepare_execution(t_exe *exe, t_shell *shell);
 
 // PIPING
-void 	malloc_fds(t_exe *exe, int amount_cmds);
-void	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
-
+void		malloc_fds(t_exe *exe, int amount_cmds);
+void		pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
 
 // DUPPING
-void	dup_cmd(t_exe *exe, t_node *cmd_node);
-void	dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
-void	dup_pipe_write(int idx, t_exe *exe);
-void	dup_pipe_read(int idx, t_exe *exe);
-void	dup_redirect_write(char *file);
-void	dup_redirect_read(char *file);
+void		dup_cmd(t_exe *exe, t_node *cmd_node);
+void		dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
+void		dup_pipe_write(int idx, t_exe *exe);
+void		dup_pipe_read(int idx, t_exe *exe);
+void		dup_redirect_write(char *file);
+void		dup_redirect_read(char *file);
 
 // FORKING
-void 	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
-void	close_pipe_ends(int **pipes_fds, int idx);
+void		fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
+void		close_pipe_ends(int **pipes_fds, int idx);
 
 // EXECUTION
-char 	*get_full_path(char *cmd, t_exe *exe);
-void	execute_cmd(char **cmd, t_exe *exe);
+char		*get_full_path(char *cmd, t_exe *exe);
+void		execute_cmd(char **cmd, t_exe *exe);
 
 #endif

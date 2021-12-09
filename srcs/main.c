@@ -33,11 +33,11 @@ int	main(int argc, char *argv[], const char *envp[])
 	input_string = readline(DEFAULT_PROMPT);
 	while (input_string)
 	{
-		if (!parse_input_string(input_string, shell))
+		if (parse_input_string(input_string, shell) == SYS_ERROR)
 			break ;
 		add_history(input_string);
-		init_exe(shell);
-		ft_lstclear(&shell->cmd_nodes, node_del);	// TODO move to init_exe?
+		if (init_exe(shell) == SYS_ERROR)
+			break ;
 		free(input_string);
 		input_string = readline(DEFAULT_PROMPT);
 	}

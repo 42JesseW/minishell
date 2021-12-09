@@ -46,7 +46,6 @@ void	prepare_execution(t_exe *exe, t_shell *shell)
 		idx++;
 	}
 	free(exe->pids);
-	free_fds(exe);
 }
 
 /*
@@ -59,16 +58,23 @@ void	prepare_execution(t_exe *exe, t_shell *shell)
 ** 3. All information is send to the prepare_execution function
 */
 
-void	init_exe(t_shell *shell)
+int	init_exe(t_shell *shell)
 {
 	t_exe	*exe;
 
+	if (!shell->cmd_nodes)
+		return (NONFATAL);
 	exe = (t_exe *) malloc(sizeof(t_exe));
 	if (!exe)
+	{
 		printf("Error - Malloc failed\n");
+		return (SYS_ERROR);
+	}
 	exe->paths = NULL;
 	exe->envp = environ_to_envp(shell->environ);
-	if (init_paths(exe, shell) == SYS_ERROR)
+	if (init_paths(exe, shell) == SYS_ERROR)	// TODO NONFATAL ??
 		printf("Error - Initialization of path failed\n");
 	prepare_execution(exe, shell);
+	ft_lstclear(&shell->cmd_nodes, node_del);
+	return (SUCCESS);
 }

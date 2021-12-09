@@ -14,7 +14,7 @@ CMAKE_DIR	= cmake-build
 LIB_DIR     = . ${HOME}/.brew/opt/readline/lib
 
 CLINKS 		= -ltermcap -lreadline -lft
-CFLAGS		= -Wall -Wextra -Werror -g #-fsanitize=address
+CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
 
 SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/environ/pair/pair_new.c \
