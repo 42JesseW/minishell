@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <minishell.h>
+#include <errno.h>
 
 /*
 ** write_heredoc() reads from STDIN using readline
@@ -88,13 +89,17 @@ static int	get_redir_fd(t_redir *node)
 	if (node->type == REDIR_DELIM)
 		fd = convert_heredoc(node, mode);
 	else if (node->type == REDIR_IN)
-		fd = open(node->file, O_RDONLY);		// TODO failure some exit function
+		fd = open(node->file, O_RDONLY);
 	else if (node->type == REDIR_OUT)
 		fd = open(node->file, O_CREAT | O_TRUNC | O_WRONLY, mode);
 	else
 		fd = open(node->file, O_CREAT | O_APPEND | O_WRONLY, mode);
 	if (fd == -1)
-		return (SYS_ERROR);
+	{
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, node->file, strerror(errno));
+		errno = 0;
+		return (NONFATAL);
+	}
 	return (fd);
 }
 
@@ -130,8 +135,8 @@ int	create_redir_files(t_shell *shell)
 		{
 			redir = (t_redir *)redir_node->content;
 			fd = get_redir_fd(redir);
-			if (fd == -1)
-				return (SYS_ERROR);
+			if (fd != SUCCESS)
+				return (fd);
 			redir->fd = fd;
 			redir_node = redir_node->next;
 		}

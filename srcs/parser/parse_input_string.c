@@ -17,6 +17,7 @@
 ** correct_dollar()
 ** redir_merge()
 ** has_paired_quotes()
+** create_redir_files()			(V)
 ** [bash: syntax error near unexpected token `{token}']
 **	- >
 **	- |

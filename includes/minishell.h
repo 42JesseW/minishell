@@ -22,6 +22,9 @@
 
 # define DEFAULT_PROMPT "shelly3.2$ "
 # define HEREDOC_PROMPT "> "
+# define SHELL_NAME "shelly"
+# define FMT_ERR ": %s: %s\n"
+# define SYNTAX_ERR "syntax error near unexpected token `%s'"
 
 # include <libft.h>
 # include <parser.h>
