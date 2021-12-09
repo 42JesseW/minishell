@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include <minishell.h>
-#include <errno.h>
 
 /*
 ** write_heredoc() reads from STDIN using readline

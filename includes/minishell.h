@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 
 # define MINISHELL_H
+
 # define SYS_ERROR -1
 # define NONFATAL 0
 # define SUCCESS 1
@@ -29,6 +30,8 @@
 # include <libft.h>
 # include <parser.h>
 # include <stdio.h>
+# include <string.h>
+# include <errno.h>
 # include <stdbool.h>
 # include <unistd.h>
 # include <fcntl.h>

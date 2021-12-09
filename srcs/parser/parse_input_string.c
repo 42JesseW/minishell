@@ -85,8 +85,8 @@ int	parse_input_string(char *input_string, t_shell *shell)
 
 	if (!input_string)					// TODO print exit on EOF ?
 		return (0);
-	if (!(*input_string))				// if just an ENTER readline() returns "" empty string
-		return (1);
+	if (!(*input_string))
+		return (SUCCESS);
 	tokens = tokenize(input_string);
 	if (!tokens)						// TODO some exit code struct?
 		return (0);
@@ -106,10 +106,5 @@ int	parse_input_string(char *input_string, t_shell *shell)
 		return (0);
 	if (create_redir_files(shell) == SYS_ERROR)
 		return (0);
-	nodes_print_stdout(shell->cmd_nodes);
-
-	// resolve here-doc in parser after initial nodes are made
-	// convert the "<< {DELIM}" to a "< {temp.filename}" node.
-
-	return (1);
+	return (SUCCESS);
 }
