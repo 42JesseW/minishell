@@ -19,13 +19,13 @@ public:
 		REQUIRE(redir_merge(tokens));
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
-		REQUIRE(validate_pipes(tokens));
+		REQUIRE(validate_syntax(tokens));
 		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
 	}
 };
 
 TEST_CASE_METHOD(ResolveQuotesFixture, "No quotes") {
-	init_tokens(" word | word | word > word > word < word < ");
+	init_tokens(" word | word | word > word > word < word < word");
 	REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 	ft_lstclear(&tokens, token_del);
 	shell_destroy(&shell);

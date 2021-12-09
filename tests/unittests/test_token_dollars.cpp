@@ -90,7 +90,7 @@ public:
 		REQUIRE(redir_merge(tokens));
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
-		REQUIRE(validate_pipes(tokens));
+		REQUIRE(validate_syntax(tokens));
 	}
 };
 

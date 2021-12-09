@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   validate_pipes.c                                   :+:    :+:            */
+/*   validate_syntax.c                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <minishell.h>
 
 static bool	is_quote(t_token_type type)
 {
@@ -57,16 +57,23 @@ static int	valid_pipe_position(t_list *scan_from)
 	return (1);
 }
 
+static bool	redir_has_word(t_list *token_node)
+{
+	t_token	*word;
+
+	if (!token_node->next)
+		return (false);
+	word = (t_token *)token_node->next->content;
+	return (word->type != TOK_PIPE);
+}
+
 /*
-** validate_pipes() will Look for syntax errors, meaning
+** validate_syntax() will Look for syntax errors, meaning
 ** successive tokens that don't follow the grammar
 ** rules of the shell.
-**
-** RETURN
-**  - 1 on success, 0 on parsing error, -1 on sys_error
 */
 
-int	validate_pipes(t_list *tokens)
+int	validate_syntax(t_list *tokens)
 {
 	t_list	*node;
 	t_list	*prev;
@@ -77,10 +84,11 @@ int	validate_pipes(t_list *tokens)
 	while (node)
 	{
 		token = (t_token *)node->content;
-		if (token->type == TOK_PIPE)
+		if ((token->type == TOK_PIPE && !valid_pipe_position(prev))
+			|| (is_redir_type(token->type, REDIR_ALL) && !redir_has_word(node)))
 		{
-			if (!valid_pipe_position(prev))
-				return (PARSE_FAIL);
+			dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
+			return (PARSE_FAIL);
 		}
 		prev = node;
 		node = node->next;

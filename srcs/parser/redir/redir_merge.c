@@ -19,7 +19,7 @@ static int	merge(t_list *redir1, t_list *redir2)
 	t_token	*token2;
 
 	if (redir1 == redir2)
-		return (1);
+		return (SUCCESS);
 	token1 = (t_token *)redir1->content;
 	token2 = (t_token *)redir2->content;
 	if (token1->type != token2->type)
@@ -35,10 +35,10 @@ static int	merge(t_list *redir1, t_list *redir2)
 		token1->type = TOK_DLESS;
 		token1->token = ft_strdup("<<");
 	}
-	token1->token = NULL;
+	token2->token = NULL;
 	redir1->next = redir2->next;
 	ft_lstdelone(redir2, redir_del);
-	return (1);
+	return (SUCCESS);
 }
 
 static int	scan_redirs(t_list *scan_from, t_list **merge_node)
@@ -88,7 +88,7 @@ int	redir_merge(t_list *tokens)
 		if (is_redir_type(token->type, REDIR_SINGLE))
 		{
 			count = scan_redirs(node, &merge_node);
-			if (count > 2 || (count == 2 && !merge(node, merge_node)))	// TODO syntax error
+			if (count > 2 || (count == 2 && !merge(node, merge_node)))
 			{
 				dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
 				return (PARSE_FAIL);
@@ -96,5 +96,5 @@ int	redir_merge(t_list *tokens)
 		}
 		node = node->next;
 	}
-	return (1);
+	return (SUCCESS);
 }

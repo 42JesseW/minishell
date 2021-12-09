@@ -25,7 +25,7 @@
 # define HEREDOC_PROMPT "> "
 # define SHELL_NAME "shelly"
 # define FMT_ERR ": %s: %s\n"
-# define SYNTAX_ERR "syntax error near unexpected token `%s'"
+# define SYNTAX_ERR ": syntax error near unexpected token `%s'\n"
 
 # include <libft.h>
 # include <parser.h>
@@ -110,7 +110,7 @@ t_node		*node_new_def(void);
 void		*node_new_cpy(void *cpy);
 t_node		*node_new_val(char **cmd, t_list *redir);
 
-int			parse_input_string(char *input_string, t_shell *shell);	// TODO testcase
+int			parse_input_string(char *input_string, t_shell *shell);
 int			consume_token(t_list *cmd_node, t_list *token_node);
 int			group_tokens(t_shell *shell, t_list **tokens);
 int			resolve_dollar(t_shell *shell, t_list **tokens);
