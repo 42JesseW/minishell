@@ -134,7 +134,7 @@ int	create_redir_files(t_shell *shell)
 		{
 			redir = (t_redir *)redir_node->content;
 			fd = get_redir_fd(redir);
-			if (fd != SUCCESS)
+			if (fd <= NONFATAL)
 				return (fd);
 			redir->fd = fd;
 			redir_node = redir_node->next;

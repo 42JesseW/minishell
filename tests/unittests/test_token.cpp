@@ -483,7 +483,7 @@ public:
 		REQUIRE(redir_merge(tokens));
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
-		REQUIRE(validate_pipes(tokens));
+		REQUIRE(validate_syntax(tokens));
 		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
 		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 		normalize(&tokens);
@@ -529,7 +529,7 @@ public:
 		REQUIRE(redir_merge(tokens));
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
-		REQUIRE(validate_pipes(tokens));
+		REQUIRE(validate_syntax(tokens));
 		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
 		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 		normalize(&tokens);

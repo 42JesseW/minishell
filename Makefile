@@ -37,7 +37,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/token/tokenize.c \
 			  parser/token/correct_dollar.c \
 			  parser/token/remove_spaces.c \
-			  parser/token/validate_pipes.c \
+			  parser/token/validate_syntax.c \
 			  parser/token/resolve_quotes.c \
 			  parser/token/normalize.c \
 			  parser/token/consume_token.c \

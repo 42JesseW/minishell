@@ -62,7 +62,6 @@ static void	lexer_init(t_lexer *lexer, const char *input_string)
 **	   this counts as a syntax error.
 **	2. convert string components to tokens
 */
-
 t_list	*tokenize(const char *input_string)
 {
 	t_list	*tokens;
