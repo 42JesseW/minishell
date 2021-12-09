@@ -10,11 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// Nadenken over generieke foutafhandeling: printf errors vervangen
+#include <minishell.h>
 
-#include <exe.h>
-
-void	store_paths(const char *str_paths, t_exe *exe, t_shell *shell)
+void	store_paths(const char *str_paths, t_exe *exe)
 {
 	int		idx;
 	char	**split_paths;
@@ -47,7 +45,7 @@ int	init_paths(t_exe *exe, t_shell *shell)
 		pair = shell->environ->content;
 		if (ft_strncmp(pair->key, "PATH", 4) == 0)
 		{
-			store_paths(pair->val, exe, shell);
+			store_paths(pair->val, exe);
 			return (0);
 		}
 		else

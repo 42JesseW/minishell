@@ -10,24 +10,65 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// Hier functie uittrekken die execution start: main is tijdelijk
+#include <minishell.h>
 
-#include <exe.h>
+/*
+** DESCRIPTION
+**	- Decides to call the piping functions if there is more than 1 cmd
+**  or the cmd executor function if it is only one cmd
+** JOBS
+** 1. Prepares the memory to store the pids of fork(s)
+** 2. Prepares the memory to store the pipe_fds if there are 1+ cmds
+** 3. Initiates the piping route if there are 1+ cmds
+** 4. Initiates the cmd executor route if there is just 1 cmd
+*/
 
-void init_exe(t_shell *shell)
+void	prepare_execution(t_exe *exe, t_shell *shell)
 {
-	t_exe		*exe;
+	int	idx;
+	int	amount_cmds;
 
-	exe = (t_exe *)malloc(sizeof(t_exe));
-	if (!exe)
-		printf("Error - Malloc failed\n");
-	if (init_paths(exe, shell) == SYS_ERROR)
-		printf("Error - Initialization of paths failed\n");
-	while (exe->paths)
+	amount_cmds = ft_lstsize(shell->cmd_nodes);
+	exe->pids = malloc(amount_cmds * sizeof(int));
+	if (exe->pids == NULL)
+		printf("Error - Malloc has failed");
+	if (amount_cmds > 1)
 	{
-		printf("path = %s\n", exe->paths->content);
-		exe->paths = exe->paths->next;
+		malloc_fds(exe, (amount_cmds - 1));
+		pipe_loop(amount_cmds, exe, shell);
 	}
+	else
+		fork_process(0, amount_cmds, exe, shell->cmd_nodes->content);
+	idx = 0;
+	while (idx < amount_cmds)
+	{
+		waitpid(exe->pids[idx], NULL, 0);
+		idx++;
+	}
+	free(exe->pids);
+	free_fds(exe);
 }
 
-// gcc -Iincludes srcs/executor/exe.h srcs/executor/exe_paths.c srcs/executor/executor.c srcs/shell/environ/pair/pair_del.c srcs/shell/environ/pair/pair_join.c srcs/shell/environ/pair/pair_new.c srcs/shell/environ/environ_from_envp.c includes/minishell.h libft/includes/libft.h libft/srcs/ft_bzero.c libft/srcs/ft_calloc.c libft/srcs/lst/ft_lstadd_back.c libft/srcs/lst/ft_lstclear.c libft/srcs/lst/ft_lstdelone.c libft/srcs/lst/ft_lstnew.c libft/srcs/ft_split.c libft/srcs/str/ft_strarrfree.c libft/srcs/str/ft_strchr.c libft/srcs/str/ft_strcpy.c libft/srcs/str/ft_strdup.c libft/srcs/str/ft_strjoin.c libft/srcs/str/ft_strlcat.c libft/srcs/str/ft_strlcpy.c libft/srcs/str/ft_strncmp.c libft/srcs/str/ft_strlen.c libft/srcs/str/ft_strndup.c libft/srcs/ft_substr.c srcs/shell/shell_init.c srcs/shell/shell_destroy.c
+/*
+** DESCRIPTION
+**	- Initiates the exe struct, fills it with the environmental path
+**  and sends everything to the prepare_execution function
+** JOBS
+** 1. Prepares the memory for the exe struct
+** 2. Takes care of the storage of the environmental path
+** 3. All information is send to the prepare_execution function
+*/
+
+void	init_exe(t_shell *shell)
+{
+	t_exe	*exe;
+
+	exe = (t_exe *) malloc(sizeof(t_exe));
+	if (!exe)
+		printf("Error - Malloc failed\n");
+	exe->paths = NULL;
+	exe->envp = environ_to_envp(shell->environ);
+	if (init_paths(exe, shell) == SYS_ERROR)
+		printf("Error - Initialization of path failed\n");
+	prepare_execution(exe, shell);
+}
