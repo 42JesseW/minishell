@@ -12,22 +12,30 @@
 
 #include <minishell.h>
 
-void	dup_pipe_write(int idx, t_exe *exe)
+int	dup_pipe_write(int idx, t_exe *exe)
 {
 	int	fd_out;
 
 	fd_out = dup2(exe->pipe_fds[idx][1], STDOUT_FILENO);
 	if (fd_out == -1)
-		printf("Error - Duplicating fd failed");
+	{
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Dup", strerror(errno));
+		return (SYS_ERROR);
+	}
+	return (SUCCESS);
 }
 
-void	dup_pipe_read(int idx, t_exe *exe)
+int	dup_pipe_read(int idx, t_exe *exe)
 {
 	int	fd;
 
 	fd = dup2(exe->pipe_fds[idx][0], STDIN_FILENO);
 	if (fd == -1)
-		printf("Error - Duplicating fd failed");
+	{
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+		return (SYS_ERROR);
+	}
+	return (SUCCESS);
 }
 
 /*
@@ -40,16 +48,20 @@ void	dup_pipe_read(int idx, t_exe *exe)
 ** 2. Each cmd node is send to the forking process to be executed
 */
 
-void	dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
+int	dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
 	if (idx != (amount_cmds - 1))
-		dup_pipe_write(idx, exe);
+		if (dup_pipe_write(idx, exe) == SYS_ERROR)
+			return (SYS_ERROR);
 	if (idx != 0)
 	{
 		idx--;
-		dup_pipe_read(idx, exe);
+		if (dup_pipe_read(idx, exe) == SYS_ERROR)
+			return (SYS_ERROR);
 	}
-	close(exe->pipe_fds[idx][0]);
-	close(exe->pipe_fds[idx][1]);
-	execute_cmd(cmd_node->cmd, exe);
+	close(exe->pipe_fds[idx][0]); // TODO checken of close een error kan genereren, zo ja functie aanpassen
+	close(exe->pipe_fds[idx][1]); // TODO checken of close een error kan genereren, zo ja functie aanpassen
+	if (execute_cmd(cmd_node->cmd, exe) == SYS_ERROR) // TODO FUNCTIE AANPASSEN
+		return (SYS_ERROR);
+	return (SUCCESS);
 }

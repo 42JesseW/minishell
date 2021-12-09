@@ -12,24 +12,31 @@
 
 #include <minishell.h>
 
-void	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
+int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid < 0)
-		printf("Error - Fork has failed");
+	{
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Fork", strerror(errno));
+		return (SYS_ERROR);
+	}
 	else if (pid == 0)
 	{
 		if (amount_cmds > 1)
-			dup_pipes(idx, amount_cmds, exe, cmd_node);
+			if (dup_pipes(idx, amount_cmds, exe, cmd_node) == SYS_ERROR) // functie aanpassen
+				return (SYS_ERROR);
 		else
-			dup_cmd(exe, cmd_node);
+			if (dup_cmd(exe, cmd_node) == SYS_ERROR) // functie aanpassen
+				return (SYS_ERROR);
 	}
 	else if (pid > 0)
 	{
 		exe->pids[idx] = pid;
 		if (amount_cmds > 1)
-			close_pipe_ends(exe->pipe_fds, idx);
+			if (close_pipe_ends(exe->pipe_fds, idx) == == SYS_ERROR) // TODO checken of close een error kan genereren, zo ja functie aanpassen
+				return (SYS_ERROR);
 	}
+	return (SUCCESS);
 }

@@ -122,26 +122,26 @@ void		nodes_print_stdout(t_list *cmd_nodes);
 int			init_exe(t_shell *shell);
 int			init_paths(t_exe *exe, t_shell *shell);
 void		store_paths(const char *strpaths, t_exe *exe);
-void		prepare_execution(t_exe *exe, t_shell *shell);
+int			prepare_execution(t_exe *exe, t_shell *shell);
 
 // PIPING
-void		malloc_fds(t_exe *exe, int amount_cmds);
-void		pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
+int			malloc_fds(t_exe *exe, int amount_cmds);
+int			pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
 
 // DUPPING
-void		dup_cmd(t_exe *exe, t_node *cmd_node);
-void		dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
-void		dup_pipe_write(int idx, t_exe *exe);
-void		dup_pipe_read(int idx, t_exe *exe);
+int 		dup_cmd(t_exe *exe, t_node *cmd_node);
+int 		dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
+int 		dup_pipe_write(int idx, t_exe *exe);
+int 		dup_pipe_read(int idx, t_exe *exe);
 void		dup_redirect_write(char *file);
 void		dup_redirect_read(char *file);
 
 // FORKING
-void		fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
+int			fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
 void		close_pipe_ends(int **pipes_fds, int idx);
 
 // EXECUTION
 char		*get_full_path(char *cmd, t_exe *exe);
-void		execute_cmd(char **cmd, t_exe *exe);
+int			execute_cmd(char **cmd, t_exe *exe);
 
 #endif

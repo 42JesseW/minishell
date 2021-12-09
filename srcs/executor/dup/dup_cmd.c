@@ -17,7 +17,9 @@
 **	-  Moet nog aangevuld worden voor situatie met redirects
 */
 
-void	dup_cmd(t_exe *exe, t_node *cmd_node)
+int	dup_cmd(t_exe *exe, t_node *cmd_node)
 {
-	execute_cmd(cmd_node->cmd, exe);
+	if (execute_cmd(cmd_node->cmd, exe) == SYS_ERROR)
+		return (SYS_ERROR);
+	return (SUCCESS);
 }

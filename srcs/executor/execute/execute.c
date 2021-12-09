@@ -21,13 +21,13 @@
 ** 2. Execute the cmd
 */
 
-void	execute_cmd(char **cmd, t_exe *exe)
+int	execute_cmd(char **cmd, t_exe *exe) //TODO Uitzoeken hoe ik deze functie wil laten eindigen
 {
 	char	*path;
 
-	path = get_full_path(cmd[0], exe);
+	path = get_full_path(cmd[0], exe); //TODO Functie aanpassen
 	if (path == NULL)
-		dprintf(STDERR_FILENO, "Path not found.");
+		return (SYS_ERROR);
 	if (execve(path, cmd, exe->envp) == -1)
 	{
 		free (path);

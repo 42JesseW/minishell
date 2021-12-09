@@ -23,29 +23,42 @@
 ** 4. Initiates the cmd executor route if there is just 1 cmd
 */
 
-void	prepare_execution(t_exe *exe, t_shell *shell)
+int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te lang
 {
 	int	idx;
+	int status;
 	int	amount_cmds;
 
 	amount_cmds = ft_lstsize(shell->cmd_nodes);
 	exe->pids = malloc(amount_cmds * sizeof(int));
 	if (exe->pids == NULL)
-		printf("Error - Malloc has failed");
+	{
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+		return (SYS_ERROR);
+	}
 	if (amount_cmds > 1)
 	{
-		malloc_fds(exe, (amount_cmds - 1));
-		pipe_loop(amount_cmds, exe, shell);
+		if (malloc_fds(exe, (amount_cmds - 1)) == SYS_ERROR)
+			return (SYS_ERROR);
+		if (pipe_loop(amount_cmds, exe, shell) == SYS_ERROR) // Nog functie aanpassen: int
+			return (SYS_ERROR);
 	}
 	else
-		fork_process(0, amount_cmds, exe, shell->cmd_nodes->content);
+		if (fork_process(0, amount_cmds, exe, shell->cmd_nodes->content) == SYS_ERROR) // Nog functie aanpassen: int
+			return (SYS_ERROR);
 	idx = 0;
 	while (idx < amount_cmds)
 	{
-		waitpid(exe->pids[idx], NULL, 0);
+		if (waitpid(exe->pids[idx], &status, 0) == -1) //UITZOEKEN
+		{
+			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Child process ended with", WEXITSTATUS(status)) // TODO waitpid uitzoeken waarde WEXITSTATUS
+			return (SYS_ERROR);
+		}
 		idx++;
 	}
 	free(exe->pids);
+	// Hier nog fds freeen
+	return (SUCCESS);
 }
 
 /*
@@ -63,17 +76,20 @@ int	init_exe(t_shell *shell)
 	t_exe	*exe;
 
 	if (!shell->cmd_nodes)
+	{
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input", "cmd_nodes = NULL");
 		return (NONFATAL);
+	}
 	exe = (t_exe *) malloc(sizeof(t_exe));
 	if (!exe)
 	{
-		printf("Error - Malloc failed\n");
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
 		return (SYS_ERROR);
 	}
 	exe->paths = NULL;
 	exe->envp = environ_to_envp(shell->environ);
 	if (init_paths(exe, shell) == SYS_ERROR)	// TODO NONFATAL ??
-		printf("Error - Initialization of path failed\n");
+		return (SYS_ERROR);
 	prepare_execution(exe, shell);
 	ft_lstclear(&shell->cmd_nodes, node_del);
 	return (SUCCESS);

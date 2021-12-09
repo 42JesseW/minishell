@@ -20,7 +20,7 @@
 
 #include <minishell.h>
 
-char	*get_full_path(char *cmd, t_exe *exe)
+char	*get_full_path(char *cmd, t_exe *exe) // TODO Hoe kan ik de fouten teruggeven bij een char *
 {
 	char	*path;
 
@@ -29,12 +29,14 @@ char	*get_full_path(char *cmd, t_exe *exe)
 		path = ft_strjoin(exe->paths->content, cmd);
 		if (path == NULL)
 		{
-			printf("Error - Malloc failed");
+			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
 			return (NULL);
 		}
 		if (access(path, (F_OK & X_OK)) != -1)
 			return (path);
+
 		exe->paths = exe->paths->next;
 	}
+	dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path, strerror(errno));
 	return (NULL);
 }
