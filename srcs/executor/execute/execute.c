@@ -18,21 +18,20 @@
 **    and executes it
 ** JOBS
 ** 1. Finds the path to the folder from where the cmd can be executed
-** 2. Execute the cmd
+** 2. Executes the cmd
+** 3. Frees the path if the execution fails (otherwise the child process exits
+**    and automatically frees all memory)
 */
 
-int	execute_cmd(char **cmd, t_exe *exe) //TODO Uitzoeken hoe ik deze functie wil laten eindigen
+int	execute_cmd(char **cmd, t_exe *exe)
 {
 	char	*path;
 
-	path = get_full_path(cmd[0], exe); //TODO Functie aanpassen
+	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
 		return (SYS_ERROR);
-	if (execve(path, cmd, exe->envp) == -1)
-	{
-		free (path);
-		dprintf(STDERR_FILENO, "Execution failed.");
-		exit(1);
-	}
-	dprintf(STDERR_FILENO, "Command not found.");
+	execve(path, cmd, exe->envp);
+	free(path);
+	dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Execution", strerror(errno));
+	return (SYS_ERROR);
 }

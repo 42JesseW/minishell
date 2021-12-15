@@ -26,7 +26,7 @@
 int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te lang
 {
 	int	idx;
-	int status;
+	int	status;
 	int	amount_cmds;
 
 	amount_cmds = ft_lstsize(shell->cmd_nodes);
@@ -40,18 +40,19 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 	{
 		if (malloc_fds(exe, (amount_cmds - 1)) == SYS_ERROR)
 			return (SYS_ERROR);
-		if (pipe_loop(amount_cmds, exe, shell) == SYS_ERROR) // Nog functie aanpassen: int
+		if (pipe_loop(amount_cmds, exe, shell) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
 	else
-		if (fork_process(0, amount_cmds, exe, shell->cmd_nodes->content) == SYS_ERROR) // Nog functie aanpassen: int
+		if (fork_process(0, amount_cmds, exe, shell->cmd_nodes->content)
+			== SYS_ERROR)
 			return (SYS_ERROR);
 	idx = 0;
 	while (idx < amount_cmds)
 	{
 		if (waitpid(exe->pids[idx], &status, 0) == -1) //UITZOEKEN
 		{
-			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Child process ended with", WEXITSTATUS(status)) // TODO waitpid uitzoeken waarde WEXITSTATUS
+			//dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Child process ended with", WEXITSTATUS(status)); // TODO waitpid uitzoeken waarde WEXITSTATUS
 			return (SYS_ERROR);
 		}
 		idx++;
@@ -88,7 +89,7 @@ int	init_exe(t_shell *shell)
 	}
 	exe->paths = NULL;
 	exe->envp = environ_to_envp(shell->environ);
-	if (init_paths(exe, shell) == SYS_ERROR)	// TODO NONFATAL ??
+	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);
 	prepare_execution(exe, shell);
 	ft_lstclear(&shell->cmd_nodes, node_del);

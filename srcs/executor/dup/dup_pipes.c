@@ -45,10 +45,10 @@ int	dup_pipe_read(int idx, t_exe *exe)
 8*    right (read) from the pipe).
 ** JOBS
 ** 1. Checks if a cmd is not the last one of the list (in that case write)
-** 2. Each cmd node is send to the forking process to be executed
+** 2. AANVULLEN
 */
 
-int	dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
+int	dup_pipes(int idx, int amount_cmds, t_exe *exe)
 {
 	if (idx != (amount_cmds - 1))
 		if (dup_pipe_write(idx, exe) == SYS_ERROR)
@@ -59,9 +59,12 @@ int	dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 		if (dup_pipe_read(idx, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
-	close(exe->pipe_fds[idx][0]); // TODO checken of close een error kan genereren, zo ja functie aanpassen
-	close(exe->pipe_fds[idx][1]); // TODO checken of close een error kan genereren, zo ja functie aanpassen
-	if (execute_cmd(cmd_node->cmd, exe) == SYS_ERROR) // TODO FUNCTIE AANPASSEN
+	if (close(exe->pipe_fds[idx][0]) == -1
+		|| close(exe->pipe_fds[idx][1]) == -1)
+	{
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Close pipe",
+			strerror(errno));
 		return (SYS_ERROR);
+	}
 	return (SUCCESS);
 }

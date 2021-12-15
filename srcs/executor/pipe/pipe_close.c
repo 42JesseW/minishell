@@ -17,12 +17,17 @@
 **	- Closes the (unused) pipe_ends of the parent
 */
 
-void	close_pipe_ends(int **pipes_fds, int idx)
+int	close_pipe_ends(int **pipes_fds, int idx)
 {
 	if (idx != 0)
 	{
 		idx--;
-		close(pipes_fds[idx][0]);
-		close(pipes_fds[idx][1]);
+		if (close(pipes_fds[idx][0]) == -1 || close(pipes_fds[idx][1]) == -1)
+		{
+			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Close pipe",
+				strerror(errno));
+			return (SYS_ERROR);
+		}
 	}
+	return (SUCCESS);
 }

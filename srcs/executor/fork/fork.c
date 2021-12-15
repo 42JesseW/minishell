@@ -12,6 +12,35 @@
 
 #include <minishell.h>
 
+// TODO Function descriptions toevoegen
+
+/*
+** DESCRIPTION
+**	- INVULLEN
+** JOBS
+** 1. INVULLEN
+*/
+
+int	child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
+{
+	if (amount_cmds > 1)
+	{
+		if (dup_pipes(idx, amount_cmds, exe) == SYS_ERROR)
+			return (SYS_ERROR);
+	}
+	else
+	{
+		if (ft_lstsize(cmd_node->redir) > 0)
+			if (dup_redirect(cmd_node) == SYS_ERROR)
+				return (SYS_ERROR);
+//		if (dup_cmd(exe, cmd_node) == SYS_ERROR)
+//			return (SYS_ERROR);
+	}
+	if (execute_cmd(cmd_node->cmd, exe) == SYS_ERROR)
+		return (SYS_ERROR);
+	return (SUCCESS);
+}
+
 int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
 	pid_t	pid;
@@ -24,19 +53,17 @@ int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 	}
 	else if (pid == 0)
 	{
-		if (amount_cmds > 1)
-			if (dup_pipes(idx, amount_cmds, exe, cmd_node) == SYS_ERROR) // functie aanpassen
-				return (SYS_ERROR);
-		else
-			if (dup_cmd(exe, cmd_node) == SYS_ERROR) // functie aanpassen
-				return (SYS_ERROR);
+		if (child_process(idx, amount_cmds, exe, cmd_node) == SYS_ERROR)
+			return (SYS_ERROR);
 	}
 	else if (pid > 0)
 	{
 		exe->pids[idx] = pid;
 		if (amount_cmds > 1)
-			if (close_pipe_ends(exe->pipe_fds, idx) == == SYS_ERROR) // TODO checken of close een error kan genereren, zo ja functie aanpassen
+		{
+			if (close_pipe_ends(exe->pipe_fds, idx) == SYS_ERROR)
 				return (SYS_ERROR);
+		}
 	}
 	return (SUCCESS);
 }
