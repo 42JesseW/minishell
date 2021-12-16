@@ -52,7 +52,7 @@ int	dup_redirect(t_node *cmd_node) //TODO Uitzoeken wat ik moet doen om append t
 			if (dup_redirect_read(redir->fd) == SYS_ERROR)
 				return (SYS_ERROR);
 		}
-		else if (redir->type == REDIR_OUT)
+		else if (redir->type == REDIR_OUT || redir->type == REDIR_APP)
 		{
 			if (dup_redirect_write(redir->fd) == SYS_ERROR)
 				return (SYS_ERROR);

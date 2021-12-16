@@ -45,13 +45,15 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/resolve_dollar.c \
 			  parser/create_redir_files.c \
 			  parser/parse_input_string.c \
+			  executor/builtins/bi_init.c \
+			  executor/builtins/bi_echo.c \
 			  executor/dup/dup_cmd.c \
 			  executor/dup/dup_pipes.c \
 			  executor/dup/dup_redirect.c \
 			  executor/execute/execute.c \
 			  executor/fork/fork.c \
 			  executor/path/path_of_cmd.c \
-			  executor/path/path_store.c \
+			  executor/path/path_init.c \
 			  executor/pipe/pipe.c \
 			  executor/pipe/pipe_close.c \
 			  executor/pipe/pipe_malloc_fds.c \
@@ -99,7 +101,7 @@ $(NAME): $(OBJECTS) $(LIBFTLIB)
 $(OBJECT_DIR)/%.o: %.c
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/shell/environ/pair
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/parser/{node,redir,token}
-	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/executor/{dup,execute,fork,path,pipe}
+	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/executor/{builtins,dup,execute,fork,path,pipe}
 	@if $(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; then \
 		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
 	else \

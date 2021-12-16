@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// TODO - Overal alles veilig maken en op goede moment alles freeen
+
 #include <minishell.h>
 
 /*
@@ -28,6 +30,8 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 	int	idx;
 	int	status;
 	int	amount_cmds;
+	t_node *cmd_node;
+	t_builtin	*builtin;
 
 	amount_cmds = ft_lstsize(shell->cmd_nodes);
 	exe->pids = malloc(amount_cmds * sizeof(int));
@@ -44,9 +48,15 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 			return (SYS_ERROR);
 	}
 	else
-		if (fork_process(0, amount_cmds, exe, shell->cmd_nodes->content)
+	{
+		cmd_node = shell->cmd_nodes->content;					// TODO Functie schrijven om builtin te herkennen
+		builtin = exe->builtins->content;
+		if (ft_strcmp(cmd_node->cmd[0], builtin->name) == 0)
+			(*builtin->function)(cmd_node, STDOUT_FILENO);
+		else if (fork_process(0, amount_cmds, exe, cmd_node)
 			== SYS_ERROR)
 			return (SYS_ERROR);
+	}
 	idx = 0;
 	while (idx < amount_cmds)
 	{
@@ -89,8 +99,10 @@ int	init_exe(t_shell *shell)
 	}
 	exe->paths = NULL;
 	exe->envp = environ_to_envp(shell->environ);
+	exe->builtins = NULL;
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);
+	init_builtins(exe);
 	prepare_execution(exe, shell);
 	ft_lstclear(&shell->cmd_nodes, node_del);
 	return (SUCCESS);

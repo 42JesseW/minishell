@@ -26,5 +26,5 @@ void	shell_destroy(t_shell **shell)
 		free(p);
 	}
 	*shell = NULL;
-	rl_clear_history();
+	//rl_clear_history();
 }

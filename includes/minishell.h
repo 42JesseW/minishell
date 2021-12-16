@@ -80,8 +80,16 @@ typedef struct s_exe
 	t_list	*paths;
 	int		**pipe_fds;
 	pid_t	*pids;
-	char	**envp; //temp
+	char	**envp;
+	t_list	*builtins;
 }	t_exe;
+
+typedef struct s_builtin
+{
+	char 		*name;
+	void		(*function)(t_node*, int);
+}	t_builtin;
+
 
 void		pair_del(void *pair);
 
@@ -116,6 +124,10 @@ int			resolve_dollar(t_shell *shell, t_list **tokens);
 int			create_redir_files(t_shell *shell);
 
 void		nodes_print_stdout(t_list *cmd_nodes);
+
+// BUILTINS
+void		builtin_echo(t_node *cmd_node, int fd_out);
+int 		init_builtins(t_exe *exe);
 
 // INITIALISATION
 int			init_exe(t_shell *shell);

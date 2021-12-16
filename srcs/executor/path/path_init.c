@@ -22,7 +22,7 @@
 ** 3. Adds each path to the back of the list of paths of the exe struct
 */
 
-int	store_paths(const char *str_paths, t_exe *exe)
+int	store_paths(const char *str_paths, t_exe *exe) // TODO: ft_lstadd_back aanpassen (new eruit halen)
 {
 	int		idx;
 	char	**split_paths;
