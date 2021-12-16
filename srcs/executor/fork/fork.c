@@ -28,13 +28,10 @@ int	child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 		if (dup_pipes(idx, amount_cmds, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
-	else
+	if (ft_lstsize(cmd_node->redir) > 0)
 	{
-		if (ft_lstsize(cmd_node->redir) > 0)
-			if (dup_redirect(cmd_node) == SYS_ERROR)
-				return (SYS_ERROR);
-//		if (dup_cmd(exe, cmd_node) == SYS_ERROR)
-//			return (SYS_ERROR);
+		if (dup_redirect(cmd_node) == SYS_ERROR)
+			return (SYS_ERROR);
 	}
 	if (execute_cmd(cmd_node->cmd, exe) == SYS_ERROR)
 		return (SYS_ERROR);

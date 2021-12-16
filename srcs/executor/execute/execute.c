@@ -30,8 +30,12 @@ int	execute_cmd(char **cmd, t_exe *exe)
 	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
 		return (SYS_ERROR);
-	execve(path, cmd, exe->envp);
-	free(path);
-	dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Execution", strerror(errno));
-	return (SYS_ERROR);
+	if (execve(path, cmd, exe->envp) == -1)
+	{
+		free(path);
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Execution",
+			strerror(errno));
+		return (SYS_ERROR);
+	}
+	return (SUCCESS);
 }

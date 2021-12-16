@@ -128,13 +128,12 @@ int			malloc_fds(t_exe *exe, int amount_cmds);
 int			pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
 
 // DUPPING
-int 		dup_cmd(t_exe *exe, t_node *cmd_node);
 int 		dup_pipes(int idx, int amount_cmds, t_exe *exe);
 int 		dup_pipe_write(int idx, t_exe *exe);
 int 		dup_pipe_read(int idx, t_exe *exe);
 int			dup_redirect(t_node *cmd_node);
-void		dup_redirect_write(char *file);
-void		dup_redirect_read(char *file);
+int			dup_redirect_read(int fd);
+int			dup_redirect_write(int fd);
 
 // FORKING
 int			child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
