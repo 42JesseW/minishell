@@ -38,7 +38,7 @@ int	dup_redirect_read(int fd)
 	return (SUCCESS);
 }
 
-int	dup_redirect(t_node *cmd_node) //TODO Uitzoeken wat ik moet doen om append te laten werken
+int	dup_redirect(t_node *cmd_node)
 {
 	t_list	*lst_redir;
 	t_redir	*redir;
