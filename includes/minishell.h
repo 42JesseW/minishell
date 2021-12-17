@@ -87,7 +87,7 @@ typedef struct s_exe
 typedef struct s_builtin
 {
 	char 		*name;
-	void		(*function)(t_node*, int);
+	int			(*function)(t_node*);
 }	t_builtin;
 
 
@@ -126,7 +126,8 @@ int			create_redir_files(t_shell *shell);
 void		nodes_print_stdout(t_list *cmd_nodes);
 
 // BUILTINS
-void		builtin_echo(t_node *cmd_node, int fd_out);
+int			builtin_check(int idx, int amount_cmds, t_node *cmd_node, t_exe *exe);
+int			builtin_echo(t_node *cmd_node);
 int 		init_builtins(t_exe *exe);
 
 // INITIALISATION

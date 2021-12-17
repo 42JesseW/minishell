@@ -30,8 +30,6 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 	int	idx;
 	int	status;
 	int	amount_cmds;
-	t_node *cmd_node;
-	t_builtin	*builtin;
 
 	amount_cmds = ft_lstsize(shell->cmd_nodes);
 	exe->pids = malloc(amount_cmds * sizeof(int));
@@ -49,12 +47,7 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 	}
 	else
 	{
-		cmd_node = shell->cmd_nodes->content;					// TODO Functie schrijven om builtin te herkennen
-		builtin = exe->builtins->content;
-		if (ft_strcmp(cmd_node->cmd[0], builtin->name) == 0)
-			(*builtin->function)(cmd_node, STDOUT_FILENO);
-		else if (fork_process(0, amount_cmds, exe, cmd_node)
-			== SYS_ERROR)
+		if (builtin_check(0, amount_cmds, shell->cmd_nodes->content, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
 	idx = 0;

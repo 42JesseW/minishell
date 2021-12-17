@@ -45,6 +45,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/resolve_dollar.c \
 			  parser/create_redir_files.c \
 			  parser/parse_input_string.c \
+			  executor/builtins/bi_check.c \
 			  executor/builtins/bi_init.c \
 			  executor/builtins/bi_echo.c \
 			  executor/dup/dup_cmd.c \

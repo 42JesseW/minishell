@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// TODO probleem met fd redir oplossen
+
 #include <minishell.h>
 
 /*
@@ -33,7 +35,7 @@ int	check_n(char *cmd)
 	return (SUCCESS);
 }
 
-void	builtin_echo(t_node *cmd_node, int fd_out)
+int	builtin_echo(t_node *cmd_node)
 {
 	int	idx;
 	int	len;
@@ -50,11 +52,12 @@ void	builtin_echo(t_node *cmd_node, int fd_out)
 	}
 	while (idx < len)
 	{
-		dprintf(fd_out, "%s", cmd_node->cmd[idx]);
+		printf("%s", cmd_node->cmd[idx]);
 		if (idx < len - 1)
-			dprintf(fd_out, " ");
+			printf(" ");
 		idx++;
 	}
 	if (flag_n == 0)
-		dprintf(fd_out, "\n");
+		printf("\n");
+	return (SUCCESS);
 }
