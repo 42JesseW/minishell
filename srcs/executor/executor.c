@@ -27,17 +27,12 @@
 
 int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te lang
 {
-	int	idx;
-	int	status;
-	int	amount_cmds;
+	int		len;
+	int		status;
+	int		amount_cmds;
+	pid_t	*pid;
 
 	amount_cmds = ft_lstsize(shell->cmd_nodes);
-	exe->pids = malloc(amount_cmds * sizeof(int));
-	if (exe->pids == NULL)
-	{
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
-		return (SYS_ERROR);
-	}
 	if (amount_cmds > 1)
 	{
 		if (malloc_fds(exe, (amount_cmds - 1)) == SYS_ERROR)
@@ -50,18 +45,18 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 		if (builtin_check(0, amount_cmds, shell->cmd_nodes->content, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
-	idx = 0;
-	while (idx < amount_cmds)
+	len = ft_lstsize(exe->pids);
+	while (len > 0)
 	{
-		if (waitpid(exe->pids[idx], &status, 0) == -1) //UITZOEKEN
+		pid = exe->pids->content;
+		if (waitpid(*pid, &status, 0) == -1)
 		{
 			//dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Child process ended with", WEXITSTATUS(status)); // TODO waitpid uitzoeken waarde WEXITSTATUS
 			return (SYS_ERROR);
 		}
-		idx++;
+		exe->pids = exe->pids->next;
+		len--;
 	}
-	free(exe->pids);
-	//ft_lstclear(&exe->builtins, free);
 	if (amount_cmds > 1)
 		free_pipe_fds(exe->pipe_fds);
 	return (SUCCESS);
@@ -77,26 +72,22 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 ** 3. All information is send to the prepare_execution function
 */
 
-int	init_exe(t_shell *shell)
-{
-	t_exe	*exe;
+int	init_exe(t_shell *shell) {
+	t_exe *exe;
 
-	if (!shell->cmd_nodes)
-	{
+	if (!shell->cmd_nodes) {
 		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input", "cmd_nodes = NULL");
 		return (NONFATAL);
 	}
 	exe = (t_exe *) malloc(sizeof(t_exe));
-	if (!exe)
-	{
+	if (!exe) {
 		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
 		return (SYS_ERROR);
 	}
 	exe->paths = NULL;
-	exe->fd_stdin = dup(STDIN_FILENO);
-	exe->fd_stdout = dup(STDOUT_FILENO);
-	exe->envp = environ_to_envp(shell->environ);
 	exe->builtins = NULL;
+	exe->pids = NULL;
+	exe->envp = environ_to_envp(shell->environ);
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);
 	init_builtins(exe);

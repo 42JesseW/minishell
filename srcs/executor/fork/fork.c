@@ -41,6 +41,8 @@ int	child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
 	pid_t	pid;
+	pid_t 	*p_pid;
+	t_list	*node;
 
 	pid = fork();
 	if (pid < 0)
@@ -55,12 +57,14 @@ int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 	}
 	else if (pid > 0)
 	{
-		exe->pids[idx] = pid;
 		if (amount_cmds > 1)
 		{
 			if (close_pipe_ends(exe->pipe_fds, idx) == SYS_ERROR)
 				return (SYS_ERROR);
 		}
+		p_pid = &pid;
+		node = ft_lstnew(p_pid); // TODO beveiligen
+		ft_lstadd_back(&exe->pids, node);
 	}
 	return (SUCCESS);
 }

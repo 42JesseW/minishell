@@ -77,11 +77,11 @@ typedef struct s_shell
 
 typedef struct s_exe
 {
-	int 	fd_stdin;
-	int 	fd_stdout;
+//	int 	fd_stdin;
+//	int 	fd_stdout;
 	int		**pipe_fds;
 	char	**envp;
-	pid_t	*pids;
+	t_list	*pids;
 	t_list	*paths;
 	t_list	*builtins;
 }	t_exe;

@@ -40,7 +40,7 @@ int	store_paths(const char *str_paths, t_exe *exe) // TODO: ft_lstadd_back aanpa
 			ft_strarrfree(&split_paths);
 			return (SYS_ERROR);
 		}
-		ft_lstadd_back(&exe->paths, ft_lstnew(path));
+		ft_lstadd_back(&exe->paths, ft_lstnew(path));  // TODO: lst_new eruit trekken
 		idx++;
 	}
 	ft_strarrfree(&split_paths);
