@@ -14,11 +14,11 @@
 
 int	builtin_check(int idx, int amount_cmds, t_node *cmd_node, t_exe *exe)
 {
-	int 		idj;
+	int 		len;
 	t_builtin	*builtin;
 
-	idj = 0;
-	while (idj < ft_lstsize(exe->builtins))
+	len = ft_lstsize(exe->builtins);
+	while (len > 0)
 	{
 		builtin = exe->builtins->content;
 		if (ft_strcmp(cmd_node->cmd[0], builtin->name) == 0)
@@ -34,7 +34,7 @@ int	builtin_check(int idx, int amount_cmds, t_node *cmd_node, t_exe *exe)
 				return (SUCCESS);
 		}
 		exe->builtins = exe->builtins->next;
-		idj++;
+		len--;
 	}
 	if (fork_process(idx, amount_cmds, exe, cmd_node)
 		== SYS_ERROR)

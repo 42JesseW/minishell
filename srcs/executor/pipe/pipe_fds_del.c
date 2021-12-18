@@ -17,15 +17,15 @@
 **	- Frees the allocated memory for the pipe_fds
 */
 
-void	free_fds(t_exe *exe)
+void	free_pipe_fds(int **pipe_fds)
 {
 	int	idx;
 
 	idx = 0;
-	while (exe->pipe_fds[idx])
+	while (pipe_fds[idx])
 	{
-		free(exe->pipe_fds[idx]);
+		free(pipe_fds[idx]);
 		idx++;
 	}
-	free(exe->pipe_fds);
+	free(pipe_fds);
 }

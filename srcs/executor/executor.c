@@ -61,7 +61,9 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 		idx++;
 	}
 	free(exe->pids);
-	// Hier nog fds freeen
+	//ft_lstclear(&exe->builtins, free);
+	if (amount_cmds > 1)
+		free_pipe_fds(exe->pipe_fds);
 	return (SUCCESS);
 }
 
@@ -91,12 +93,17 @@ int	init_exe(t_shell *shell)
 		return (SYS_ERROR);
 	}
 	exe->paths = NULL;
+	exe->fd_stdin = dup(STDIN_FILENO);
+	exe->fd_stdout = dup(STDOUT_FILENO);
 	exe->envp = environ_to_envp(shell->environ);
 	exe->builtins = NULL;
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);
 	init_builtins(exe);
 	prepare_execution(exe, shell);
+	ft_lstclear(&exe->paths, free);
+	ft_strarrfree(&exe->envp);
 	ft_lstclear(&shell->cmd_nodes, node_del);
+	free(exe);
 	return (SUCCESS);
 }

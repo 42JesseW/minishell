@@ -40,11 +40,9 @@ int	builtin_echo(t_node *cmd_node)
 	int	idx;
 	int	len;
 	int	flag_n;
-	int fd;
 
 	idx = 1;
 	flag_n = 0;
-	fd = dup(STDOUT_FILENO);
 	len = ft_strarrlen(cmd_node->cmd);
 	if (ft_strnstr(cmd_node->cmd[1], "-n", 2) > 0)
 	{
@@ -54,12 +52,12 @@ int	builtin_echo(t_node *cmd_node)
 	}
 	while (idx < len)
 	{
-		dprintf(fd, "%s", cmd_node->cmd[idx]);
+		printf("%s", cmd_node->cmd[idx]);
 		if (idx < len - 1)
-			dprintf(fd, " ");
+			printf(" ");
 		idx++;
 	}
 	if (flag_n == 0)
-		dprintf(fd, "\n");
+		printf("\n");
 	return (SUCCESS);
 }

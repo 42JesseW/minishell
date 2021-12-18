@@ -26,7 +26,7 @@ int	store_paths(const char *str_paths, t_exe *exe) // TODO: ft_lstadd_back aanpa
 {
 	int		idx;
 	char	**split_paths;
-	char	*current_path;
+	char	*path;
 
 	split_paths = ft_strsplit(str_paths, ':');
 	if (!split_paths)
@@ -34,13 +34,13 @@ int	store_paths(const char *str_paths, t_exe *exe) // TODO: ft_lstadd_back aanpa
 	idx = 0;
 	while (split_paths[idx] != NULL)
 	{
-		current_path = ft_strjoin(split_paths[idx], "/");
-		if (!current_path)
+		path = ft_strjoin(split_paths[idx], "/");
+		if (!path)
 		{
 			ft_strarrfree(&split_paths);
 			return (SYS_ERROR);
 		}
-		ft_lstadd_back(&exe->paths, ft_lstnew(current_path));
+		ft_lstadd_back(&exe->paths, ft_lstnew(path));
 		idx++;
 	}
 	ft_strarrfree(&split_paths);
@@ -60,8 +60,10 @@ int	store_paths(const char *str_paths, t_exe *exe) // TODO: ft_lstadd_back aanpa
 int	init_paths(t_exe *exe, t_shell *shell)
 {
 	t_pair	*pair;
+	int 	len;
 
-	while (shell->environ)
+	len = ft_lstsize(shell->environ);
+	while (len > 0)
 	{
 		pair = shell->environ->content;
 		if (ft_strncmp(pair->key, "PATH", 4) == 0)
@@ -75,7 +77,10 @@ int	init_paths(t_exe *exe, t_shell *shell)
 			return (SUCCESS);
 		}
 		else
+		{
 			shell->environ = shell->environ->next;
+			len--;
+		}
 	}
 	return (SYS_ERROR);
 }

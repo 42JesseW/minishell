@@ -77,10 +77,12 @@ typedef struct s_shell
 
 typedef struct s_exe
 {
-	t_list	*paths;
+	int 	fd_stdin;
+	int 	fd_stdout;
 	int		**pipe_fds;
-	pid_t	*pids;
 	char	**envp;
+	pid_t	*pids;
+	t_list	*paths;
 	t_list	*builtins;
 }	t_exe;
 
@@ -138,6 +140,7 @@ int			prepare_execution(t_exe *exe, t_shell *shell);
 
 // PIPING
 int			malloc_fds(t_exe *exe, int amount_cmds);
+void		free_pipe_fds(int **pipe_fds);
 int			pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
 
 // DUPPING

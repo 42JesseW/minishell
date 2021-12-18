@@ -28,8 +28,10 @@
 char	*get_full_path(char *cmd, t_exe *exe)
 {
 	char	*path;
+	int 	len;
 
-	while (exe->paths)
+	len = ft_lstsize(exe->paths);
+	while (len > 0)
 	{
 		path = ft_strjoin(exe->paths->content, cmd);
 		if (path == NULL)
@@ -41,6 +43,7 @@ char	*get_full_path(char *cmd, t_exe *exe)
 		if (access(path, F_OK) != -1)
 			return (path);
 		exe->paths = exe->paths->next;
+		len--;
 	}
 	dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path, strerror(errno));
 	return (NULL);
