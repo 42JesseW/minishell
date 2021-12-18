@@ -48,7 +48,6 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  executor/builtins/bi_check.c \
 			  executor/builtins/bi_init.c \
 			  executor/builtins/bi_echo.c \
-			  executor/dup/dup_cmd.c \
 			  executor/dup/dup_pipes.c \
 			  executor/dup/dup_redirect.c \
 			  executor/execute/execute.c \
