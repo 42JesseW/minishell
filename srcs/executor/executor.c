@@ -25,6 +25,14 @@
 ** 4. Initiates the cmd executor route if there is just 1 cmd
 */
 
+void	free_exe(t_exe *exe, t_shell *shell)
+{
+	ft_lstclear(&exe->paths, free);
+	ft_strarrfree(&exe->envp);
+	ft_lstclear(&shell->cmd_nodes, node_del);
+	free(exe);
+}
+
 int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te lang
 {
 	int		len;
@@ -84,6 +92,7 @@ int	init_exe(t_shell *shell) {
 		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
 		return (SYS_ERROR);
 	}
+	exe->fd_stdout = dup(STDOUT_FILENO);
 	exe->paths = NULL;
 	exe->builtins = NULL;
 	exe->pids = NULL;
@@ -92,9 +101,6 @@ int	init_exe(t_shell *shell) {
 		return (SYS_ERROR);
 	init_builtins(exe);
 	prepare_execution(exe, shell);
-	ft_lstclear(&exe->paths, free);
-	ft_strarrfree(&exe->envp);
-	ft_lstclear(&shell->cmd_nodes, node_del);
-	free(exe);
+	free_exe(exe, shell);
 	return (SUCCESS);
 }

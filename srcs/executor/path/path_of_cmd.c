@@ -28,7 +28,7 @@
 char	*get_full_path(char *cmd, t_exe *exe)
 {
 	char	*path;
-	int 	len;
+	int		len;
 
 	len = ft_lstsize(exe->paths);
 	while (len > 0)

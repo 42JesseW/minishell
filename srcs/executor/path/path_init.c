@@ -22,11 +22,12 @@
 ** 3. Adds each path to the back of the list of paths of the exe struct
 */
 
-int	store_paths(const char *str_paths, t_exe *exe) // TODO: ft_lstadd_back aanpassen (new eruit halen)
+int	store_paths(const char *str_paths, t_exe *exe)
 {
 	int		idx;
 	char	**split_paths;
 	char	*path;
+	t_list	*node;
 
 	split_paths = ft_strsplit(str_paths, ':');
 	if (!split_paths)
@@ -40,7 +41,10 @@ int	store_paths(const char *str_paths, t_exe *exe) // TODO: ft_lstadd_back aanpa
 			ft_strarrfree(&split_paths);
 			return (SYS_ERROR);
 		}
-		ft_lstadd_back(&exe->paths, ft_lstnew(path));  // TODO: lst_new eruit trekken
+		node = ft_lstnew(path);
+		if (node == NULL)
+			return (SYS_ERROR);
+		ft_lstadd_back(&exe->paths, node);
 		idx++;
 	}
 	ft_strarrfree(&split_paths);
@@ -60,7 +64,7 @@ int	store_paths(const char *str_paths, t_exe *exe) // TODO: ft_lstadd_back aanpa
 int	init_paths(t_exe *exe, t_shell *shell)
 {
 	t_pair	*pair;
-	int 	len;
+	int		len;
 
 	len = ft_lstsize(shell->environ);
 	while (len > 0)

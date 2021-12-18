@@ -28,7 +28,7 @@ int	builtin_check(int idx, int amount_cmds, t_node *cmd_node, t_exe *exe)
 				if (dup_redirect(cmd_node) == SYS_ERROR)
 					return (SYS_ERROR);
 			}
-			if ((*builtin->function)(cmd_node) == SYS_ERROR)
+			if ((*builtin->function)(cmd_node->cmd, exe) == SYS_ERROR)
 				return (SYS_ERROR);
 			else
 				return (SUCCESS);

@@ -40,3 +40,56 @@ TEST_CASE("testing init_exe") {
 	shell = shell_init(envp);
 	REQUIRE(shell != NULL);
 }
+
+void echo_check(char *cmd[], int type)
+{
+	int 	idx;
+	int 	fd;
+	int 	fd_stdout;
+	char 	*system_cmd;
+	char 	*new_system_cmd;
+
+	if (type == 1)
+		fd = open("test1.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	else
+		fd = open("test2.txt", O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	REQUIRE(fd != -1);
+	fd_stdout = dup(STDOUT_FILENO);
+	dup2(fd, STDOUT_FILENO);
+	close(fd);
+	idx = 0;
+	if (type == 1)
+		builtin_echo(cmd);
+	else
+	{
+		system("bash -c 'echo -nnnnnb hallohallohallo hallohallohallo'");
+	}
+	fflush(stdout);
+	dup2(fd_stdout, STDOUT_FILENO);
+	close(fd_stdout);
+}
+
+TEST_CASE("testing builtin echo") {
+	char	*cmd[] = {
+			"echo", "-nnnnnb", "hallohallohallo", "hallohallohallo", NULL
+	};
+	int 	fd;
+	char 	buff1[100];
+	char 	buff2[100];
+	ssize_t	ret;
+
+	echo_check(cmd, 1);
+	echo_check(cmd, 2);
+
+	fd = open("test1.txt", O_RDONLY);
+	ret = read(fd, buff1, 100);
+	buff1[ret] = 0;
+	fd = open("test2.txt", O_RDONLY);
+	ret = read(fd, buff2, 100);
+	buff2[ret] = 0;
+
+	CHECK(strcmp(buff1, buff2) == 0);
+
+	remove("test1.txt");
+	remove("test2.txt");
+}

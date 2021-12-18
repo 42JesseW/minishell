@@ -26,7 +26,6 @@
 int	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell)
 {
 	int		idx;
-	t_node	*cmd_node;
 	int		amount_pipes;
 
 	idx = 0;
@@ -42,8 +41,8 @@ int	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell)
 				return (SYS_ERROR);
 			}
 		}
-		cmd_node = shell->cmd_nodes->content;
-		if (fork_process(idx, amount_cmds, exe, cmd_node) == SYS_ERROR)
+		if (fork_process(idx, amount_cmds, exe, shell->cmd_nodes->content)
+			== SYS_ERROR)
 			return (SYS_ERROR);
 		shell->cmd_nodes = shell->cmd_nodes->next;
 		idx++;
