@@ -27,15 +27,17 @@ int	execute_cmd(char **cmd, t_exe *exe)
 {
 	char	*path;
 
+	if (builtin_check(cmd, exe) == SUCCESS)
+		exit (EXIT_SUCCESS);
 	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
-		return (SYS_ERROR);
+		return (SYS_ERROR);						//TODO uitzoeken: als ik niet exit gaat het mis met pipes enzo
 	if (execve(path, cmd, exe->envp) == -1)
 	{
 		free(path);
 		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Execution",
 			strerror(errno));
-		return (SYS_ERROR);
+		return (SYS_ERROR);						//TODO uitzoeken: geldt ook hiervoor
 	}
 	return (SUCCESS);
 }

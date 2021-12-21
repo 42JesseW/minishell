@@ -50,7 +50,8 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 	}
 	else
 	{
-		if (builtin_check(0, amount_cmds, shell->cmd_nodes->content, exe) == SYS_ERROR)
+		if (fork_process(0, amount_cmds, exe, shell->cmd_nodes->content)
+			== SYS_ERROR)
 			return (SYS_ERROR);
 	}
 	len = ft_lstsize(exe->pids);
@@ -80,27 +81,29 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 ** 3. All information is send to the prepare_execution function
 */
 
-int	init_exe(t_shell *shell) {
-	t_exe *exe;
+int	init_exe(t_shell *shell)
+{
+	t_exe	*exe;
 
-	if (!shell->cmd_nodes) {
+	if (!shell->cmd_nodes)
+	{
 		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input", "cmd_nodes = NULL");
 		return (NONFATAL);
 	}
 	exe = (t_exe *) malloc(sizeof(t_exe));
-	if (!exe) {
+	if (!exe)
+	{
 		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
 		return (SYS_ERROR);
 	}
-	exe->fd_stdout = dup(STDOUT_FILENO);
 	exe->paths = NULL;
 	exe->builtins = NULL;
 	exe->pids = NULL;
-	exe->envp = environ_to_envp(shell->environ);
+	exe->envp = environ_to_envp(shell->environ);	// TODO deze functie beschermen (SYS_ERROR)
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);
-	init_builtins(exe);
-	prepare_execution(exe, shell);
-	free_exe(exe, shell);
+	init_builtins(exe);								// TODO deze functie beschermen (SYS_ERROR)
+	prepare_execution(exe, shell);					// TODO deze functie beschermen (SYS_ERROR)
+	free_exe(exe, shell);							// TODO deze functie beschermen (SYS_ERROR)
 	return (SUCCESS);
 }

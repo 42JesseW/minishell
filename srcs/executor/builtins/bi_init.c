@@ -18,9 +18,8 @@
 //		{NULL, NULL},
 //};
 
-int init_builtins(t_exe *exe) // TODO uitbreiden naar meerdere builtins
+int	init_builtins(t_exe *exe) // TODO uitbreiden naar meerdere builtins
 {
-
 	t_list		*l_builtin;
 	t_builtin	*builtin;
 

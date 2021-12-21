@@ -12,23 +12,18 @@
 
 #include <minishell.h>
 
-int	builtin_check(int idx, int amount_cmds, t_node *cmd_node, t_exe *exe)
+int	builtin_check(char **cmd, t_exe *exe)
 {
-	int 		len;
+	int			len;
 	t_builtin	*builtin;
 
 	len = ft_lstsize(exe->builtins);
 	while (len > 0)
 	{
 		builtin = exe->builtins->content;
-		if (ft_strcmp(cmd_node->cmd[0], builtin->name) == 0)
+		if (ft_strcmp(cmd[0], builtin->name) == 0)
 		{
-			if (ft_lstsize(cmd_node->redir) > 0)
-			{
-				if (dup_redirect(cmd_node) == SYS_ERROR)
-					return (SYS_ERROR);
-			}
-			if ((*builtin->function)(cmd_node->cmd, exe) == SYS_ERROR)
+			if ((*builtin->function)(cmd) == SYS_ERROR)
 				return (SYS_ERROR);
 			else
 				return (SUCCESS);
@@ -36,8 +31,5 @@ int	builtin_check(int idx, int amount_cmds, t_node *cmd_node, t_exe *exe)
 		exe->builtins = exe->builtins->next;
 		len--;
 	}
-	if (fork_process(idx, amount_cmds, exe, cmd_node)
-		== SYS_ERROR)
-		return (SYS_ERROR);
-	return (SUCCESS);
+	return (0);
 }
