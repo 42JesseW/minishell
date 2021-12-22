@@ -16,6 +16,7 @@
 // TODO - WEXITSTATUS uitzoeken
 // TODO - Overal descriptions bij maken
 // TODO - Tests schrijven voor een aantal functies
+// TODO - In execute.c uitzoeken hoe ik het beste de functie kan verlaten
 
 #include <minishell.h>
 
@@ -92,13 +93,13 @@ int	init_exe(t_shell *shell)
 
 	if (!shell->cmd_nodes)
 	{
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input", "cmd_nodes = NULL");
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input", "cmd_nodes = NULL");
 		return (NONFATAL);
 	}
 	exe = (t_exe *) malloc(sizeof(t_exe));
 	if (!exe)
 	{
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
 		return (SYS_ERROR);
 	}
 	exe->paths = NULL;

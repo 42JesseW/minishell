@@ -24,10 +24,10 @@ int	builtin_pwd(char **cmd, t_exe *exe)
 	(void)exe;
 	if (getcwd(buff, sizeof(buff)) == NULL)
 	{
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Getcwd", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Getcwd", strerror(errno));
 		return (SYS_ERROR);
 	}
 	else
-		printf("%s\n", buff);
+		ft_printf("%s\n", buff);
 	return (SUCCESS);
 }

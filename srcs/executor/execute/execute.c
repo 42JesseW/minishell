@@ -35,7 +35,7 @@ int	execute_cmd(char **cmd, t_exe *exe)
 	if (execve(path, cmd, exe->envp) == -1)
 	{
 		free(path);
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Execution",
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Execution",
 			strerror(errno));
 		return (SYS_ERROR);						//TODO uitzoeken: geldt ook hiervoor
 	}

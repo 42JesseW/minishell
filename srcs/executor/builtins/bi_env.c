@@ -28,7 +28,7 @@ int	builtin_env(char **cmd, t_exe *exe)
 	len = ft_strarrlen(exe->envp);
 	while (idx < len)
 	{
-		printf("%s\n", exe->envp[idx]);
+		ft_printf("%s\n", exe->envp[idx]);
 		idx++;
 	}
 	return (SUCCESS);

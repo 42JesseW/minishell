@@ -36,7 +36,7 @@ int	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell)
 		{
 			if (pipe(exe->pipe_fds[idx]) != 0)
 			{
-				dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Pipe",
+				ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Pipe",
 					strerror(errno));
 				return (SYS_ERROR);
 			}

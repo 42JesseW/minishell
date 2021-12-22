@@ -36,7 +36,7 @@ char	*get_full_path(char *cmd, t_exe *exe)
 		path = ft_strjoin(exe->paths->content, cmd);
 		if (path == NULL)
 		{
-			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
 				strerror(errno));
 			return (NULL);
 		}
@@ -45,6 +45,6 @@ char	*get_full_path(char *cmd, t_exe *exe)
 		exe->paths = exe->paths->next;
 		len--;
 	}
-	dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path, strerror(errno));
+	ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path, strerror(errno));
 	return (NULL);
 }

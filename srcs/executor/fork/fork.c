@@ -30,7 +30,7 @@ int	store_pids(pid_t pid, t_exe *exe)
 	node = ft_lstnew(p_pid);
 	if (node == NULL)
 	{
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
 		return (SYS_ERROR);
 	}
 	ft_lstadd_back(&exe->pids, node);
@@ -61,7 +61,7 @@ int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 	pid = fork();
 	if (pid < 0)
 	{
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Fork", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Fork", strerror(errno));
 		return (SYS_ERROR);
 	}
 	else if (pid == 0)

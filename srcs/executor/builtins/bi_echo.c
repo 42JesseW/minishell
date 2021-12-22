@@ -25,7 +25,7 @@ int	check_n(char *cmd)
 	int	len;
 
 	idx = 1;
-	len = ft_strlen(cmd);
+	len = (int)ft_strlen(cmd);
 	while (idx < len)
 	{
 		if (cmd[idx] != 'n')
@@ -52,7 +52,7 @@ int	builtin_echo(char **cmd, t_exe *exe)
 	idx = 1;
 	flag_n = 0;
 	len = ft_strarrlen(cmd);
-	if (ft_strnstr(cmd[1], "-n", 2) != NULL) // TODO discuss (> 0) -> (!= NULL)
+	if (ft_strnstr(cmd[1], "-n", 2) != NULL)
 	{
 		flag_n = check_n(cmd[1]);
 		if (flag_n == SUCCESS)
@@ -60,12 +60,12 @@ int	builtin_echo(char **cmd, t_exe *exe)
 	}
 	while (idx < len)
 	{
-		printf("%s", cmd[idx]);
+		ft_printf("%s", cmd[idx]);
 		if (idx < len - 1)
-			printf(" ");
+			ft_printf(" ");
 		idx++;
 	}
 	if (flag_n == 0)
-		printf("\n");
+		ft_printf("\n");
 	return (EXIT_SUCCESS);
 }

@@ -13,9 +13,13 @@
 #include <minishell.h>
 
 static t_builtin	g_builtins[] = {
+		{"cd", NULL},
 		{"echo", &builtin_echo},
 		{"env", &builtin_env},
+		{"exit", NULL},
+		{"export", NULL},
 		{"pwd", &builtin_pwd},
+		{"unset", NULL},
 };
 
 /*
