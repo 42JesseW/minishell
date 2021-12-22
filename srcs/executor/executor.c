@@ -17,9 +17,19 @@
 // TODO - Tests schrijven voor een aantal functies
 // TODO - In execute.c uitzoeken hoe ik het beste de functie kan verlaten
 // TODO - Functie prepare_execution splitsen
-// TODO - in init_exe zijn er nog verschillende functies niet beschermd
+// TODO - In init_exe zijn er nog verschillende functies niet beschermd
+// TODO - Uitzoeken wat launch van cmd by using relative or absolute path betekent
+// TODO - Uitzoeken of eindigen met ctrl-C, ctrl-D en ctrl-\ werkt
 
 #include <minishell.h>
+
+void	free_exe(t_exe *exe, t_shell *shell)
+{
+	ft_lstclear(&exe->paths, free);
+	ft_strarrfree(&exe->envp);
+	ft_lstclear(&shell->cmd_nodes, node_del);
+	free(exe);
+}
 
 /*
 ** DESCRIPTION
@@ -31,14 +41,6 @@
 ** 3. Initiates the piping route if there are 1+ cmds
 ** 4. Initiates the cmd executor route if there is just 1 cmd
 */
-
-void	free_exe(t_exe *exe, t_shell *shell)
-{
-	ft_lstclear(&exe->paths, free);
-	ft_strarrfree(&exe->envp);
-	ft_lstclear(&shell->cmd_nodes, node_del);
-	free(exe);
-}
 
 int	prepare_execution(t_exe *exe, t_shell *shell)
 {
