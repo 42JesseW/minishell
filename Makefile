@@ -7,11 +7,18 @@ LIBFTLIB	= libft.a
 
 SOURCE_DIR 	= srcs
 OBJECT_DIR 	= obj
-INCLUDE_DIR	= includes $(LIBFTDIR)/includes ${HOME}/.brew/opt/readline/include
+INCLUDE_DIR	= includes .
+
 CMAKE_DIR	= cmake-build
 
 # `brew install readline` for function rl_replace_line
-LIB_DIR     = . ${HOME}/.brew/opt/readline/lib
+LIB_DIR     = .
+
+UNAME_S		= $(shell uname -s)
+ifeq ($(UNAME_S), Darwin)
+    INCLUDE_DIR	+= ${HOME}/.brew/opt/readline/include
+    LIB_DIR     += ${HOME}/.brew/opt/readline/lib
+endif
 
 CLINKS 		= -ltermcap -lreadline -lft
 CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address

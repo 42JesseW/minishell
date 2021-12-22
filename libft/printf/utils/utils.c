@@ -12,26 +12,6 @@
 
 #include "../../includes/printf.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	unsigned char	*str1;
-	unsigned char	*str2;
-	int				idx;
-
-	if (s1 == NULL || s2 == NULL)
-		return (ft_ternary_int(s1 == NULL, -1, 1));
-	idx = 0;
-	str1 = (unsigned char *)s1;
-	str2 = (unsigned char *)s2;
-	while (str1[idx] != '\0')
-	{
-		if (str1[idx] != str2[idx])
-			return (str1[idx] - str2[idx]);
-		idx++;
-	}
-	return (str1[idx] - str2[idx]);
-}
-
 char	*ft_strrev(char *s)
 {
 	int		i;

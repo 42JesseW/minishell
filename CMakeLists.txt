@@ -9,7 +9,7 @@ set(GCC_NORM_COMPILE_FLAGS      "-Wall -Wextra -Werror")
 set(GCC_SANITIZER_COMPILE_FLAGS "-fsanitize=address")
 set(${CMAKE_C_FLAGS} "${CMAKE_C_FLAGS} ${GCC_NORM_COMPILE_FLAGS} ${GCC_SANITIZER_COMPILE_FLAGS}")
 
-include_directories(includes ${LIBFT_DIR}/includes $ENV{HOME}/.brew/opt/readline/include)
+include_directories(includes . $ENV{HOME}/.brew/opt/readline/include)
 link_directories(${LIBFT_DIR} $ENV{HOME}/.brew/opt/readline/lib)
 
 add_custom_target(

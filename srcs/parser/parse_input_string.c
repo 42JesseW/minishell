@@ -30,10 +30,10 @@ static int	get_tokenize_fail_exit(void)
 	if (errno != 0)
 	{
 		exit_code = SYS_ERROR;
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "system", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "system", strerror(errno));
 	}
 	else
-		dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, "multiline");
+		ft_dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, "multiline");
 	return (exit_code);
 }
 

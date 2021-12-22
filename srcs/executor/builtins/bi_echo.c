@@ -42,7 +42,7 @@ int	builtin_echo(char **cmd)
 	idx = 1;
 	flag_n = 0;
 	len = ft_strarrlen(cmd);
-	if (ft_strnstr(cmd[1], "-n", 2) > 0)
+	if (ft_strnstr(cmd[1], "-n", 2) != NULL) // TODO discuss (> 0) -> (!= NULL)
 	{
 		flag_n = check_n(cmd[1]);
 		if (flag_n == SUCCESS)
