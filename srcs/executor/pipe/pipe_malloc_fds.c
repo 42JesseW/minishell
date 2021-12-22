@@ -14,7 +14,7 @@
 
 /*
 ** DESCRIPTION
-**	- Mallocs for each pipe in a loop the needed memory for both pipe_fd[2].
+**	- Mallocs for each pipe in a loop the needed memory for both pipe ends.
 */
 
 int	malloc_fds(t_exe *exe, int amount_pipes)

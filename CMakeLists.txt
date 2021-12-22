@@ -20,7 +20,7 @@ add_custom_target(
 
 file(GLOB_RECURSE SOURCES srcs/main.c srcs/**/*.c)
 
-add_executable(minishell ${SOURCES})
+add_executable(minishell ${SOURCES} srcs/executor/builtins/bi_env.c srcs/executor/builtins/bi_pwd.c)
 
 add_dependencies(minishell ${LIBFT})
 

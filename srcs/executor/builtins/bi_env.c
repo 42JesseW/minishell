@@ -1,35 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   bi_check.c                                         :+:    :+:            */
+/*   bi_env.c                                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: annaheister <annaheister@student.codam.nl>   +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/12/17 10:16:40 by annaheister   #+#    #+#                 */
-/*   Updated: 2021/12/17 10:16:40 by annaheister   ########   odam.nl         */
+/*   Created: 2021/12/22 16:03:01 by annaheister   #+#    #+#                 */
+/*   Updated: 2021/12/22 16:03:01 by annaheister   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-int	builtin_check(char **cmd, t_exe *exe)
-{
-	int			len;
-	t_builtin	*builtin;
+/*
+** DESCRIPTION
+**	-  Prints the environmental variables in the order in which the variables are stored.
+**     Prints only the environmental variables that have both a key and a value
+*/
 
-	len = ft_lstsize(exe->builtins);
-	while (len > 0)
+int	builtin_env(char **cmd, t_exe *exe)
+{
+	int	idx;
+	int	len;
+
+	(void)cmd;
+	idx = 0;
+	len = ft_strarrlen(exe->envp);
+	while (idx < len)
 	{
-		builtin = exe->builtins->content;
-		if (ft_strcmp(cmd[0], builtin->name) == 0)
-		{
-			if ((*builtin->function)(cmd, exe) == SYS_ERROR)
-				return (SYS_ERROR);
-			else
-				return (SUCCESS);
-		}
-		exe->builtins = exe->builtins->next;
-		len--;
+		printf("%s\n", exe->envp[idx]);
+		idx++;
 	}
-	return (0);
+	return (SUCCESS);
 }

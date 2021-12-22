@@ -1,35 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   bi_check.c                                         :+:    :+:            */
+/*   bi_pwd.c                                           :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: annaheister <annaheister@student.codam.nl>   +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/12/17 10:16:40 by annaheister   #+#    #+#                 */
-/*   Updated: 2021/12/17 10:16:40 by annaheister   ########   odam.nl         */
+/*   Created: 2021/12/22 19:35:10 by annaheister   #+#    #+#                 */
+/*   Updated: 2021/12/22 19:35:10 by annaheister   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include <minishell.h>
 
-int	builtin_check(char **cmd, t_exe *exe)
-{
-	int			len;
-	t_builtin	*builtin;
+/*
+** DESCRIPTION
+**	-  Prints the name of the current working directory.
+*/
 
-	len = ft_lstsize(exe->builtins);
-	while (len > 0)
+int	builtin_pwd(char **cmd, t_exe *exe)
+{
+	char buff[256];
+
+	(void)cmd;
+	(void)exe;
+	if (getcwd(buff, sizeof(buff)) == NULL)
 	{
-		builtin = exe->builtins->content;
-		if (ft_strcmp(cmd[0], builtin->name) == 0)
-		{
-			if ((*builtin->function)(cmd, exe) == SYS_ERROR)
-				return (SYS_ERROR);
-			else
-				return (SUCCESS);
-		}
-		exe->builtins = exe->builtins->next;
-		len--;
+		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Getcwd", strerror(errno));
+		return (SYS_ERROR);
 	}
-	return (0);
+	else
+		printf("%s\n", buff);
+	return (SUCCESS);
 }

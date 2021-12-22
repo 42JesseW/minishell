@@ -14,7 +14,9 @@
 
 /*
 ** DESCRIPTION
-**	-  Moet nog aangevuld
+**	-  The echo command writes its arguments separated by blanks and
+**     terminated by a new line on the standard output. The -n option
+**     prints a line without the newline;
 */
 
 int	check_n(char *cmd)
@@ -33,16 +35,24 @@ int	check_n(char *cmd)
 	return (SUCCESS);
 }
 
-int	builtin_echo(char **cmd)
+/*
+** DESCRIPTION
+**	-  The builtin echo writes its arguments separated by blanks and
+**     terminated by a new line on the standard output. The -n option
+**     prints a line without the newline;
+*/
+
+int	builtin_echo(char **cmd, t_exe *exe)
 {
 	int	idx;
 	int	len;
 	int	flag_n;
 
+	(void)exe;
 	idx = 1;
 	flag_n = 0;
 	len = ft_strarrlen(cmd);
-	if (ft_strnstr(cmd[1], "-n", 2) > 0)
+	if (ft_strnstr(cmd[1], "-n", 2) != NULL)
 	{
 		flag_n = check_n(cmd[1]);
 		if (flag_n == SUCCESS)

@@ -11,6 +11,11 @@
 /* ************************************************************************** */
 
 // TODO - Overal alles veilig maken en op goede moment alles freeen
+// TODO - Overal printf en dprintf vervangen door ft_printf etc.
+// TODO - Aantal grote functies splitsen
+// TODO - WEXITSTATUS uitzoeken
+// TODO - Overal descriptions bij maken
+// TODO - Tests schrijven voor een aantal functies
 
 #include <minishell.h>
 
