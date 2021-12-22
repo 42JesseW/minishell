@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// TODO Function init_builtins splitsen
+
 #include <minishell.h>
 
 static t_builtin	g_builtins[] = {
@@ -37,9 +39,9 @@ static t_builtin	g_builtins[] = {
 ** 6.   add it to the list exe->builtins
 */
 
-int	init_builtins(t_exe *exe)		//TODO functie opsplitsen
+int	init_builtins(t_exe *exe)
 {
-	int 		idx;
+	int			idx;
 	int			len;
 	t_list		*node;
 	t_builtin	*builtin;
@@ -51,7 +53,8 @@ int	init_builtins(t_exe *exe)		//TODO functie opsplitsen
 		builtin = (t_builtin *)malloc(sizeof(t_builtin));
 		if (!builtin)
 		{
-			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
+				strerror(errno));
 			return (SYS_ERROR);
 		}
 		builtin->name = (g_builtins[idx]).name;
@@ -59,7 +62,8 @@ int	init_builtins(t_exe *exe)		//TODO functie opsplitsen
 		node = ft_lstnew(builtin);
 		if (node == NULL)
 		{
-			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
+				strerror(errno));
 			return (SYS_ERROR);
 		}
 		ft_lstadd_back(&exe->builtins, node);

@@ -11,12 +11,13 @@
 /* ************************************************************************** */
 
 // TODO - Overal alles veilig maken en op goede moment alles freeen
-// TODO - Overal printf en dprintf vervangen door ft_printf etc.
 // TODO - Aantal grote functies splitsen
 // TODO - WEXITSTATUS uitzoeken
 // TODO - Overal descriptions bij maken
 // TODO - Tests schrijven voor een aantal functies
 // TODO - In execute.c uitzoeken hoe ik het beste de functie kan verlaten
+// TODO - Functie prepare_execution splitsen
+// TODO - in init_exe zijn er nog verschillende functies niet beschermd
 
 #include <minishell.h>
 
@@ -39,7 +40,7 @@ void	free_exe(t_exe *exe, t_shell *shell)
 	free(exe);
 }
 
-int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te lang
+int	prepare_execution(t_exe *exe, t_shell *shell)
 {
 	int		len;
 	int		status;
@@ -66,7 +67,8 @@ int	prepare_execution(t_exe *exe, t_shell *shell) // TODO Functie splitsen - te 
 		pid = exe->pids->content;
 		if (waitpid(*pid, &status, 0) == -1)
 		{
-			//dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Child process ended with", WEXITSTATUS(status)); // TODO waitpid uitzoeken waarde WEXITSTATUS
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR,
+				"Child process ended with", WEXITSTATUS(status));
 			return (SYS_ERROR);
 		}
 		exe->pids = exe->pids->next;
@@ -93,23 +95,25 @@ int	init_exe(t_shell *shell)
 
 	if (!shell->cmd_nodes)
 	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input", "cmd_nodes = NULL");
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input",
+			"cmd_nodes = NULL");
 		return (NONFATAL);
 	}
 	exe = (t_exe *) malloc(sizeof(t_exe));
 	if (!exe)
 	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
+			strerror(errno));
 		return (SYS_ERROR);
 	}
 	exe->paths = NULL;
 	exe->builtins = NULL;
 	exe->pids = NULL;
-	exe->envp = environ_to_envp(shell->environ);	// TODO deze functie beschermen (SYS_ERROR)
+	exe->envp = environ_to_envp(shell->environ);
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);
-	init_builtins(exe);								// TODO deze functie beschermen (SYS_ERROR)
-	prepare_execution(exe, shell);					// TODO deze functie beschermen (SYS_ERROR)
-	free_exe(exe, shell);							// TODO deze functie beschermen (SYS_ERROR)
+	init_builtins(exe);
+	prepare_execution(exe, shell);
+	free_exe(exe, shell);
 	return (SUCCESS);
 }

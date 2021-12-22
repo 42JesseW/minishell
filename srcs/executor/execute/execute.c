@@ -10,6 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+// TODO Hoe kan ik het beste deze functie verlaten als ie mis gaat
+
 #include <minishell.h>
 
 /*
@@ -31,13 +33,13 @@ int	execute_cmd(char **cmd, t_exe *exe)
 		exit (EXIT_SUCCESS);
 	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
-		return (SYS_ERROR);						//TODO uitzoeken: als ik niet exit gaat het mis met pipes enzo
+		return (SYS_ERROR);
 	if (execve(path, cmd, exe->envp) == -1)
 	{
 		free(path);
 		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Execution",
 			strerror(errno));
-		return (SYS_ERROR);						//TODO uitzoeken: geldt ook hiervoor
+		return (SYS_ERROR);
 	}
 	return (SUCCESS);
 }

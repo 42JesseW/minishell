@@ -32,7 +32,8 @@ int	dup_pipe_read(int idx, t_exe *exe)
 	fd = dup2(exe->pipe_fds[idx][0], STDIN_FILENO);
 	if (fd == -1)
 	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
+			strerror(errno));
 		return (SYS_ERROR);
 	}
 	return (SUCCESS);

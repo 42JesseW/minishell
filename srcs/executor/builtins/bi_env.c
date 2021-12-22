@@ -14,8 +14,9 @@
 
 /*
 ** DESCRIPTION
-**	-  Prints the environmental variables in the order in which the variables are stored.
-**     Prints only the environmental variables that have both a key and a value
+**	-  Prints the environmental variables in the order in which the
+**     variables are stored. Prints only the environmental variables
+**     that have both a key and a value.
 */
 
 int	builtin_env(char **cmd, t_exe *exe)

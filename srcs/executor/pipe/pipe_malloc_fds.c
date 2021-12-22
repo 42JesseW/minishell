@@ -24,7 +24,8 @@ int	malloc_fds(t_exe *exe, int amount_pipes)
 	exe->pipe_fds = (int **)malloc(sizeof(int *) * (amount_pipes + 1));
 	if (!exe->pipe_fds)
 	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
+			strerror(errno));
 		return (SYS_ERROR);
 	}
 	idx = 0;

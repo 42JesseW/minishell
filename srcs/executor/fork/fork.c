@@ -30,7 +30,8 @@ int	store_pids(pid_t pid, t_exe *exe)
 	node = ft_lstnew(p_pid);
 	if (node == NULL)
 	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
+			strerror(errno));
 		return (SYS_ERROR);
 	}
 	ft_lstadd_back(&exe->pids, node);
