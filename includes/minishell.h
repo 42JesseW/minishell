@@ -27,7 +27,6 @@
 # define FMT_ERR ": %s: %s\n"
 # define SYNTAX_ERR ": syntax error near unexpected token `%s'\n"
 
-# include <libft.h>
 # include <parser.h>
 # include <stdio.h>
 # include <string.h>
@@ -35,8 +34,11 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <sys/wait.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <libft/includes/libft.h>
+# include <libft/includes/printf.h>
 
 typedef enum e_redir_type
 {
