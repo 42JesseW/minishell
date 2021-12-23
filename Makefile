@@ -16,8 +16,10 @@ LIB_DIR     = .
 
 UNAME_S		= $(shell uname -s)
 ifeq ($(UNAME_S), Darwin)
-    INCLUDE_DIR	+= ${HOME}/.brew/opt/readline/include
-    LIB_DIR     += ${HOME}/.brew/opt/readline/lib
+    #INCLUDE_DIR	+= ${HOME}/.brew/opt/readline/include
+    INCLUDE_DIR	+= /usr/local/Cellar/readline/8.1.1/include
+    #LIB_DIR     += ${HOME}/.brew/opt/readline/lib
+    LIB_DIR		+= /usr/local/Cellar/readline/8.1.1/lib
 endif
 
 CLINKS 		= -ltermcap -lreadline -lft
@@ -31,6 +33,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/environ/environ_get.c \
 			  shell/shell_init.c \
 			  shell/shell_destroy.c \
+			  shell/signals.c \
 			  parser/node/node_del.c \
 			  parser/node/node_new.c \
 			  parser/node/node_utils.c \

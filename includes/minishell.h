@@ -109,6 +109,7 @@ const char	*environ_get(t_list *environ, const char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[]);
+void		set_signals(void);
 
 void		redir_del(void *redir);
 t_redir		*redir_new_def(void);

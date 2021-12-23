@@ -27,6 +27,7 @@ int	main(int argc, char *argv[], const char *envp[])
 
 	if (argc > 1 || argv[1])
 		return (EXIT_SUCCESS);
+	set_signals();
 	shell = shell_init(envp);
 	if (!shell)
 		return (EXIT_FAILURE);
