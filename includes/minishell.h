@@ -81,6 +81,7 @@ typedef struct s_exe
 {
 	int		**pipe_fds;
 	char	**envp;
+	t_list	*environ;
 	t_list	*pids;
 	t_list	*paths;
 	t_list	*builtins;
@@ -133,6 +134,7 @@ int			builtin_check(char **cmd, t_exe *exe);
 int			builtin_echo(char **cmd, t_exe *exe);
 int			builtin_env(char **cmd, t_exe *exe);
 int			builtin_pwd(char **cmd, t_exe *exe);
+int			builtin_unset(char **cmd, t_exe *exe);
 int 		init_builtins(t_exe *exe);
 
 // INITIALISATION

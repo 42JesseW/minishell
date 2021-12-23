@@ -55,9 +55,10 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/parse_input_string.c \
 			  executor/builtins/bi_check.c \
 			  executor/builtins/bi_env.c \
-			  executor/builtins/bi_init.c \
 			  executor/builtins/bi_echo.c \
+			  executor/builtins/bi_init.c \
 			  executor/builtins/bi_pwd.c \
+			  executor/builtins/bi_unset.c \
 			  executor/dup/dup_pipes.c \
 			  executor/dup/dup_redirect.c \
 			  executor/execute/execute.c \

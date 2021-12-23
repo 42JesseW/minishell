@@ -21,7 +21,7 @@ static t_builtin	g_builtins[] = {
 		{"exit", NULL},
 		{"export", NULL},
 		{"pwd", &builtin_pwd},
-		{"unset", NULL},
+		{"unset", &builtin_unset},
 };
 
 /*
