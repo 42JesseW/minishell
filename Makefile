@@ -50,6 +50,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/token/consume_token.c \
 			  parser/token/group_tokens.c \
 			  parser/resolve_dollar.c \
+			  parser/resolve_dollar_heredoc.c \
 			  parser/create_redir_files.c \
 			  parser/parse_input_string.c \
 			  executor/builtins/bi_check.c \

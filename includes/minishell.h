@@ -122,7 +122,8 @@ t_node		*node_new_val(char **cmd, t_list *redir);
 int			parse_input_string(char *input_string, t_shell *shell);
 int			consume_token(t_list *cmd_node, t_list *token_node);
 int			group_tokens(t_shell *shell, t_list **tokens);
-int			resolve_dollar(t_shell *shell, t_list **tokens);
+int			resolve_dollar(t_list *environ, t_list **tokens);
+char		*resolve_dollar_heredoc(t_list *environ, char *line);
 int			create_redir_files(t_shell *shell);
 
 void		nodes_print_stdout(t_list *cmd_nodes);
