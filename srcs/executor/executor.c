@@ -20,6 +20,7 @@
 // TODO - In init_exe zijn er nog verschillende functies niet beschermd
 // TODO - Uitzoeken wat launch van cmd by using relative or absolute path betekent
 // TODO - Uitzoeken of eindigen met ctrl-C, ctrl-D en ctrl-\ werkt
+// TODO - History doet soms gek (proberen te reproduceren)
 
 #include <minishell.h>
 
@@ -69,8 +70,8 @@ int	prepare_execution(t_exe *exe, t_shell *shell)
 		pid = exe->pids->content;
 		if (waitpid(*pid, &status, 0) == -1)
 		{
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR,
-				"Child process ended with", WEXITSTATUS(status));
+//			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR,
+//				"Child process ended with", WEXITSTATUS(status));
 			return (SYS_ERROR);
 		}
 		exe->pids = exe->pids->next;
@@ -98,7 +99,7 @@ int	init_exe(t_shell *shell)
 	if (!shell->cmd_nodes)
 	{
 		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input",
-			"cmd_nodes = NULL");
+			"no input");
 		return (NONFATAL);
 	}
 	exe = (t_exe *) malloc(sizeof(t_exe));
@@ -111,6 +112,7 @@ int	init_exe(t_shell *shell)
 	exe->paths = NULL;
 	exe->builtins = NULL;
 	exe->pids = NULL;
+	exe->environ = shell->environ;
 	exe->envp = environ_to_envp(shell->environ);
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);
