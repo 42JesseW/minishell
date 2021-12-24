@@ -22,8 +22,16 @@ void	sigint_handler(int sig)
 	rl_redisplay();
 }
 
-void	set_signals(void)
+void	set_signals(bool is_parent)
 {
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
+	if (is_parent)
+	{
+		signal(SIGINT, sigint_handler);
+		signal(SIGQUIT, SIG_IGN);
+	}
+	else
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+	}
 }
