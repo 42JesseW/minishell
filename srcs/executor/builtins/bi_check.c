@@ -12,18 +12,19 @@
 
 #include <minishell.h>
 
-int	builtin_check(int idx, int amount_cmds, t_node *node, t_exe *exe)		//OVERAL t_node van maken ipv char **
+int	builtin_check(int idx, int amount_cmds, t_node *node, t_exe *exe)
 {
-	bool 		is_builtin;
-	int 		old_stdout;
-	int 		old_stdin;
+	bool		is_builtin;
+	int			old_stdout;
+	int			old_stdin;
 	t_list		*bi_node;
 	t_builtin	*builtin;
 
 	bi_node = exe->builtins;
 	old_stdout = dup(STDOUT_FILENO);
 	old_stdin = dup(STDIN_FILENO);
-	while (bi_node) {
+	while (bi_node)
+	{
 		builtin = bi_node->content;
 		if (ft_strcmp(node->cmd[0], builtin->name) == 0)
 		{
@@ -55,25 +56,3 @@ int	builtin_check(int idx, int amount_cmds, t_node *node, t_exe *exe)		//OVERAL 
 		return (SYS_ERROR);
 	return (SUCCESS);
 }
-
-//int	builtin_check(char **cmd, t_exe *exe)
-//{
-//	int			len;
-//	t_builtin	*builtin;
-//
-//	len = ft_lstsize(exe->builtins);
-//	while (len > 0)
-//	{
-//		builtin = exe->builtins->content;
-//		if (ft_strcmp(cmd[0], builtin->name) == 0)
-//		{
-//			if ((*builtin->function)(cmd, exe) == SYS_ERROR)
-//				return (SYS_ERROR);
-//			else
-//				return (SUCCESS);
-//		}
-//		exe->builtins = exe->builtins->next;
-//		len--;
-//	}
-//	return (0);
-//}

@@ -22,7 +22,7 @@ int	dup_pipe_write(int idx, int is_builtin, t_exe *exe)
 		if (close(exe->pipe_fds[idx][1]) == -1)
 		{
 			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
-					   strerror(errno));
+				strerror(errno));
 			return (SYS_ERROR);
 		}
 	}
@@ -44,7 +44,7 @@ int	dup_pipe_read(int idx, int is_builtin, t_exe *exe)
 		if (close(exe->pipe_fds[idx][0]) == -1)
 		{
 			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
-					   strerror(errno));
+				strerror(errno));
 			return (SYS_ERROR);
 		}
 	}
@@ -77,11 +77,13 @@ int	dup_pipes(int idx, int amount_cmds, int is_builtin, t_exe *exe)
 		if (dup_pipe_read(idx, is_builtin, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
-	if (is_builtin == 0) {
+	if (is_builtin == 0)
+	{
 		if (close(exe->pipe_fds[idx][0]) == -1
-			|| close(exe->pipe_fds[idx][1]) == -1) {
+			|| close(exe->pipe_fds[idx][1]) == -1)
+		{
 			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
-					   strerror(errno));
+				strerror(errno));
 			return (SYS_ERROR);
 		}
 	}

@@ -24,6 +24,8 @@
 //		  opvangen met WIFSIGNALED(w_status) waar w_status komt uit waitpid(pid, &w_status, 0)
 //		  met WTERMSIG(w_status) kan gekeken worden welke signal. SIGQUIT (ctrl-\) is 3.
 // TODO - History doet soms gek (proberen te reproduceren)
+// TODO - Overal loopen door lijst checken en aanpassen
+// TODO - Soms lijkt er een tweede shell opgestart te worden bij een execve die niet gevonden wordt
 
 #include <minishell.h>
 
@@ -66,9 +68,6 @@ int	prepare_execution(t_exe *exe, t_shell *shell)
 		if (builtin_check(0, amount_cmds, shell->cmd_nodes->content, exe)
 			== SYS_ERROR)
 			return (SYS_ERROR);
-//		if (fork_process(0, amount_cmds, exe, shell->cmd_nodes->content)
-//			== SYS_ERROR)
-//			return (SYS_ERROR);
 	}
 	pid_node = exe->pids;
 	while (pid_node)
