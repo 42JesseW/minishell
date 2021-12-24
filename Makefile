@@ -35,6 +35,9 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/environ/environ_from_envp.c \
 			  shell/environ/environ_to_envp.c \
 			  shell/environ/environ_get.c \
+			  shell/environ/environ_new.c \
+			  shell/environ/environ_update.c \
+			  shell/environ/environ_remove.c \
 			  shell/shell_init.c \
 			  shell/shell_destroy.c \
 			  shell/init_inputrc.c \

@@ -12,6 +12,7 @@
 
 // TODO unlinken van node gaat fout
 // TODO PATH* - unset: `PATH*': not a valid identifier
+// TODO unset <key1> <key2> <key3> ... moet alle keys verwijderen
 
 #include <minishell.h>
 

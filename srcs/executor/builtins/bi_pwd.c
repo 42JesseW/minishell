@@ -18,7 +18,7 @@
 
 int	builtin_pwd(char **cmd, t_exe *exe)
 {
-	char	buff[256];
+	char	buff[PATH_MAX];
 
 	(void)cmd;
 	(void)exe;

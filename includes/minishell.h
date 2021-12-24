@@ -108,6 +108,9 @@ t_pair		*pair_new_val(const char *kv);
 int			environ_from_envp(t_list **root, const char **envp);
 char		**environ_to_envp(t_list *root);
 const char	*environ_get(t_list *environ, const char *key);
+int			environ_update(t_list **environ, char *key, const char *val);
+t_list		*environ_new(char *key, const char *val);
+void		environ_remove(t_list **environ, char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[]);
