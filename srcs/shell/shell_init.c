@@ -35,6 +35,8 @@ t_shell	*shell_init(const char *envp[])
 	t_shell	*shell;
 	t_list	*environ;
 
+	set_signals();
+	init_inputrc();
 	shell = (t_shell *)malloc(sizeof(t_shell));
 	if (!shell)
 		return (NULL);

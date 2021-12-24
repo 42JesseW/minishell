@@ -26,6 +26,7 @@
 # define SHELL_NAME "shelly"
 # define FMT_ERR ": %s: %s\n"
 # define SYNTAX_ERR ": syntax error near unexpected token `%s'\n"
+# define INPUTRC_OPTION "set echo-control-characters Off\n"
 
 # include <parser.h>
 # include <stdio.h>
@@ -39,6 +40,7 @@
 # include <readline/readline.h>
 # include <libft/includes/libft.h>
 # include <libft/includes/printf.h>
+# include <libft/includes/get_next_line.h>
 
 typedef enum e_redir_type
 {
@@ -109,6 +111,7 @@ const char	*environ_get(t_list *environ, const char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[]);
+int			init_inputrc(void);
 void		set_signals(void);
 
 void		redir_del(void *redir);

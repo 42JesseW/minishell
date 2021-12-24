@@ -37,6 +37,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/environ/environ_get.c \
 			  shell/shell_init.c \
 			  shell/shell_destroy.c \
+			  shell/init_inputrc.c \
 			  shell/signals.c \
 			  parser/node/node_del.c \
 			  parser/node/node_new.c \
