@@ -15,11 +15,15 @@ CMAKE_DIR	= cmake-build
 LIB_DIR     = .
 
 UNAME_S		= $(shell uname -s)
+HOSTNAME	= $(shell scutil --get LocalHostName)
 ifeq ($(UNAME_S), Darwin)
-    #INCLUDE_DIR	+= ${HOME}/.brew/opt/readline/include
+  ifeq ($(HOSTNAME), jesses-MacBook-Pro)
     INCLUDE_DIR	+= /usr/local/Cellar/readline/8.1.1/include
-    #LIB_DIR     += ${HOME}/.brew/opt/readline/lib
     LIB_DIR		+= /usr/local/Cellar/readline/8.1.1/lib
+  else
+    INCLUDE_DIR	+= ${HOME}/.brew/opt/readline/include
+    LIB_DIR     += ${HOME}/.brew/opt/readline/lib
+  endif
 endif
 
 CLINKS 		= -ltermcap -lreadline -lft

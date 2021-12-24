@@ -12,6 +12,26 @@
 
 #include <minishell.h>
 
+//static int	create_inputrc_file(void)
+//{
+//	const char	*file_path;
+//	const char	*home;
+//
+//	home = getenv("HOME");
+//	if (!home)
+//	{
+//		ft_dprintf("create_inputrc_file: HOME not set");
+//		return (SYS_ERROR);
+//	}
+//	file_path = ft_strjoin(home, "/.inputrc")
+//}
+//
+//int	init_inputrc(void)
+//{
+//	/* if file does not exist, create */
+//	if (access())
+//}
+
 /*
 ** main() has 4 main jobs:
 **	1. checking arguments passed to the program
