@@ -28,13 +28,13 @@
 */
 
 static t_builtin	g_builtins[] = {
-		{"cd", NULL},
-		{"echo", &builtin_echo},
-		{"env", &builtin_env},
-		{"exit", NULL},
-		{"export", NULL},
-		{"pwd", &builtin_pwd},
-		{"unset", &builtin_unset},
+	{"cd", &builtin_cd},
+	{"echo", &builtin_echo},
+	{"env", &builtin_env},
+	{"exit", NULL},
+	{"export", NULL},
+	{"pwd", &builtin_pwd},
+	{"unset", &builtin_unset},
 };
 
 t_builtin	*fill_builtin(int idx)

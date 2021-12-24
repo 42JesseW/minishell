@@ -63,14 +63,14 @@ int	store_paths(const char *str_paths, t_exe *exe)
 
 int	init_paths(t_exe *exe, t_shell *shell)
 {
+	t_list	*node;
 	t_pair	*pair;
-	int		len;
 
-	len = ft_lstsize(shell->environ);
-	while (len > 0)
+	node = shell->environ;
+	while (node)
 	{
-		pair = shell->environ->content;
-		if (ft_strncmp(pair->key, "PATH", 4) == 0)
+		pair = node->content;
+		if (ft_strcmp(pair->key, "PATH") == 0)
 		{
 			if (store_paths(pair->val, exe) == SYS_ERROR)
 			{
@@ -81,10 +81,7 @@ int	init_paths(t_exe *exe, t_shell *shell)
 			return (SUCCESS);
 		}
 		else
-		{
-			shell->environ = shell->environ->next;
-			len--;
-		}
+			node = node->next;
 	}
 	return (SYS_ERROR);
 }

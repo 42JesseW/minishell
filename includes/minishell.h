@@ -140,6 +140,7 @@ int			builtin_echo(char **cmd, t_exe *exe);
 int			builtin_env(char **cmd, t_exe *exe);
 int			builtin_pwd(char **cmd, t_exe *exe);
 int			builtin_unset(char **cmd, t_exe *exe);
+int			builtin_cd(char **cmd, t_exe *exe);
 int 		init_builtins(t_exe *exe);
 
 // INITIALISATION
