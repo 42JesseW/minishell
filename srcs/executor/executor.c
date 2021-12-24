@@ -48,10 +48,10 @@ void	free_exe(t_exe *exe, t_shell *shell)
 
 int	prepare_execution(t_exe *exe, t_shell *shell)
 {
-	int		len;
-	int		status;
-	int		amount_cmds;
 	pid_t	*pid;
+	int		w_status;
+	t_list	*pid_node;
+	int		amount_cmds;
 
 	amount_cmds = ft_lstsize(shell->cmd_nodes);
 	if (amount_cmds > 1)
@@ -70,19 +70,23 @@ int	prepare_execution(t_exe *exe, t_shell *shell)
 //			== SYS_ERROR)
 //			return (SYS_ERROR);
 	}
-	len = ft_lstsize(exe->pids);
-	while (len > 0)
+	pid_node = exe->pids;
+	while (pid_node)
 	{
-		pid = exe->pids->content;
-		if (waitpid(*pid, &status, 0) == -1)
-		{
-//			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR,
-//				"Child process ended with", WEXITSTATUS(status));
+		pid = pid_node->content;
+		if (waitpid(*pid, &w_status, 0) == -1)
 			return (SYS_ERROR);
+		if (!pid_node->next && WIFSIGNALED(w_status))
+		{
+			if (WTERMSIG(w_status) == SIGQUIT)
+				ft_dprintf(STDERR_FILENO, "Quit: %d", WTERMSIG(w_status));
+			ft_dprintf(STDERR_FILENO, "\n");
 		}
-		exe->pids = exe->pids->next;
-		len--;
+		if (WIFEXITED(w_status))
+			ft_dprintf(STDERR_FILENO, "error code: %d\n", WEXITSTATUS(w_status));	// TODO change to setting exit_code
+		pid_node = pid_node->next;
 	}
+	set_signals(true);
 	if (amount_cmds > 1)
 		free_pipe_fds(exe->pipe_fds);
 	return (SUCCESS);

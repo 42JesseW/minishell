@@ -40,6 +40,7 @@ int	store_pids(pid_t pid, t_exe *exe)
 
 int	child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
+	set_signals(false);
 	if (amount_cmds > 1)
 	{
 		if (dup_pipes(idx, amount_cmds, 0, exe) == SYS_ERROR)
@@ -59,6 +60,7 @@ int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
 	pid_t	pid;
 
+	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (pid < 0)
 	{
