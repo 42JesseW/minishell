@@ -27,11 +27,26 @@
 
 char	*get_full_path(char *cmd, t_exe *exe)
 {
+	char 	buff[256];
 	char	*path;
 	int		len;
 
 	if (ft_strncmp(cmd, "/", 1) == 0)
 		return (cmd);
+	if (ft_strncmp(cmd, "./", 2) == 0)
+	{
+		if (getcwd(buff, sizeof(buff)) == NULL)
+		{
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "getcwd",
+					   strerror(errno));
+			return (NULL);
+		}
+		else
+		{
+			path = ft_strjoin(buff, (cmd + 1));
+			return (path);
+		}
+	}
 	len = ft_lstsize(exe->paths);
 	while (len > 0)
 	{
