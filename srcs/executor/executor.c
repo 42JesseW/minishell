@@ -20,6 +20,9 @@
 // TODO - In init_exe zijn er nog verschillende functies niet beschermd
 // TODO - Uitzoeken wat launch van cmd by using relative or absolute path betekent
 // TODO - Uitzoeken of eindigen met ctrl-C, ctrl-D en ctrl-\ werkt
+// 		- ctrl-\ (CTRL + \) doet niks in parent. Wanneer in child uitgevoerd,
+//		  opvangen met WIFSIGNALED(w_status) waar w_status komt uit waitpid(pid, &w_status, 0)
+//		  met WTERMSIG(w_status) kan gekeken worden welke signal. SIGQUIT (ctrl-\) is 3.
 // TODO - History doet soms gek (proberen te reproduceren)
 
 #include <minishell.h>

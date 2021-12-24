@@ -20,7 +20,7 @@ public:
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
 		REQUIRE(validate_syntax(tokens));
-		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+		REQUIRE(resolve_dollar(shell->environ, &tokens) != SYS_ERROR);
 	}
 };
 

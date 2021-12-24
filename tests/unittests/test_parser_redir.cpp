@@ -28,7 +28,7 @@ public:
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
 		REQUIRE(validate_syntax(tokens));
-		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+		REQUIRE(resolve_dollar(shell->environ, &tokens) != SYS_ERROR);
 		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 		normalize(&tokens);
 		REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
@@ -258,4 +258,49 @@ TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_DELIM (multiple)") {
 	/* reset some stuff */
 	REQUIRE(dup2(old_fd, STDIN_FILENO) == 0);
 	remove(file_name.c_str());
+}
+
+void	check_resolve_heredoc_dollar_line(t_list *environ, char *line, const char *check_line)
+{
+	char	*dup_line;
+	char	*resolved_line;
+
+	dup_line = strdup(line);
+	REQUIRE(dup_line != NULL);
+	resolved_line = resolve_dollar_heredoc(environ, dup_line);
+	REQUIRE(resolved_line != NULL);
+	CHECK(strcmp(resolved_line, check_line) == 0);
+	free(dup_line);
+	free(resolved_line);
+}
+
+TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_DELIM resolve_dollar_heredoc") {
+	char	*line;
+	char	*check_line;
+
+	/* 1 */
+	line = strdup("$PWD");
+	check_resolve_heredoc_dollar_line(shell->environ, line, environ_get(shell->environ, "PWD"));
+	free(line);
+	/* 2 */
+	line = strdup("test $PWD");
+	check_line = ft_strjoin("test ", environ_get(shell->environ, "PWD"));
+	REQUIRE(check_line != NULL);
+	check_resolve_heredoc_dollar_line(shell->environ, line, check_line);
+	free(check_line);
+	free(line);
+	/* 3 */
+	line = strdup("$PWD $SHLVL");
+	check_line = ft_strnjoin(3, environ_get(shell->environ, "PWD"), " ", environ_get(shell->environ, "SHLVL"));
+	REQUIRE(check_line != NULL);
+	check_resolve_heredoc_dollar_line(shell->environ, line, check_line);
+	free(check_line);
+	free(line);
+	/* 4 */
+	line = strdup("$ PWD $ SHLVL");
+	check_line = strdup("$ PWD $ SHLVL");
+	REQUIRE(check_line != NULL);
+	check_resolve_heredoc_dollar_line(shell->environ, line, check_line);
+	free(check_line);
+	free(line);
 }
