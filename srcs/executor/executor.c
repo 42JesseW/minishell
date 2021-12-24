@@ -122,7 +122,7 @@ int	init_exe(t_shell *shell)
 	exe->paths = NULL;
 	exe->builtins = NULL;
 	exe->pids = NULL;
-	exe->environ = shell->environ;
+	exe->environ = &shell->environ;
 	exe->envp = environ_to_envp(shell->environ);
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);

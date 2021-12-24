@@ -33,14 +33,14 @@ int	builtin_unset(char **cmd, t_exe *exe)
 				"not enough arguments");
 		return (SUCCESS);
 	}
-	node = exe->environ;
+	node = *exe->environ;
 	while (node)
 	{
 		pair = node->content;
 		if (ft_strncmp(pair->key, cmd[1], ft_strlen(cmd[1])) == 0)
 		{
-			ft_lstunlink(&exe->environ, node);
-			//ft_lstdelone(node, pair_del);
+			ft_lstunlink(exe->environ, node);
+			ft_lstdelone(node, pair_del);
 			return (SUCCESS);
 		}
 		else

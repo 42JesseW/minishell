@@ -83,7 +83,7 @@ typedef struct s_exe
 {
 	int		**pipe_fds;
 	char	**envp;
-	t_list	*environ;
+	t_list	**environ;
 	t_list	*pids;
 	t_list	*paths;
 	t_list	*builtins;
