@@ -60,9 +60,12 @@ int	prepare_execution(t_exe *exe, t_shell *shell)
 	}
 	else
 	{
-		if (fork_process(0, amount_cmds, exe, shell->cmd_nodes->content)
+		if (builtin_check(0, amount_cmds, shell->cmd_nodes->content, exe)
 			== SYS_ERROR)
 			return (SYS_ERROR);
+//		if (fork_process(0, amount_cmds, exe, shell->cmd_nodes->content)
+//			== SYS_ERROR)
+//			return (SYS_ERROR);
 	}
 	len = ft_lstsize(exe->pids);
 	while (len > 0)

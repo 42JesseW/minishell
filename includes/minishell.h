@@ -129,7 +129,8 @@ int			create_redir_files(t_shell *shell);
 void		nodes_print_stdout(t_list *cmd_nodes);
 
 // BUILTINS
-int			builtin_check(char **cmd, t_exe *exe);
+//int			builtin_check(char **cmd, t_exe *exe);
+int			builtin_check(int idx, int amount_cmds, t_node *node, t_exe *exe);
 int			builtin_echo(char **cmd, t_exe *exe);
 int			builtin_env(char **cmd, t_exe *exe);
 int			builtin_pwd(char **cmd, t_exe *exe);

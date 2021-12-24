@@ -41,9 +41,12 @@ int	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell)
 				return (SYS_ERROR);
 			}
 		}
-		if (fork_process(idx, amount_cmds, exe, shell->cmd_nodes->content)
+		if (builtin_check(idx, amount_cmds, shell->cmd_nodes->content, exe)
 			== SYS_ERROR)
 			return (SYS_ERROR);
+//		else if (fork_process(idx, amount_cmds, exe, shell->cmd_nodes->content)
+//			== SYS_ERROR)
+//			return (SYS_ERROR);
 		shell->cmd_nodes = shell->cmd_nodes->next;
 		idx++;
 	}

@@ -17,7 +17,7 @@ int	dup_pipe_write(int idx, t_exe *exe)
 	int	fd_out;
 
 	fd_out = dup2(exe->pipe_fds[idx][1], STDOUT_FILENO);
-	if (fd_out == -1)
+	if (close(exe->pipe_fds[idx][1]) || fd_out == -1)
 	{
 		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Dup", strerror(errno));
 		return (SYS_ERROR);
@@ -30,7 +30,7 @@ int	dup_pipe_read(int idx, t_exe *exe)
 	int	fd;
 
 	fd = dup2(exe->pipe_fds[idx][0], STDIN_FILENO);
-	if (fd == -1)
+	if (close(exe->pipe_fds[idx][0]) == -1 || fd == -1)
 	{
 		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
 			strerror(errno));
@@ -60,12 +60,12 @@ int	dup_pipes(int idx, int amount_cmds, t_exe *exe)
 		if (dup_pipe_read(idx, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
-	if (close(exe->pipe_fds[idx][0]) == -1
-		|| close(exe->pipe_fds[idx][1]) == -1)
-	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Close pipe",
-			strerror(errno));
-		return (SYS_ERROR);
-	}
+//	if (close(exe->pipe_fds[idx][0]) == -1
+//		|| close(exe->pipe_fds[idx][1]) == -1)
+//	{
+//		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Close pipe",
+//			strerror(errno));
+//		return (SYS_ERROR);
+//	}
 	return (SUCCESS);
 }

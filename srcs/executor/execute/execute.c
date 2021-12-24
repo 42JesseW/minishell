@@ -29,8 +29,8 @@ int	execute_cmd(char **cmd, t_exe *exe)
 {
 	char	*path;
 
-	if (builtin_check(cmd, exe) == SUCCESS)
-		exit (EXIT_SUCCESS);
+//	if (builtin_check(cmd, exe) == SUCCESS)
+//		exit (EXIT_SUCCESS);
 	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
 		return (SYS_ERROR);

@@ -60,7 +60,7 @@ int	builtin_echo(char **cmd, t_exe *exe)
 	}
 	while (idx < len)
 	{
-		ft_printf("%s", cmd[idx]);
+		ft_printf("%s BLA", cmd[idx]);
 		if (idx < len - 1)
 			ft_printf(" ");
 		idx++;
