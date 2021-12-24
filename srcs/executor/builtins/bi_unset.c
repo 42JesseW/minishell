@@ -10,14 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+// TODO unlinken van node gaat fout
+// TODO PATH* - unset: `PATH*': not a valid identifier
 
-// checken of key bestaat en of key valid is
-// bij PATH* - unset: `PATH*': not a valid identifier
+#include <minishell.h>
 
 /*
 ** DESCRIPTION
-**	-  VOLGT
+**	-  The function 'unset' unsets values and attributes of variables
+**     and functions of the environmental variables
 */
 
 int	builtin_unset(char **cmd, t_exe *exe)
@@ -38,13 +39,12 @@ int	builtin_unset(char **cmd, t_exe *exe)
 		pair = node->content;
 		if (ft_strncmp(pair->key, cmd[1], ft_strlen(cmd[1])) == 0)
 		{
-			printf("cmd = %s\n", cmd[1]);
 			ft_lstunlink(&exe->environ, node);
-			ft_lstdelone(node, pair_del);
+			//ft_lstdelone(node, pair_del);
 			return (SUCCESS);
 		}
 		else
 			node = node->next;
 	}
-	return(EXIT_SUCCESS);
+	return (EXIT_SUCCESS);
 }

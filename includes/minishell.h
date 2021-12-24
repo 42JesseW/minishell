@@ -151,9 +151,9 @@ void		free_pipe_fds(int **pipe_fds);
 int			pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
 
 // DUPPING
-int 		dup_pipes(int idx, int amount_cmds, t_exe *exe);
-int 		dup_pipe_write(int idx, t_exe *exe);
-int 		dup_pipe_read(int idx, t_exe *exe);
+int 		dup_pipes(int idx, int amount_cmds, int is_builtin, t_exe *exe);
+int 		dup_pipe_write(int idx, int is_builtin, t_exe *exe);
+int 		dup_pipe_read(int idx, int is_builtin, t_exe *exe);
 int			dup_redirect(t_node *cmd_node);
 int			dup_redirect_read(int fd);
 int			dup_redirect_write(int fd);

@@ -10,19 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO Function init_builtins splitsen
-
 #include <minishell.h>
-
-static t_builtin	g_builtins[] = {
-		{"cd", NULL},
-		{"echo", &builtin_echo},
-		{"env", &builtin_env},
-		{"exit", NULL},
-		{"export", NULL},
-		{"pwd", &builtin_pwd},
-		{"unset", &builtin_unset},
-};
 
 /*
 ** DESCRIPTION
@@ -39,6 +27,32 @@ static t_builtin	g_builtins[] = {
 ** 6.   add it to the list exe->builtins
 */
 
+static t_builtin	g_builtins[] = {
+		{"cd", NULL},
+		{"echo", &builtin_echo},
+		{"env", &builtin_env},
+		{"exit", NULL},
+		{"export", NULL},
+		{"pwd", &builtin_pwd},
+		{"unset", &builtin_unset},
+};
+
+t_builtin	*fill_builtin(int idx)
+{
+	t_builtin	*builtin;
+
+	builtin = (t_builtin *)malloc(sizeof(t_builtin));
+	if (!builtin)
+	{
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "malloc",
+			strerror(errno));
+		return (NULL);
+	}
+	builtin->name = (g_builtins[idx]).name;
+	builtin->function = (g_builtins[idx]).function;
+	return (builtin);
+}
+
 int	init_builtins(t_exe *exe)
 {
 	int			idx;
@@ -50,19 +64,11 @@ int	init_builtins(t_exe *exe)
 	len = sizeof(g_builtins) / sizeof(t_builtin);
 	while (idx < len)
 	{
-		builtin = (t_builtin *)malloc(sizeof(t_builtin));
-		if (!builtin)
-		{
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
-				strerror(errno));
-			return (SYS_ERROR);
-		}
-		builtin->name = (g_builtins[idx]).name;
-		builtin->function = (g_builtins[idx]).function;
+		builtin = fill_builtin(idx);
 		node = ft_lstnew(builtin);
 		if (node == NULL)
 		{
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "malloc",
 				strerror(errno));
 			return (SYS_ERROR);
 		}

@@ -42,7 +42,7 @@ int	child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 {
 	if (amount_cmds > 1)
 	{
-		if (dup_pipes(idx, amount_cmds, exe) == SYS_ERROR)
+		if (dup_pipes(idx, amount_cmds, 0, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
 	if (ft_lstsize(cmd_node->redir) > 0)

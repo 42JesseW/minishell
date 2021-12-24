@@ -14,6 +14,7 @@
 
 int	builtin_check(int idx, int amount_cmds, t_node *node, t_exe *exe)		//OVERAL t_node van maken ipv char **
 {
+	bool 		is_builtin;
 	int 		old_stdout;
 	int 		old_stdin;
 	t_list		*bi_node;
@@ -26,9 +27,10 @@ int	builtin_check(int idx, int amount_cmds, t_node *node, t_exe *exe)		//OVERAL 
 		builtin = bi_node->content;
 		if (ft_strcmp(node->cmd[0], builtin->name) == 0)
 		{
+			is_builtin = 1;
 			if (amount_cmds > 1)
 			{
-				if (dup_pipes(idx, amount_cmds, exe) == SYS_ERROR)
+				if (dup_pipes(idx, amount_cmds, is_builtin, exe) == SYS_ERROR)
 					return (SYS_ERROR);
 			}
 			if (ft_lstsize(node->redir) > 0)

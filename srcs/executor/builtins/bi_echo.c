@@ -12,13 +12,6 @@
 
 #include <minishell.h>
 
-/*
-** DESCRIPTION
-**	-  The echo command writes its arguments separated by blanks and
-**     terminated by a new line on the standard output. The -n option
-**     prints a line without the newline;
-*/
-
 int	check_n(char *cmd)
 {
 	int	idx;
@@ -37,9 +30,10 @@ int	check_n(char *cmd)
 
 /*
 ** DESCRIPTION
-**	-  The builtin echo writes its arguments separated by blanks and
+**	-  The echo command writes its arguments separated by blanks and
 **     terminated by a new line on the standard output. The -n option
 **     prints a line without the newline;
+**     echo without arguments prints only a new line.
 */
 
 int	builtin_echo(char **cmd, t_exe *exe)
@@ -52,7 +46,7 @@ int	builtin_echo(char **cmd, t_exe *exe)
 	idx = 1;
 	flag_n = 0;
 	len = ft_strarrlen(cmd);
-	if (ft_strnstr(cmd[1], "-n", 2) != NULL)
+	if (len > 1 && ft_strnstr(cmd[1], "-n", 2) != NULL)
 	{
 		flag_n = check_n(cmd[1]);
 		if (flag_n == SUCCESS)
@@ -60,7 +54,7 @@ int	builtin_echo(char **cmd, t_exe *exe)
 	}
 	while (idx < len)
 	{
-		ft_printf("%s BLA", cmd[idx]);
+		ft_printf("%s", cmd[idx]);
 		if (idx < len - 1)
 			ft_printf(" ");
 		idx++;

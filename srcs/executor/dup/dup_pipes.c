@@ -12,28 +12,45 @@
 
 #include <minishell.h>
 
-int	dup_pipe_write(int idx, t_exe *exe)
+int	dup_pipe_write(int idx, int is_builtin, t_exe *exe)
 {
 	int	fd_out;
 
 	fd_out = dup2(exe->pipe_fds[idx][1], STDOUT_FILENO);
-	if (close(exe->pipe_fds[idx][1]) || fd_out == -1)
+	if (is_builtin == 1)
 	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Dup", strerror(errno));
+		if (close(exe->pipe_fds[idx][1]) == -1)
+		{
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
+					   strerror(errno));
+			return (SYS_ERROR);
+		}
+	}
+	if (fd_out == -1)
+	{
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "dup", strerror(errno));
 		return (SYS_ERROR);
 	}
 	return (SUCCESS);
 }
 
-int	dup_pipe_read(int idx, t_exe *exe)
+int	dup_pipe_read(int idx, int is_builtin, t_exe *exe)
 {
-	int	fd;
+	int	fd_in;
 
-	fd = dup2(exe->pipe_fds[idx][0], STDIN_FILENO);
-	if (close(exe->pipe_fds[idx][0]) == -1 || fd == -1)
+	fd_in = dup2(exe->pipe_fds[idx][0], STDIN_FILENO);
+	if (is_builtin == 1)
 	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
-			strerror(errno));
+		if (close(exe->pipe_fds[idx][0]) == -1)
+		{
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
+					   strerror(errno));
+			return (SYS_ERROR);
+		}
+	}
+	if (fd_in == -1)
+	{
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "dup", strerror(errno));
 		return (SYS_ERROR);
 	}
 	return (SUCCESS);
@@ -49,23 +66,24 @@ int	dup_pipe_read(int idx, t_exe *exe)
 ** 2. AANVULLEN
 */
 
-int	dup_pipes(int idx, int amount_cmds, t_exe *exe)
+int	dup_pipes(int idx, int amount_cmds, int is_builtin, t_exe *exe)
 {
 	if (idx != (amount_cmds - 1))
-		if (dup_pipe_write(idx, exe) == SYS_ERROR)
+		if (dup_pipe_write(idx, is_builtin, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	if (idx != 0)
 	{
 		idx--;
-		if (dup_pipe_read(idx, exe) == SYS_ERROR)
+		if (dup_pipe_read(idx, is_builtin, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
-//	if (close(exe->pipe_fds[idx][0]) == -1
-//		|| close(exe->pipe_fds[idx][1]) == -1)
-//	{
-//		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Close pipe",
-//			strerror(errno));
-//		return (SYS_ERROR);
-//	}
+	if (is_builtin == 0) {
+		if (close(exe->pipe_fds[idx][0]) == -1
+			|| close(exe->pipe_fds[idx][1]) == -1) {
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
+					   strerror(errno));
+			return (SYS_ERROR);
+		}
+	}
 	return (SUCCESS);
 }
