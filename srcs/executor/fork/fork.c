@@ -51,8 +51,7 @@ int	child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 		if (dup_redirect(cmd_node) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
-	if (execute_cmd(cmd_node->cmd, exe) == SYS_ERROR)
-		return (SYS_ERROR);
+	execute_cmd(cmd_node->cmd, exe);
 	return (SUCCESS);
 }
 

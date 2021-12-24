@@ -23,19 +23,18 @@
 **    and automatically frees all memory)
 */
 
-int	execute_cmd(char **cmd, t_exe *exe)
+void	execute_cmd(char **cmd, t_exe *exe)
 {
 	char	*path;
 
 	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
-		return (SYS_ERROR);
+		exit (EXIT_FAILURE);
 	if (execve(path, cmd, exe->envp) == -1)
 	{
 		free(path);
 		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "execution",
 			strerror(errno));
-		return (SYS_ERROR);
+		exit (EXIT_FAILURE);
 	}
-	return (EXIT_SUCCESS);
 }
