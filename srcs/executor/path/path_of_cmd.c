@@ -11,11 +11,11 @@
 /* ************************************************************************** */
 
 /*
-** - from name		(using $PATH)           -> {echo}
+** FIXED - from name		(using $PATH)           -> {echo}
 ** - relative path	(from current workdir)  -> {../../bin/echo}
 ** 											|| {./echo}
 **											|| {bin/echo}
-** - absolute path	(starting at /)         -> {/bin/echo}
+** FIXED - absolute path	(starting at /)         -> {/bin/echo}
 */
 
 #include <minishell.h>
@@ -30,6 +30,8 @@ char	*get_full_path(char *cmd, t_exe *exe)
 	char	*path;
 	int		len;
 
+	if (ft_strncmp(cmd, "/", 1) == 0)
+		return (cmd);
 	len = ft_lstsize(exe->paths);
 	while (len > 0)
 	{
