@@ -64,7 +64,7 @@ int	builtin_echo(char **cmd, t_exe *exe)
 	len = ft_strarrlen(cmd);
 	if (len > 1)
 	{
-		while (ft_strnstr(cmd[idx], "-n", 2) != NULL)
+		while (idx < len && ft_strnstr(cmd[idx], "-n", 2) != NULL)
 		{
 			flag_n = check_n(cmd[idx]);
 			if (flag_n == SUCCESS)
