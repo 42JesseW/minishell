@@ -11,7 +11,12 @@
 /* ************************************************************************** */
 
 // TODO - Overal alles veilig maken en op goede moment alles freeen
-// TODO - Overal descriptions bij maken
+// TODO - builtin unset afmaken
+// TODO - builtin echo -n -n oplossen
+// TODO - builtin exit maken
+// TODO - builtin export maken
+// TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
+//        bi_check, bi_unset
 // TODO - Uitzoeken of eindigen met ctrl-C, ctrl-D en ctrl-\ werkt
 // 		- ctrl-\ (CTRL + \) doet niks in parent. Wanneer in child uitgevoerd,
 //		  opvangen met WIFSIGNALED(w_status) waar w_status komt uit
@@ -27,17 +32,6 @@ void	free_exe(t_exe *exe, t_shell *shell)
 	ft_lstclear(&shell->cmd_nodes, node_del);
 	free(exe);
 }
-
-/*
-** DESCRIPTION
-**	- Decides to call the piping functions if there is more than 1 cmd
-**  or the check_builtin function if it is only one cmd.
-** JOBS
-** 1. Prepares the memory to store the pids of fork(s)
-** 2. Prepares the memory to store the pipe_fds if there are 1+ cmds
-** 3. Initiates the piping route if there are 1+ cmds
-** 4. Initiates the check_builtin route if there is just 1 cmd
-*/
 
 int	wait_process_end(t_list	*pid_node)
 {
@@ -61,6 +55,18 @@ int	wait_process_end(t_list	*pid_node)
 	}
 	return (SUCCESS);
 }
+
+/*
+** DESCRIPTION
+**	- Decides to call the piping functions if there is more than 1 cmd
+**  or the check_builtin function if it is only one cmd.
+** JOBS
+** 1. Prepares the memory to store the pids of fork(s)
+** 2. Prepares the memory to store the pipe_fds if there are 1+ cmds
+** 3. Initiates the piping route if there are 1+ cmds
+** 4. Initiates the check_builtin route if there is just 1 cmd
+** 5. Waits for all the child_process to finish
+*/
 
 int	prepare_execution(t_exe *exe, t_shell *shell)
 {
