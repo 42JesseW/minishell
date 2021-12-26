@@ -92,8 +92,6 @@ char		*ft_itoa_base(int n, int base);
 
 char		*ft_itoa_u_base(uintptr_t n, unsigned long base, int capitalized);
 
-int			ft_strcmp(const char *s1, const char *s2);
-
 char		*ft_strrev(char *s);
 
 int			count_digits(int n);

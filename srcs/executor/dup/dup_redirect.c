@@ -12,30 +12,46 @@
 
 #include <minishell.h>
 
-void	dup_redirect_write(char *file)
+int	dup_redirect_write(int fd)
 {
-	int	fd;
-	int	fd_file;
+	int	fd_dup;
 
-	fd_file = open(file, O_RDONLY);
-	if (fd_file < 0)
-		printf("Error - File cannot be opened");
-	fd = dup2(fd_file, STDOUT_FILENO);
-	if (fd == -1)
-		printf("Error - Duplicating fd failed");
-//	close(fd_file); // File moet ergens gesloten worden, maar pas als de cmd uitgevoerd is.
+	fd_dup = dup2(fd, STDOUT_FILENO);
+	if (fd_dup == -1)
+		return (SYS_ERROR);
+	return (SUCCESS);
 }
 
-void	dup_redirect_read(char *file)
+int	dup_redirect_read(int fd)
 {
-	int	fd;
-	int	fd_file;
+	int	fd_dup;
 
-	fd_file = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd_file < 0)
-		printf("Error - File cannot be opened");
-	fd = dup2(fd_file, STDIN_FILENO);
-	if (fd == -1)
-		printf("Error - Duplicating fd failed");
-	//close(fd_file); // File moet ergens gesloten worden, maar pas als de cmd uitgevoerd is.
+	fd_dup = dup2(fd, STDIN_FILENO);
+	if (fd_dup == -1)
+		return (SYS_ERROR);
+	return (SUCCESS);
+}
+
+int	dup_redirect(t_node *cmd_node)
+{
+	t_list	*lst_redir;
+	t_redir	*redir;
+
+	lst_redir = cmd_node->redir;
+	while (lst_redir)
+	{
+		redir = lst_redir->content;
+		if (redir->type == REDIR_IN)
+		{
+			if (dup_redirect_read(redir->fd) == SYS_ERROR)
+				return (SYS_ERROR);
+		}
+		else if (redir->type == REDIR_OUT || redir->type == REDIR_APP)
+		{
+			if (dup_redirect_write(redir->fd) == SYS_ERROR)
+				return (SYS_ERROR);
+		}
+		lst_redir = lst_redir->next;
+	}
+	return (SUCCESS);
 }

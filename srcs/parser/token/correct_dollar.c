@@ -10,11 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <minishell.h>
 
 static bool	is_fail_type(t_token_type type)
 {
 	return (type == TOK_DOLLAR || type == TOK_QUOTE || type == TOK_DQUOTE);
+}
+
+static int	correct(t_list *node, t_token *token)
+{
+	t_token	*next_token;
+
+	if (!node->next)
+		token->type = TOK_WORD;
+	else
+	{
+		next_token = ((t_token *)node->next->content);
+		if (next_token->type != TOK_WORD)
+		{
+			if (is_fail_type(next_token->type))
+				return (PARSE_FAIL);
+			token->type = TOK_WORD;
+		}
+	}
+	return (SUCCESS);
 }
 
 /*
@@ -27,14 +46,13 @@ static bool	is_fail_type(t_token_type type)
 ** - BASHPID ($$)
 ** 	 https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 **
-** TESTS // TODO
+** TESTS // TODO check this weird edge case
 **	- $>OUT
 */
 int	correct_dollar(t_list *tokens)
 {
 	t_list	*node;
 	t_token	*token;
-	t_token	*next_token;
 
 	node = tokens;
 	while (node)
@@ -42,20 +60,13 @@ int	correct_dollar(t_list *tokens)
 		token = (t_token *)node->content;
 		if (token->type == TOK_DOLLAR)
 		{
-			if (!node->next)
-				token->type = TOK_WORD;
-			else
+			if (correct(node, token) == PARSE_FAIL)
 			{
-				next_token = ((t_token *)node->next->content);
-				if (next_token->type != TOK_WORD)
-				{
-					if (is_fail_type(next_token->type))
-						return (PARSE_FAIL);
-					token->type = TOK_WORD;
-				}
+				dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
+				return (PARSE_FAIL);
 			}
 		}
 		node = node->next;
 	}
-	return (1);
+	return (SUCCESS);
 }

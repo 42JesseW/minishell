@@ -47,7 +47,8 @@ static int	append_to_token(t_token *new_token, t_list *node)
 	return (1);
 }
 
-static int	insert_word(t_list **tokens, t_list *prev, t_list **ref, t_token *word)
+static int	insert_word(t_list **tokens, t_list *prev, t_list **ref,
+						t_token *word)
 {
 	t_list	*node;
 

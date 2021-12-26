@@ -3,32 +3,48 @@
 /*                                                        ::::::::            */
 /*   minishell.h                                        :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
+/*   By: jessevanderwolf <jessevanderwolf@student...  +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/05 16:38:36 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/11/05 16:38:36 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/12/26 11:48:35 by jessevander...#+#    #+#                 */
+/*   Updated: 2021/12/26 11:48:35 by jessevander...########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 
 # define MINISHELL_H
+
 # define SYS_ERROR -1
+# define NONFATAL 0
+# define SUCCESS 1
 
 # define B "\e[0;38;2;218;165;32m"
 # define R "\e[m"
 
 # define DEFAULT_PROMPT "shelly3.2$ "
 # define HEREDOC_PROMPT "> "
+# define SHELL_NAME "shelly"
+# ifdef TESTRUN
+#  undef SHELL_NAME
+#  define SHELL_NAME "bash"
+# endif
+# define FMT_ERR ": %s: %s\n"
+# define SYNTAX_ERR ": syntax error near unexpected token `%s'\n"
+# define INPUTRC_OPTION "set echo-control-characters Off\n"
 
-# include <libft.h>
 # include <parser.h>
 # include <stdio.h>
+# include <string.h>
+# include <errno.h>
 # include <stdbool.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <sys/wait.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <libft/includes/libft.h>
+# include <libft/includes/printf.h>
+# include <libft/includes/get_next_line.h>
 
 typedef enum e_redir_type
 {
@@ -67,6 +83,23 @@ typedef struct s_shell
 	t_list	*cmd_nodes;
 }	t_shell;
 
+typedef struct s_exe
+{
+	int		**pipe_fds;
+	char	**envp;
+	int		amount_cmds;
+	t_list	**environ;
+	t_list	*pids;
+	t_list	*paths;
+	t_list	*builtins;
+}	t_exe;
+
+typedef struct s_builtin
+{
+	char		*name;
+	int			(*function)(char **, t_exe *);
+}	t_builtin;
+
 void		pair_del(void *pair);
 
 char		*pair_join(t_pair *pair);
@@ -79,9 +112,15 @@ t_pair		*pair_new_val(const char *kv);
 int			environ_from_envp(t_list **root, const char **envp);
 char		**environ_to_envp(t_list *root);
 const char	*environ_get(t_list *environ, const char *key);
+int			environ_update(t_list **environ, char *key, const char *val);
+t_list		*environ_new(char *key, const char *val);
+void		environ_remove(t_list **environ, char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[]);
+int			shell_noninteractive(t_shell *shell, char **argv);
+int			init_inputrc(void);
+void		set_signals(bool is_parent);
 
 void		redir_del(void *redir);
 t_redir		*redir_new_def(void);
@@ -93,48 +132,50 @@ t_node		*node_new_def(void);
 void		*node_new_cpy(void *cpy);
 t_node		*node_new_val(char **cmd, t_list *redir);
 
-int			parse_input_string(char *input_string, t_shell *shell);	// TODO testcase
+int			parse_input_string(char *input_string, t_shell *shell);
 int			consume_token(t_list *cmd_node, t_list *token_node);
 int			group_tokens(t_shell *shell, t_list **tokens);
-int			resolve_dollar(t_shell *shell, t_list **tokens);
+int			resolve_dollar(t_list *environ, t_list **tokens);
+char		*resolve_dollar_heredoc(t_list *environ, char *line);
 int			create_redir_files(t_shell *shell);
 
 void		nodes_print_stdout(t_list *cmd_nodes);
 
-typedef struct s_exe
-{
-	t_list	*paths;
-	int		**pipe_fds;
-	pid_t 	*pids;
-	int 	fd_out;
-	char 	**envp; //temp
-}	t_exe;
+// BUILTINS
+int			builtin_check(int idx, t_node *node, t_exe *exe);
+int			builtin_echo(char **cmd, t_exe *exe);
+int			builtin_env(char **cmd, t_exe *exe);
+int			builtin_pwd(char **cmd, t_exe *exe);
+int			builtin_unset(char **cmd, t_exe *exe);
+int			builtin_cd(char **cmd, t_exe *exe);
+int			init_builtins(t_exe *exe);
 
 // INITIALISATION
-void	init_exe(t_shell *shell);
-int		init_paths(t_exe *exe, t_shell *shell);
-void	store_paths(const char *strpaths, t_exe *exe);
-void	prepare_execution(t_exe *exe, t_shell *shell);
+int			init_exe(t_shell *shell);
+int			init_paths(t_exe *exe, t_shell *shell);
+int			store_paths(const char *strpaths, t_exe *exe);
+int			prepare_execution(t_exe *exe, t_shell *shell);
 
 // PIPING
-void 	malloc_fds(t_exe *exe, int amount_cmds);
-void	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
-
+int			malloc_fds(t_exe *exe);
+void		free_pipe_fds(int **pipe_fds);
+int			pipe_loop(t_exe *exe, t_shell *shell);
 
 // DUPPING
-void	dup_cmd(t_exe *exe, t_node *cmd_node);
-void	dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
-void	dup_pipe_write(int idx, t_exe *exe);
-void	dup_pipe_read(int idx, t_exe *exe);
-void	dup_redirect_write(char *file);
-void	dup_redirect_read(char *file);
+int			dup_pipes(int idx, int is_builtin, t_exe *exe);
+int			dup_pipe_write(int idx, int is_builtin, t_exe *exe);
+int			dup_pipe_read(int idx, int is_builtin, t_exe *exe);
+int			dup_redirect(t_node *cmd_node);
+int			dup_redirect_read(int fd);
+int			dup_redirect_write(int fd);
 
 // FORKING
-void 	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
-void	close_pipe_ends(int **pipes_fds, int idx);
+int			child_process(int idx, t_exe *exe, t_node *cmd_node);
+int			fork_process(int idx, t_exe *exe, t_node *cmd_node);
+int			close_pipe_ends(int **pipes_fds, int idx);
 
 // EXECUTION
-char 	*get_full_path(char *cmd, t_exe *exe);
-void	execute_cmd(char **cmd, t_exe *exe);
+char		*get_full_path(char *cmd, t_exe *exe);
+void		execute_cmd(char **cmd, t_exe *exe);
 
 #endif

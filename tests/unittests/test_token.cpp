@@ -256,19 +256,19 @@ TEST_CASE_METHOD(BaseFixture, "Syntax error because unknown tokens") {
 	init_tokens("<>");
 	REQUIRE(redir_merge(tokens) == PARSE_FAIL);
 	REQUIRE(tokens != NULL);
-	BaseFixture::~BaseFixture();
+    ft_lstclear(&tokens, token_del);
 	init_tokens("><");
 	REQUIRE(redir_merge(tokens) == PARSE_FAIL);
 	REQUIRE(tokens != NULL);
-	BaseFixture::~BaseFixture();
+    ft_lstclear(&tokens, token_del);
 	init_tokens("<<<");
 	REQUIRE(redir_merge(tokens) == PARSE_FAIL);
 	REQUIRE(tokens != NULL);
-	BaseFixture::~BaseFixture();
+    ft_lstclear(&tokens, token_del);
 	init_tokens(">>>");
 	REQUIRE(redir_merge(tokens) == PARSE_FAIL);
 	REQUIRE(tokens != NULL);
-	BaseFixture::~BaseFixture();
+    ft_lstclear(&tokens, token_del);
 }
 
 TEST_CASE_METHOD(BaseFixture, "Only spaces") {
@@ -483,8 +483,8 @@ public:
 		REQUIRE(redir_merge(tokens));
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
-		REQUIRE(validate_pipes(tokens));
-		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+		REQUIRE(validate_syntax(tokens));
+		REQUIRE(resolve_dollar(shell->environ, &tokens) != SYS_ERROR);
 		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 		normalize(&tokens);
 	}
@@ -529,8 +529,8 @@ public:
 		REQUIRE(redir_merge(tokens));
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
-		REQUIRE(validate_pipes(tokens));
-		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+		REQUIRE(validate_syntax(tokens));
+		REQUIRE(resolve_dollar(shell->environ, &tokens) != SYS_ERROR);
 		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 		normalize(&tokens);
 	}

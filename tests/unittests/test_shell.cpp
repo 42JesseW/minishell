@@ -23,8 +23,6 @@ static const char	*envp[] = {
 	"TERM=xterm-256color",
 	"TERMINAL_EMULATOR=JetBrains-JediTerm",
 	"SHLVL=1",
-	"PWD=/Users/jevan-de/Documents/projects/minishell/shelly/tests",
-	"OLDPWD=/Users/jevan-de/Documents/projects/minishell/shelly",
 	"ZSH=/Users/jevan-de/.oh-my-zsh",
 	"PAGER=less",
 	"LESS=-R",
@@ -42,6 +40,7 @@ SCENARIO("initialize a shell structure from entrypoint") {
 			shell = shell_init(envp);
 			REQUIRE(shell != NULL);
 			THEN("the members and input_line should have the appropriate values") {
+				t_pair	*pair;
 				char	*kv;
 
 				CHECK(shell->cmd_nodes == NULL);
@@ -49,8 +48,11 @@ SCENARIO("initialize a shell structure from entrypoint") {
 				int	idx = 0;
 				for (t_list *env = shell->environ; env != NULL; env = env->next, idx++)
 				{
-					kv = pair_join((t_pair *)env->content);
-					CHECK(strcmp(envp[idx], kv) == 0);
+					pair = (t_pair *)env->content;
+					kv = pair_join(pair);
+					if (strcmp(pair->key, "SHLVL") != 0) {
+						CHECK(strcmp(envp[idx], kv) == 0);
+					}
 					free(kv);
 				}
 			}

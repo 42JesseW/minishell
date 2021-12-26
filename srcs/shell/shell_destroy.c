@@ -18,6 +18,9 @@ void	shell_destroy(t_shell **shell)
 
 	if (!shell)
 		return ;
+	if (errno > 0)
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "system error",
+			strerror(errno));
 	p = *shell;
 	if (p)
 	{

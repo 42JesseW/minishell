@@ -14,58 +14,58 @@ public:
 };
 
 TEST_CASE_METHOD(ValidatePipesFixture, "No pipes") {
-	init_tokens("> word <");
-	REQUIRE(validate_pipes(tokens));
+	init_tokens("> word < word");
+	REQUIRE(validate_syntax(tokens));
 }
 
 TEST_CASE_METHOD(ValidatePipesFixture, "One pipe") {
-	init_tokens("> wo | rd <");
-	REQUIRE(validate_pipes(tokens));
+	init_tokens("> word | < word");
+	REQUIRE(validate_syntax(tokens));
 }
 
 TEST_CASE_METHOD(ValidatePipesFixture, "Multiple pipes") {
 	init_tokens("> word | < word | > word");
-	REQUIRE(validate_pipes(tokens));
+	REQUIRE(validate_syntax(tokens));
 }
 
 TEST_CASE_METHOD(ValidatePipesFixture, "Valid pipes") {
 	init_tokens("\"word\"|\"word\" word");
-	REQUIRE(validate_pipes(tokens));
+	REQUIRE(validate_syntax(tokens));
 	ft_lstclear(&tokens, token_del);
 	init_tokens("\'word\'|\'word\' word");
-	REQUIRE(validate_pipes(tokens));
+	REQUIRE(validate_syntax(tokens));
 	ft_lstclear(&tokens, token_del);
 	init_tokens("$word|$");
-	REQUIRE(validate_pipes(tokens));
+	REQUIRE(validate_syntax(tokens));
 	ft_lstclear(&tokens, token_del);
 	init_tokens("$|$word");
-	REQUIRE(validate_pipes(tokens));
+	REQUIRE(validate_syntax(tokens));
 	ft_lstclear(&tokens, token_del);
 	init_tokens("$|$");
-	REQUIRE(validate_pipes(tokens));
+	REQUIRE(validate_syntax(tokens));
 	ft_lstclear(&tokens, token_del);
 	init_tokens(" $ | $ ");
-	REQUIRE(validate_pipes(tokens));
+	REQUIRE(validate_syntax(tokens));
 	ft_lstclear(&tokens, token_del);
 }
 
 TEST_CASE_METHOD(ValidatePipesFixture, "invalid pipes") {
 	init_tokens("||");
-	REQUIRE(validate_pipes(tokens) == PARSE_FAIL);
+	REQUIRE(validate_syntax(tokens) == PARSE_FAIL);
 	ft_lstclear(&tokens, token_del);
 	init_tokens(" | | ");
-	REQUIRE(validate_pipes(tokens) == PARSE_FAIL);
+	REQUIRE(validate_syntax(tokens) == PARSE_FAIL);
 	ft_lstclear(&tokens, token_del);
-	init_tokens(" word | word > |");
-	REQUIRE(validate_pipes(tokens) == PARSE_FAIL);
+	init_tokens(" word | word > word |");
+	REQUIRE(validate_syntax(tokens) == PARSE_FAIL);
 	ft_lstclear(&tokens, token_del);
-	init_tokens(" word | word < |");
-	REQUIRE(validate_pipes(tokens) == PARSE_FAIL);
+	init_tokens(" word | word < word |");
+	REQUIRE(validate_syntax(tokens) == PARSE_FAIL);
 	ft_lstclear(&tokens, token_del);
-	init_tokens(" word | word >> |");
-	REQUIRE(validate_pipes(tokens) == PARSE_FAIL);
+	init_tokens(" word | word >> word |");
+	REQUIRE(validate_syntax(tokens) == PARSE_FAIL);
 	ft_lstclear(&tokens, token_del);
-	init_tokens(" word | word << |");
-	REQUIRE(validate_pipes(tokens) == PARSE_FAIL);
+	init_tokens(" word | word << word |");
+	REQUIRE(validate_syntax(tokens) == PARSE_FAIL);
 	ft_lstclear(&tokens, token_del);
 }

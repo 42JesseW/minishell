@@ -14,26 +14,26 @@
 
 /*
 ** DESCRIPTION
-**	- Mallocs for each pipe in a loop the needed memory for each pipe_fd[2].
+**	- Mallocs for each pipe in a loop the needed memory for both pipe ends.
 */
 
-void	malloc_fds(t_exe *exe, int amount_pipes)
+int	malloc_fds(t_exe *exe)
 {
 	int	idx;
+	int	amount_pipes;
 
-	exe->pipe_fds = (int **)malloc(sizeof(int *) * amount_pipes + 1);
+	amount_pipes = exe->amount_cmds - 1;
+	exe->pipe_fds = (int **)malloc(sizeof(int *) * (amount_pipes + 1));
 	if (!exe->pipe_fds)
-		printf("Error - Malloc failed");
+		return (SYS_ERROR);
 	idx = 0;
-	while (idx < (amount_pipes))
+	while (idx < amount_pipes)
 	{
 		exe->pipe_fds[idx] = (int *) malloc(sizeof(int) * 2);
 		if (!exe->pipe_fds[idx])
-		{
-			printf("Error - Malloc failed");
-			break ;
-		}
+			return (SYS_ERROR);
 		idx++;
 	}
-	exe->pipe_fds[amount_pipes + 1] = NULL;
+	exe->pipe_fds[amount_pipes] = NULL;
+	return (SUCCESS);
 }

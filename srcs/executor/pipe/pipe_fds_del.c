@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   pipe_close.c                                       :+:    :+:            */
+/*   pipe_free_fds.c                                    :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: annaheister <annaheister@student.codam.nl>   +#+                     */
+/*   By: aheister <aheister@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/27 15:12:32 by annaheister   #+#    #+#                 */
-/*   Updated: 2021/11/27 15:12:32 by annaheister   ########   odam.nl         */
+/*   Created: 2021/12/05 16:18:31 by aheister      #+#    #+#                 */
+/*   Updated: 2021/12/05 16:18:31 by aheister      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,18 @@
 
 /*
 ** DESCRIPTION
-**	- Closes the (unused) pipe_ends of the parent
+**	- Frees the allocated memory for the pipe_fds
 */
 
-int	close_pipe_ends(int **pipes_fds, int idx)
+void	free_pipe_fds(int **pipe_fds)
 {
-	if (idx != 0)
+	int	idx;
+
+	idx = 0;
+	while (pipe_fds[idx])
 	{
-		idx--;
-		if (close(pipes_fds[idx][0]) == -1 || close(pipes_fds[idx][1]) == -1)
-			return (SYS_ERROR);
+		free(pipe_fds[idx]);
+		idx++;
 	}
-	return (SUCCESS);
+	free(pipe_fds);
 }

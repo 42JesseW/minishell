@@ -12,6 +12,16 @@
 
 #include <minishell.h>
 
+static const char	g_prompt_startup[] = "\n"
+	"        ______       ____         " B " .════. " R "    @   @\n"
+	"       / __/ /  ___ / / /_ __   " B " / .═\"═.`. " R "   \\\\v/\n"
+	"      _\\ \\/ _ \\/ -_) / / // /  " B "  ║ ║ '\\ \\ \\ " R "_/ )\n"
+	"     /___/_//_/\\__/_/_/\\_, /  ,- " B "\\ `═.' /.' " R " / \n"
+	"                      /___/   '--- " B "`════' " R "----'\n"
+	"\n"
+	"          -- created by aheister & jevan-de --"
+	"\n";
+
 /*
 ** main() has 4 main jobs:
 **	1. checking arguments passed to the program
@@ -25,19 +35,20 @@ int	main(int argc, char *argv[], const char *envp[])
 	t_shell	*shell;
 	char	*input_string;
 
-	if (argc > 1 || argv[1])
-		return (EXIT_SUCCESS);
 	shell = shell_init(envp);
 	if (!shell)
 		return (EXIT_FAILURE);
+	if (!isatty(STDIN_FILENO) || argc > 1)
+		return (shell_noninteractive(shell, argv));
+	printf("%s\n", g_prompt_startup);
 	input_string = readline(DEFAULT_PROMPT);
 	while (input_string)
 	{
-		if (!parse_input_string(input_string, shell))
+		if (parse_input_string(input_string, shell) == SYS_ERROR)
 			break ;
 		add_history(input_string);
-		init_exe(shell);
-		ft_lstclear(&shell->cmd_nodes, node_del);	// TODO move to init_exe?
+		if (init_exe(shell) == SYS_ERROR)
+			break ;
 		free(input_string);
 		input_string = readline(DEFAULT_PROMPT);
 	}

@@ -12,22 +12,48 @@
 
 #include <minishell.h>
 
-void	dup_pipe_write(int idx, t_exe *exe)
+int	dup_pipe_write(int idx, int is_builtin, t_exe *exe)
 {
 	int	fd_out;
 
 	fd_out = dup2(exe->pipe_fds[idx][1], STDOUT_FILENO);
+	if (is_builtin == 1)
+	{
+		if (close(exe->pipe_fds[idx][1]) == -1)
+		{
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
+				strerror(errno));
+			return (SYS_ERROR);
+		}
+	}
 	if (fd_out == -1)
-		printf("Error - Duplicating fd failed");
+	{
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "dup", strerror(errno));
+		return (SYS_ERROR);
+	}
+	return (SUCCESS);
 }
 
-void	dup_pipe_read(int idx, t_exe *exe)
+int	dup_pipe_read(int idx, int is_builtin, t_exe *exe)
 {
-	int	fd;
+	int	fd_in;
 
-	fd = dup2(exe->pipe_fds[idx][0], STDIN_FILENO);
-	if (fd == -1)
-		printf("Error - Duplicating fd failed");
+	fd_in = dup2(exe->pipe_fds[idx][0], STDIN_FILENO);
+	if (is_builtin == 1)
+	{
+		if (close(exe->pipe_fds[idx][0]) == -1)
+		{
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
+				strerror(errno));
+			return (SYS_ERROR);
+		}
+	}
+	if (fd_in == -1)
+	{
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "dup", strerror(errno));
+		return (SYS_ERROR);
+	}
+	return (SUCCESS);
 }
 
 /*
@@ -37,19 +63,25 @@ void	dup_pipe_read(int idx, t_exe *exe)
 8*    right (read) from the pipe).
 ** JOBS
 ** 1. Checks if a cmd is not the last one of the list (in that case write)
-** 2. Each cmd node is send to the forking process to be executed
+** 2. AANVULLEN
 */
 
-void	dup_pipes(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
+int	dup_pipes(int idx, int is_builtin, t_exe *exe)
 {
-	if (idx != (amount_cmds - 1))
-		dup_pipe_write(idx, exe);
+	if (idx != (exe->amount_cmds - 1))
+		if (dup_pipe_write(idx, is_builtin, exe) == SYS_ERROR)
+			return (SYS_ERROR);
 	if (idx != 0)
 	{
 		idx--;
-		dup_pipe_read(idx, exe);
+		if (dup_pipe_read(idx, is_builtin, exe) == SYS_ERROR)
+			return (SYS_ERROR);
 	}
-	close(exe->pipe_fds[idx][0]);
-	close(exe->pipe_fds[idx][1]);
-	execute_cmd(cmd_node->cmd, exe);
+	if (is_builtin == 0)
+	{
+		if (close(exe->pipe_fds[idx][0]) == -1
+			|| close(exe->pipe_fds[idx][1]) == -1)
+			return (SYS_ERROR);
+	}
+	return (SUCCESS);
 }

@@ -14,6 +14,7 @@ N=$(tput sgr0)
 
 BASH_SHELL=/bin/bash
 YOUR_SHELL=$(ps -o comm= $PPID)
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # tests check for the following
 # 1. exit_code
@@ -29,7 +30,7 @@ if [[ -n $1 ]]; then
 		printf "[${R}ERROR${N}] Failed to find project makefile"
 		exit 1
 	fi
-	make minishell
+	make -C "$SCRIPT_DIR/.." minishell
 fi
 
 if [[ ! -f "$(dirname "$0")/tests.txt" ]]; then
@@ -52,11 +53,11 @@ done
 
 # Make sure norminette passes
 norm_paths=(
-	"libft/includes"
-	"libft/srcs"
-	"srcs"
+	"$SCRIPT_DIR/../libft/includes"
+	"$SCRIPT_DIR/../libft/srcs"
+	"$SCRIPT_DIR/../srcs"
 )
-norminette "${norm_paths[@]}"
+norminette "${norm_paths[@]}" # TODO norminette output parsing
 if [[ "$?" -eq 1 ]]; then
 	EXITCODE=1
 fi

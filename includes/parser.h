@@ -2,9 +2,9 @@
 
 # define PARSER_H
 
-# include <libft.h>
 # include <stdio.h>
 # include <stdbool.h>
+# include <libft/includes/libft.h>
 
 # define REDIR_ALL 0
 # define REDIR_SINGLE 1
@@ -53,7 +53,7 @@ bool	is_redir_type(t_token_type type, bool check_single);
 
 void	normalize(t_list **tokens);
 int		redir_merge(t_list *tokens);
-int		validate_pipes(t_list *tokens);
+int		validate_syntax(t_list *tokens);
 int		correct_dollar(t_list *tokens);
 int		resolve_quotes(t_list **tokens);
 

@@ -9,8 +9,8 @@ set(GCC_NORM_COMPILE_FLAGS      "-Wall -Wextra -Werror")
 set(GCC_SANITIZER_COMPILE_FLAGS "-fsanitize=address")
 set(${CMAKE_C_FLAGS} "${CMAKE_C_FLAGS} ${GCC_NORM_COMPILE_FLAGS} ${GCC_SANITIZER_COMPILE_FLAGS}")
 
-include_directories(includes ${LIBFT_DIR}/includes $ENV{HOME}/.brew/opt/readline/include)
-link_directories(${LIBFT_DIR} $ENV{HOME}/.brew/opt/readline/lib)
+include_directories(includes . /usr/local/Cellar/readline/8.1.1/include)
+link_directories(${LIBFT_DIR} /usr/local/Cellar/readline/8.1.1/lib)
 
 add_custom_target(
     ${LIBFT} ALL
@@ -20,7 +20,7 @@ add_custom_target(
 
 file(GLOB_RECURSE SOURCES srcs/main.c srcs/**/*.c)
 
-add_executable(minishell ${SOURCES})
+add_executable(minishell ${SOURCES} srcs/executor/builtins/bi_unset.c)
 
 add_dependencies(minishell ${LIBFT})
 

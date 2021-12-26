@@ -13,33 +13,30 @@
 #include <minishell.h>
 
 /*
-** validate_pipes()
-** correct_dollar()
-** redir_merge()
-** has_paired_quotes()
-** [bash: syntax error near unexpected token `{token}']
-**	- >
-**	- |
-**	- ...
-** [bash: unimplemented feature `{feature}']
-**	- multiline
-**	- ascii quoting
-**	- bash parent pid
+** The tokenizer can fail for 3 reasons:
+**	1. input_string is empty
+**	2. input_string has non matching quotes (i.e. multiline command)
+**	3. malloc fails to allocate for tokens
+**
+** The first we can discard since parse_input_string
+** already checks for this. For option 3, malloc will
+** set {errno} to reflect the error.
 */
+static int	get_tokenize_fail_exit(void)
+{
+	int		exit_code;
 
-/*
-** TESTS // TODO resolving quotes:
-**	- export TEST="cat -e";ls|"$TEST"
-**	- export TEST="cat -e";ls|$TEST
-**	- ""<OUT2	-> char **cmd should not be NULL
-**	- <OUT2		-> char **cmd should be NULl because empty TOK_WORD
-*/
-
-/*
-**	2. It adds empty TOK_WORD tokens to REDIR + WORD combinations	// TODO
-**	   - i.e. "< IN", which is TOK_LESS->TOK_WORD to TOK_WORD->TOK_LESS->TOK_WORD
-**	   This is to help creating the CMD nodes during the grouping phase.
-*/
+	exit_code = NONFATAL;
+	if (errno != 0)
+	{
+		exit_code = SYS_ERROR;
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "system",
+			strerror(errno));
+	}
+	else
+		ft_dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, "multiline");
+	return (exit_code);
+}
 
 /*
 ** parse_input_string() checks the incoming string
@@ -74,41 +71,31 @@
 **			- resolving REDIR_DELIM into REDIR_IN nodes
 **				- resolving TOK_DOLLAR inside as well
 **
-** RETURN
-**	- 0 if EOF, 1 if successful, -1 if sys_error
 */
-
 int	parse_input_string(char *input_string, t_shell *shell)
 {
 	t_list	*tokens;
 
-	if (!input_string)					// TODO print exit on EOF ?
-		return (0);
-	if (!(*input_string))				// if just an ENTER readline() returns "" empty string
-		return (1);
+	if (!input_string)
+		return (NONFATAL);
+	if (!(*input_string))
+		return (SUCCESS);
 	tokens = tokenize(input_string);
-	if (!tokens)						// TODO some exit code struct?
-		return (0);
-	if (!redir_merge(tokens))			// TODO some exit code struct?
-		return (0);
-	if (!correct_dollar(tokens))		// TODO some exit code struct?
-		return (0);
+	if (!tokens)
+		return (get_tokenize_fail_exit());
+	if (!redir_merge(tokens) || !correct_dollar(tokens))
+		return (NONFATAL);
 	remove_spaces(&tokens);
-	if (!validate_pipes(tokens))		// TODO some exit code struct?
-		return (0);
-	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
-		return (0);						// TODO some exit code struct?
+	if (!validate_syntax(tokens))
+		return (NONFATAL);
+	if (resolve_dollar(shell->environ, &tokens) == SYS_ERROR)
+		return (SYS_ERROR);
 	if (resolve_quotes(&tokens) == SYS_ERROR)
 		return (0);
 	normalize(&tokens);
 	if (group_tokens(shell, &tokens) == SYS_ERROR)
-		return (0);
+		return (SYS_ERROR);
 	if (create_redir_files(shell) == SYS_ERROR)
-		return (0);
-	nodes_print_stdout(shell->cmd_nodes);
-
-	// resolve here-doc in parser after initial nodes are made
-	// convert the "<< {DELIM}" to a "< {temp.filename}" node.
-
-	return (1);
+		return (SYS_ERROR);
+	return (SUCCESS);
 }

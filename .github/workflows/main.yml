@@ -1,4 +1,4 @@
-name: Continuous-Integraiton
+name: Continuous-Integration
 
 env:
   TERM: xterm
@@ -39,5 +39,6 @@ jobs:
       - name: regression test
         run: |
           brew install coreutils
+          brew install readline
           pip3 install --upgrade norminette
           bash tests/minishell_tester.sh

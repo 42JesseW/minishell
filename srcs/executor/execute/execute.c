@@ -12,18 +12,29 @@
 
 #include <minishell.h>
 
+/*
+** DESCRIPTION
+**	- Finds the path to the folder from where the cmd can be executed
+**    and executes it
+** JOBS
+** 1. Finds the path to the folder from where the cmd can be executed
+** 2. Executes the cmd
+** 3. Frees the path if the execution fails (otherwise the child process exits
+**    and automatically frees all memory)
+*/
+
 void	execute_cmd(char **cmd, t_exe *exe)
 {
 	char	*path;
 
 	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
-		dprintf(STDERR_FILENO, "Path not found.");
+		exit (EXIT_FAILURE);
 	if (execve(path, cmd, exe->envp) == -1)
 	{
-		free (path);
-		dprintf(STDERR_FILENO, "Execution failed.");
-		exit(1);
+		free(path);
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "execution",
+			strerror(errno));
+		exit (EXIT_FAILURE);
 	}
-	dprintf(STDERR_FILENO, "Command not found.");
 }
