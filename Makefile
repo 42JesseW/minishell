@@ -155,6 +155,7 @@ re: fclean all
 regression-test:
 	@make fclean
 	@make TESTRUN=1
+	@tests/minishell_tester.sh ./$(NAME)
 
 test:
 	@mkdir -p $(CMAKE_DIR)
