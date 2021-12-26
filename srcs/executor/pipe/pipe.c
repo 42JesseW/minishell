@@ -35,11 +35,7 @@ int	pipe_loop(t_exe *exe, t_shell *shell)
 		if (idx != amount_pipes)
 		{
 			if (pipe(exe->pipe_fds[idx]) != 0)
-			{
-				ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Pipe",
-					strerror(errno));
 				return (SYS_ERROR);
-			}
 		}
 		if (builtin_check(idx, shell->cmd_nodes->content, exe)
 			== SYS_ERROR)

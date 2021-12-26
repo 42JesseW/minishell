@@ -43,11 +43,7 @@ t_builtin	*fill_builtin(int idx)
 
 	builtin = (t_builtin *)malloc(sizeof(t_builtin));
 	if (!builtin)
-	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "malloc",
-			strerror(errno));
 		return (NULL);
-	}
 	builtin->name = (g_builtins[idx]).name;
 	builtin->function = (g_builtins[idx]).function;
 	return (builtin);
@@ -67,11 +63,7 @@ int	init_builtins(t_exe *exe)
 		builtin = fill_builtin(idx);
 		node = ft_lstnew(builtin);
 		if (node == NULL)
-		{
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "malloc",
-				strerror(errno));
 			return (SYS_ERROR);
-		}
 		ft_lstadd_back(&exe->builtins, node);
 		idx++;
 	}

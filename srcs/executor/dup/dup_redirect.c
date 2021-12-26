@@ -18,10 +18,7 @@ int	dup_redirect_write(int fd)
 
 	fd_dup = dup2(fd, STDOUT_FILENO);
 	if (fd_dup == -1)
-	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Dup", strerror(errno));
 		return (SYS_ERROR);
-	}
 	return (SUCCESS);
 }
 
@@ -31,10 +28,7 @@ int	dup_redirect_read(int fd)
 
 	fd_dup = dup2(fd, STDIN_FILENO);
 	if (fd_dup == -1)
-	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Dup", strerror(errno));
 		return (SYS_ERROR);
-	}
 	return (SUCCESS);
 }
 

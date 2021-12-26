@@ -16,17 +16,9 @@ int	restore_fds(int old_stdout, int old_stdin)
 {
 	if (dup2(old_stdout, STDOUT_FILENO) == -1
 		|| dup2(old_stdin, STDIN_FILENO) == -1)
-	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "dup2",
-			strerror(errno));
 		return (SYS_ERROR);
-	}
 	if (close(old_stdout) == -1 || close(old_stdin) == -1)
-	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close",
-			strerror(errno));
 		return (SYS_ERROR);
-	}
 	return (SUCCESS);
 }
 

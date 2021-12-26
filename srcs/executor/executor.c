@@ -102,18 +102,10 @@ int	init_exe(t_shell *shell)
 	t_exe	*exe;
 
 	if (!shell->cmd_nodes)
-	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Input",
-			"no input");
 		return (NONFATAL);
-	}
 	exe = (t_exe *) malloc(sizeof(t_exe));
 	if (!exe)
-	{
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
-			strerror(errno));
 		return (SYS_ERROR);
-	}
 	exe->paths = NULL;
 	exe->builtins = NULL;
 	exe->pids = NULL;
@@ -121,8 +113,10 @@ int	init_exe(t_shell *shell)
 	exe->envp = environ_to_envp(shell->environ);
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);
-	init_builtins(exe);
-	prepare_execution(exe, shell);
+	if (init_builtins(exe) == SYS_ERROR)
+		return (SYS_ERROR);
+	if (prepare_execution(exe, shell) == SYS_ERROR)
+		return (SYS_ERROR);
 	free_exe(exe, shell);
 	return (SUCCESS);
 }

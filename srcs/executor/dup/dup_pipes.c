@@ -81,11 +81,7 @@ int	dup_pipes(int idx, int is_builtin, t_exe *exe)
 	{
 		if (close(exe->pipe_fds[idx][0]) == -1
 			|| close(exe->pipe_fds[idx][1]) == -1)
-		{
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "close pipe",
-				strerror(errno));
 			return (SYS_ERROR);
-		}
 	}
 	return (SUCCESS);
 }

@@ -73,11 +73,7 @@ int	init_paths(t_exe *exe, t_shell *shell)
 		if (ft_strcmp(pair->key, "PATH") == 0)
 		{
 			if (store_paths(pair->val, exe) == SYS_ERROR)
-			{
-				ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Malloc",
-					strerror(errno));
 				return (SYS_ERROR);
-			}
 			return (SUCCESS);
 		}
 		else

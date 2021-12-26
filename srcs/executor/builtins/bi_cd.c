@@ -31,7 +31,7 @@ int	reset_pwd_env(t_list **environ)
 int	cd_env(t_list **environ, char *env)
 {
 	const char	*dir;
-	int 		ret;
+	int			ret;
 
 	dir = environ_get(*environ, env);
 	if (!dir)
@@ -42,7 +42,8 @@ int	cd_env(t_list **environ, char *env)
 	ret = chdir(dir);
 	if (ret == SYS_ERROR)
 	{
-		ft_dprintf(STDERR_FILENO, "%s: cd: %s: %s\n", SHELL_NAME, dir, strerror(errno));
+		ft_dprintf(STDERR_FILENO, "%s: cd: %s: %s\n", SHELL_NAME, dir,
+			strerror(errno));
 		return (EXIT_FAILURE);
 	}
 	if (ft_strcmp(env, "OLDPWD") == 0)
@@ -64,22 +65,21 @@ int	cd_env(t_list **environ, char *env)
 **	4. PWD is set to new directory only if chdir is successful
 **
 */
-int builtin_cd(char **cmd, t_exe *exe)
+int	builtin_cd(char **cmd, t_exe *exe)
 {
 	int	ret;
 
 	if (!cmd || !cmd[0] || ft_strcmp(cmd[0], "cd") != 0)
 		return (EXIT_FAILURE);
-	/* if only cd go to HOME */
 	if (!cmd[1])
 		return (cd_env(exe->environ, "HOME"));
-	/* if `cd -` go to previous directory */
 	if (ft_strcmp(cmd[1], "-") == 0)
 		return (cd_env(exe->environ, "OLDPWD"));
 	ret = chdir(cmd[1]);
 	if (ret == SYS_ERROR)
 	{
-		ft_dprintf(STDERR_FILENO, "%s: cd: %s: %s\n", SHELL_NAME, cmd[1], strerror(errno));
+		ft_dprintf(STDERR_FILENO, "%s: cd: %s: %s\n", SHELL_NAME, cmd[1],
+			strerror(errno));
 		return (EXIT_FAILURE);
 	}
 	reset_pwd_env(exe->environ);

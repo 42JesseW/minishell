@@ -23,11 +23,7 @@ int	close_pipe_ends(int **pipes_fds, int idx)
 	{
 		idx--;
 		if (close(pipes_fds[idx][0]) == -1 || close(pipes_fds[idx][1]) == -1)
-		{
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "Close pipe",
-				strerror(errno));
 			return (SYS_ERROR);
-		}
 	}
 	return (SUCCESS);
 }
