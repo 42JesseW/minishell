@@ -19,7 +19,7 @@
 ** not find a matching key, It will create a new
 ** environment variable and add it to the list.
 */
-int	environ_update(t_list **environ, char *key, const char *val)	// TODO testcase
+int	environ_update(t_list **environ, char *key, const char *val)
 {
 	t_list	*node;
 	t_pair	*pair;

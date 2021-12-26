@@ -30,7 +30,8 @@ static int	get_tokenize_fail_exit(void)
 	if (errno != 0)
 	{
 		exit_code = SYS_ERROR;
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "system", strerror(errno));
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "system",
+			strerror(errno));
 	}
 	else
 		ft_dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, "multiline");
@@ -75,8 +76,8 @@ int	parse_input_string(char *input_string, t_shell *shell)
 {
 	t_list	*tokens;
 
-	if (!input_string)					// TODO print exit on EOF ?
-		return (0);
+	if (!input_string)
+		return (NONFATAL);
 	if (!(*input_string))
 		return (SUCCESS);
 	tokens = tokenize(input_string);

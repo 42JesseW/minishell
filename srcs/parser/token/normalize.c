@@ -66,7 +66,7 @@ void	normalize_part(t_list **tokens, t_bound *bound)
 		if (is_redir_type(token->type, REDIR_ALL) && count == 2)
 			count = 1;
 		else if ((is_redir_type(token->type, REDIR_ALL) && count == 0)
-			 || (token->type == TOK_WORD && count == 1))
+			|| (token->type == TOK_WORD && count == 1))
 			count++;
 		else
 		{

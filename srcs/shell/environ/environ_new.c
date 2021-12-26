@@ -13,7 +13,7 @@
 #include <minishell.h>
 
 /* create a new environment variable as a t_list type */
-t_list *environ_new(char *key, const char *val)
+t_list	*environ_new(char *key, const char *val)
 {
 	t_list	*node;
 	t_pair	*pair;
