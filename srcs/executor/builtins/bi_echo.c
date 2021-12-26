@@ -28,6 +28,22 @@ int	check_n(char *cmd)
 	return (SUCCESS);
 }
 
+void	echo_print(int idx, int flag_n, char **cmd)
+{
+	int	len;
+
+	len = ft_strarrlen(cmd);
+	while (idx < len)
+	{
+		ft_printf("%s", cmd[idx]);
+		if (idx < len - 1)
+			ft_printf(" ");
+		idx++;
+	}
+	if (flag_n == 0)
+		ft_printf("\n");
+}
+
 /*
 ** DESCRIPTION
 **	-  The echo command writes its arguments separated by blanks and
@@ -57,14 +73,6 @@ int	builtin_echo(char **cmd, t_exe *exe)
 				break ;
 		}
 	}
-	while (idx < len)
-	{
-		ft_printf("%s", cmd[idx]);
-		if (idx < len - 1)
-			ft_printf(" ");
-		idx++;
-	}
-	if (flag_n == 0)
-		ft_printf("\n");
+	echo_print(idx, flag_n, cmd);
 	return (EXIT_SUCCESS);
 }
