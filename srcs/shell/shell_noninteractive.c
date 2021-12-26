@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   execute_single.c                                   :+:    :+:            */
+/*   shell_noninteractive.c                                   :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jessevanderwolf <jessevanderwolf@student...  +#+                     */
 /*                                                   +#+                      */
@@ -32,7 +32,7 @@ static int	execute(t_shell *shell, char *arg)
 	return (EXIT_SUCCESS);
 }
 
-int	execute_single(t_shell *shell, char *argv[])
+int	shell_noninteractive(t_shell *shell, char **argv)
 {
 	if (!argv[1])
 		return (execute(shell, NULL));

@@ -39,7 +39,7 @@ int	main(int argc, char *argv[], const char *envp[])
 	if (!shell)
 		return (EXIT_FAILURE);
 	if (!isatty(STDIN_FILENO) || argc > 1)
-		return (execute_single(shell, argv));
+		return (shell_noninteractive(shell, argv));
 	printf("%s\n", g_prompt_startup);
 	input_string = readline(DEFAULT_PROMPT);
 	while (input_string)

@@ -24,7 +24,7 @@
 # define DEFAULT_PROMPT "shelly3.2$ "
 # define HEREDOC_PROMPT "> "
 # define SHELL_NAME "shelly"
-# ifdef REGRESSION_TEST
+# ifdef TESTRUN
 #  undef SHELL_NAME
 #  define SHELL_NAME "bash"
 # endif
@@ -118,6 +118,7 @@ void		environ_remove(t_list **environ, char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[]);
+int			shell_noninteractive(t_shell *shell, char **argv);
 int			init_inputrc(void);
 void		set_signals(bool is_parent);
 
@@ -176,6 +177,5 @@ int			close_pipe_ends(int **pipes_fds, int idx);
 // EXECUTION
 char		*get_full_path(char *cmd, t_exe *exe);
 void		execute_cmd(char **cmd, t_exe *exe);
-int			execute_single(t_shell *shell, char *argv[]);
 
 #endif

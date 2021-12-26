@@ -29,6 +29,10 @@ endif
 CLINKS 		= -ltermcap -lreadline -lft
 CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
 
+ifdef TESTRUN
+  CFLAGS	+= -D TESTRUN
+endif
+
 SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/environ/pair/pair_new.c \
 			  shell/environ/pair/pair_join.c \
@@ -40,6 +44,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/environ/environ_remove.c \
 			  shell/shell_init.c \
 			  shell/shell_destroy.c \
+			  shell/shell_noninteractive.c \
 			  shell/init_inputrc.c \
 			  shell/signals.c \
 			  parser/node/node_del.c \
@@ -81,7 +86,6 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  executor/pipe/pipe_close.c \
 			  executor/pipe/pipe_fds_del.c \
 			  executor/pipe/pipe_malloc_fds.c \
-			  executor/execute_single.c \
 			  executor/executor.c \
 			  main.c
 
@@ -150,7 +154,7 @@ re: fclean all
 
 regression-test:
 	@make fclean
-
+	@make TESTRUN=1
 
 test:
 	@mkdir -p $(CMAKE_DIR)
