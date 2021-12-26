@@ -484,7 +484,7 @@ public:
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
 		REQUIRE(validate_syntax(tokens));
-		REQUIRE(resolve_dollar(shell->environ, &tokens) != SYS_ERROR);
+		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
 		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 		normalize(&tokens);
 	}
@@ -530,7 +530,7 @@ public:
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
 		REQUIRE(validate_syntax(tokens));
-		REQUIRE(resolve_dollar(shell->environ, &tokens) != SYS_ERROR);
+		REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
 		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 		normalize(&tokens);
 	}
@@ -583,7 +583,6 @@ TEST_CASE_METHOD(GroupTokensFixture, "Small edge cases") {
 	REQUIRE(ft_lstsize(((t_node *)shell->cmd_nodes->next->content)->redir) == 1);
 	ft_lstclear(&tokens, token_del);
 	ft_lstclear(&shell->cmd_nodes, node_del);
-	nodes_print_stdout(shell->cmd_nodes);
 }
 
 TEST_CASE_METHOD(GroupTokensFixture, "One simple node") {

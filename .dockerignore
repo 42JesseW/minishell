@@ -1,0 +1,11 @@
+*.o
+a.out
+.vscode/
+.cmake-*/
+.idea/
+.DS_Store
+*.a
+cmake-build*
+minishell
+*.gch
+ARCHIVE/

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 // TODO - Overal alles veilig maken en op goede moment alles freeen
+// TODO - Sommige builtins werken anders tussen pipes [unset, export <key>=<val>, cd]
 // TODO - Overal descriptions bij maken
 // TODO - Uitzoeken of eindigen met ctrl-C, ctrl-D en ctrl-\ werkt
 // 		- ctrl-\ (CTRL + \) doet niks in parent. Wanneer in child uitgevoerd,
@@ -39,7 +40,7 @@ void	free_exe(t_exe *exe, t_shell *shell)
 ** 4. Initiates the check_builtin route if there is just 1 cmd
 */
 
-int	wait_process_end(t_list	*pid_node)
+int	wait_process_end(t_shell *shell, t_list	*pid_node)
 {
 	pid_t	*pid;
 	int		w_status;
@@ -54,9 +55,10 @@ int	wait_process_end(t_list	*pid_node)
 			if (WTERMSIG(w_status) == SIGQUIT)
 				ft_dprintf(STDERR_FILENO, "Quit: %d", WTERMSIG(w_status));
 			ft_dprintf(STDERR_FILENO, "\n");
+			shell->exit_code = 128 + WTERMSIG(w_status);
 		}
 		if (WIFEXITED(w_status))
-			ft_dprintf(STDERR_FILENO, "error code: %d\n", WEXITSTATUS(w_status));	// TODO change to setting exit_code
+			shell->exit_code = WEXITSTATUS(w_status);
 		pid_node = pid_node->next;
 	}
 	return (SUCCESS);
@@ -81,7 +83,7 @@ int	prepare_execution(t_exe *exe, t_shell *shell)
 			return (SYS_ERROR);
 	}
 	pid_node = exe->pids;
-	if (wait_process_end(pid_node) == SYS_ERROR)
+	if (wait_process_end(shell, pid_node) == SYS_ERROR)
 		return (SYS_ERROR);
 	set_signals(true);
 	if (exe->amount_cmds > 1)

@@ -22,7 +22,7 @@
 ** the found environment variable is
 ** NULL, then just create an empty string.
 */
-static int	resolve(t_list *environ, t_list **tokens, t_list **node)
+static int	resolve(t_shell *shell, t_list **tokens, t_list **node)
 {
 	t_token		*token;
 	t_list		*word;
@@ -34,11 +34,16 @@ static int	resolve(t_list *environ, t_list **tokens, t_list **node)
 	*node = word;
 	token = (t_token *)word->content;
 	kv[0] = token->token;
-	kv[1] = environ_get(environ, kv[0]);
-	if (!kv[0] || !kv[1])
-		token_string = ft_strdup("");
+	if (ft_strcmp(kv[0], "?") == 0)
+		token_string = ft_itoa(shell->exit_code);
 	else
-		token_string = ft_strdup(kv[1]);
+	{
+		kv[1] = environ_get(shell->environ, kv[0]);
+		if (!kv[0] || !kv[1])
+			token_string = ft_strdup("");
+		else
+			token_string = ft_strdup(kv[1]);
+	}
 	if (!token_string)
 		return (SYS_ERROR);
 	free(token->token);
@@ -66,7 +71,7 @@ static int	resolve(t_list *environ, t_list **tokens, t_list **node)
 ** if its inside of a nested quote: "'$ENV'"
 */
 
-int	resolve_dollar(t_list *environ, t_list **tokens)
+int	resolve_dollar(t_shell *shell, t_list **tokens)
 {
 	t_list	*node;
 	t_token	*token;
@@ -84,7 +89,7 @@ int	resolve_dollar(t_list *environ, t_list **tokens)
 		if ((!quote.between || (quote.between && quote.type == TOK_DQUOTE))
 			&& token->type == TOK_DOLLAR)
 		{
-			if (resolve(environ, tokens, &node) < 0)
+			if (resolve(shell, tokens, &node) < 0)
 				return (SYS_ERROR);
 		}
 		else

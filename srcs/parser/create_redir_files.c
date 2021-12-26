@@ -12,11 +12,11 @@
 
 #include <minishell.h>
 
-static int	write_heredoc_line(t_list *environ, int fd, char *line)
+static int	write_heredoc_line(t_shell *shell, int fd, char *line)
 {
 	char	*resolved_line;
 
-	resolved_line = resolve_dollar_heredoc(environ, line);
+	resolved_line = resolve_dollar_heredoc(shell, line);
 	if (!resolved_line)
 	{
 		free(line);
@@ -35,7 +35,7 @@ static int	write_heredoc_line(t_list *environ, int fd, char *line)
 ** {delimiter} string.
 */
 
-static int	write_heredoc(t_list *environ, char *file_path, char *delimiter)
+static int	write_heredoc(t_shell *shell, char *file_path, char *delimiter)
 {
 	char	*line;
 	int		ret;
@@ -52,7 +52,7 @@ static int	write_heredoc(t_list *environ, char *file_path, char *delimiter)
 			free(line);
 			break ;
 		}
-		ret = write_heredoc_line(environ, fd, line);
+		ret = write_heredoc_line(shell, fd, line);
 		free(line);
 		if (ret == SYS_ERROR)
 		{
@@ -70,7 +70,7 @@ static int	write_heredoc(t_list *environ, char *file_path, char *delimiter)
 **	1. remove the HEREDOC_FILE file if exists
 */
 
-static int	convert_heredoc(t_list *environ, t_redir *node, int mode)
+static int	convert_heredoc(t_shell *shell, t_redir *node, int mode)
 {
 	char	file_path[PATH_MAX];
 	char	cwd[PATH_MAX];
@@ -86,7 +86,7 @@ static int	convert_heredoc(t_list *environ, t_redir *node, int mode)
 	if (fd == -1)
 		return (SYS_ERROR);
 	close(fd);
-	if (write_heredoc(environ, file_path, node->file) == SYS_ERROR)
+	if (write_heredoc(shell, file_path, node->file) == SYS_ERROR)
 		return (SYS_ERROR);
 	fd = open(file_path, O_RDONLY);
 	if (fd == -1 || unlink(file_path) < 0)
@@ -98,14 +98,14 @@ static int	convert_heredoc(t_list *environ, t_redir *node, int mode)
 	return (fd);
 }
 
-static int	get_redir_fd(t_list *environ, t_redir *node)
+static int	get_redir_fd(t_shell *shell, t_redir *node)
 {
 	int	mode;
 	int	fd;
 
 	mode = 0644;
 	if (node->type == REDIR_DELIM)
-		fd = convert_heredoc(environ, node, mode);
+		fd = convert_heredoc(shell, node, mode);
 	else if (node->type == REDIR_IN)
 		fd = open(node->file, O_RDONLY);
 	else if (node->type == REDIR_OUT)
@@ -152,7 +152,7 @@ int	create_redir_files(t_shell *shell)
 		while (redir_node)
 		{
 			redir = (t_redir *)redir_node->content;
-			fd = get_redir_fd(shell->environ, redir);
+			fd = get_redir_fd(shell, redir);
 			if (fd <= NONFATAL)
 				return (fd);
 			redir->fd = fd;
