@@ -38,8 +38,10 @@ int	shell_noninteractive(t_shell *shell, char **argv)
 		return (execute(shell, NULL));
 	if (ft_strcmp(argv[1], "-c") != 0)
 	{
+		ft_dprintf(STDERR_FILENO,
+			 "%s: %s: unknown flag\n", SHELL_NAME, argv[1]);
 		shell_destroy(&shell);
-		return (EXIT_SUCCESS);
+		return (EXIT_FAILURE);
 	}
 	if (ft_strcmp(argv[1], "-c") == 0 && !argv[2])
 	{
