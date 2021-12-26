@@ -83,6 +83,7 @@ typedef struct s_exe
 {
 	int		**pipe_fds;
 	char	**envp;
+	int		amount_cmds;
 	t_list	**environ;
 	t_list	*pids;
 	t_list	*paths;
@@ -91,10 +92,9 @@ typedef struct s_exe
 
 typedef struct s_builtin
 {
-	char 		*name;
+	char		*name;
 	int			(*function)(char **, t_exe *);
 }	t_builtin;
-
 
 void		pair_del(void *pair);
 
@@ -137,14 +137,13 @@ int			create_redir_files(t_shell *shell);
 void		nodes_print_stdout(t_list *cmd_nodes);
 
 // BUILTINS
-//int			builtin_check(char **cmd, t_exe *exe);
-int			builtin_check(int idx, int amount_cmds, t_node *node, t_exe *exe);
+int			builtin_check(int idx, t_node *node, t_exe *exe);
 int			builtin_echo(char **cmd, t_exe *exe);
 int			builtin_env(char **cmd, t_exe *exe);
 int			builtin_pwd(char **cmd, t_exe *exe);
 int			builtin_unset(char **cmd, t_exe *exe);
 int			builtin_cd(char **cmd, t_exe *exe);
-int 		init_builtins(t_exe *exe);
+int			init_builtins(t_exe *exe);
 
 // INITIALISATION
 int			init_exe(t_shell *shell);
@@ -153,21 +152,21 @@ int			store_paths(const char *strpaths, t_exe *exe);
 int			prepare_execution(t_exe *exe, t_shell *shell);
 
 // PIPING
-int			malloc_fds(t_exe *exe, int amount_cmds);
+int			malloc_fds(t_exe *exe);
 void		free_pipe_fds(int **pipe_fds);
-int			pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell);
+int			pipe_loop(t_exe *exe, t_shell *shell);
 
 // DUPPING
-int 		dup_pipes(int idx, int amount_cmds, int is_builtin, t_exe *exe);
-int 		dup_pipe_write(int idx, int is_builtin, t_exe *exe);
-int 		dup_pipe_read(int idx, int is_builtin, t_exe *exe);
+int			dup_pipes(int idx, int is_builtin, t_exe *exe);
+int			dup_pipe_write(int idx, int is_builtin, t_exe *exe);
+int			dup_pipe_read(int idx, int is_builtin, t_exe *exe);
 int			dup_redirect(t_node *cmd_node);
 int			dup_redirect_read(int fd);
 int			dup_redirect_write(int fd);
 
 // FORKING
-int			child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
-int			fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node);
+int			child_process(int idx, t_exe *exe, t_node *cmd_node);
+int			fork_process(int idx, t_exe *exe, t_node *cmd_node);
 int			close_pipe_ends(int **pipes_fds, int idx);
 
 // EXECUTION

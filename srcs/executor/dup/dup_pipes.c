@@ -66,9 +66,9 @@ int	dup_pipe_read(int idx, int is_builtin, t_exe *exe)
 ** 2. AANVULLEN
 */
 
-int	dup_pipes(int idx, int amount_cmds, int is_builtin, t_exe *exe)
+int	dup_pipes(int idx, int is_builtin, t_exe *exe)
 {
-	if (idx != (amount_cmds - 1))
+	if (idx != (exe->amount_cmds - 1))
 		if (dup_pipe_write(idx, is_builtin, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	if (idx != 0)

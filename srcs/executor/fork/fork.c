@@ -38,12 +38,12 @@ int	store_pids(pid_t pid, t_exe *exe)
 	return (SUCCESS);
 }
 
-int	child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
+int	child_process(int idx, t_exe *exe, t_node *cmd_node)
 {
 	set_signals(false);
-	if (amount_cmds > 1)
+	if (exe->amount_cmds > 1)
 	{
-		if (dup_pipes(idx, amount_cmds, 0, exe) == SYS_ERROR)
+		if (dup_pipes(idx, 0, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
 	if (ft_lstsize(cmd_node->redir) > 0)
@@ -55,7 +55,7 @@ int	child_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 	return (SUCCESS);
 }
 
-int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
+int	fork_process(int idx, t_exe *exe, t_node *cmd_node)
 {
 	pid_t	pid;
 
@@ -68,12 +68,12 @@ int	fork_process(int idx, int amount_cmds, t_exe *exe, t_node *cmd_node)
 	}
 	else if (pid == 0)
 	{
-		if (child_process(idx, amount_cmds, exe, cmd_node) == SYS_ERROR)
+		if (child_process(idx, exe, cmd_node) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
 	else if (pid > 0)
 	{
-		if (amount_cmds > 1)
+		if (exe->amount_cmds > 1)
 		{
 			if (close_pipe_ends(exe->pipe_fds, idx) == SYS_ERROR)
 				return (SYS_ERROR);

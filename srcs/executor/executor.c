@@ -12,13 +12,10 @@
 
 // TODO - Overal alles veilig maken en op goede moment alles freeen
 // TODO - Aantal grote functies splitsen
-// TODO - WEXITSTATUS uitzoeken
 // TODO - Overal descriptions bij maken
 // TODO - Tests schrijven voor een aantal functies
-// TODO - In execute.c uitzoeken hoe ik het beste de functie kan verlaten
 // TODO - Functie prepare_execution splitsen
 // TODO - In init_exe zijn er nog verschillende functies niet beschermd
-// TODO - Uitzoeken wat launch van cmd by using relative or absolute path betekent
 // TODO - Uitzoeken of eindigen met ctrl-C, ctrl-D en ctrl-\ werkt
 // 		- ctrl-\ (CTRL + \) doet niks in parent. Wanneer in child uitgevoerd,
 //		  opvangen met WIFSIGNALED(w_status) waar w_status komt uit waitpid(pid, &w_status, 0)
@@ -53,19 +50,18 @@ int	prepare_execution(t_exe *exe, t_shell *shell)
 	pid_t	*pid;
 	int		w_status;
 	t_list	*pid_node;
-	int		amount_cmds;
 
-	amount_cmds = ft_lstsize(shell->cmd_nodes);
-	if (amount_cmds > 1)
+	exe->amount_cmds = ft_lstsize(shell->cmd_nodes);
+	if (exe->amount_cmds > 1)
 	{
-		if (malloc_fds(exe, (amount_cmds - 1)) == SYS_ERROR)
+		if (malloc_fds(exe) == SYS_ERROR)
 			return (SYS_ERROR);
-		if (pipe_loop(amount_cmds, exe, shell) == SYS_ERROR)
+		if (pipe_loop(exe, shell) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
 	else
 	{
-		if (builtin_check(0, amount_cmds, shell->cmd_nodes->content, exe)
+		if (builtin_check(0, shell->cmd_nodes->content, exe)
 			== SYS_ERROR)
 			return (SYS_ERROR);
 	}
@@ -86,7 +82,7 @@ int	prepare_execution(t_exe *exe, t_shell *shell)
 		pid_node = pid_node->next;
 	}
 	set_signals(true);
-	if (amount_cmds > 1)
+	if (exe->amount_cmds > 1)
 		free_pipe_fds(exe->pipe_fds);
 	return (SUCCESS);
 }
