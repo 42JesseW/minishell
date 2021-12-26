@@ -23,14 +23,14 @@
 ** 2. Each cmd node is send to the forking process to be executed
 */
 
-int	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell)
+int	pipe_loop(t_exe *exe, t_shell *shell)
 {
 	int		idx;
 	int		amount_pipes;
 
 	idx = 0;
-	amount_pipes = amount_cmds - 1;
-	while (idx < amount_cmds)
+	amount_pipes = exe->amount_cmds - 1;
+	while (idx < exe->amount_cmds)
 	{
 		if (idx != amount_pipes)
 		{
@@ -41,7 +41,7 @@ int	pipe_loop(int amount_cmds, t_exe *exe, t_shell *shell)
 				return (SYS_ERROR);
 			}
 		}
-		if (builtin_check(idx, amount_cmds, shell->cmd_nodes->content, exe)
+		if (builtin_check(idx, shell->cmd_nodes->content, exe)
 			== SYS_ERROR)
 			return (SYS_ERROR);
 		shell->cmd_nodes = shell->cmd_nodes->next;

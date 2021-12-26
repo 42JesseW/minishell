@@ -17,10 +17,12 @@
 **	- Mallocs for each pipe in a loop the needed memory for both pipe ends.
 */
 
-int	malloc_fds(t_exe *exe, int amount_pipes)
+int	malloc_fds(t_exe *exe)
 {
 	int	idx;
+	int	amount_pipes;
 
+	amount_pipes = exe->amount_cmds - 1;
 	exe->pipe_fds = (int **)malloc(sizeof(int *) * (amount_pipes + 1));
 	if (!exe->pipe_fds)
 	{
