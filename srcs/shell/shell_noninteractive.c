@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   shell_noninteractive.c                                   :+:    :+:            */
+/*   shell_noninteractive.c                             :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: jessevanderwolf <jessevanderwolf@student...  +#+                     */
 /*                                                   +#+                      */
