@@ -3,10 +3,10 @@
 /*                                                        ::::::::            */
 /*   minishell.h                                        :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: jevan-de <jevan-de@student.codam.nl>         +#+                     */
+/*   By: jessevanderwolf <jessevanderwolf@student...  +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/11/05 16:38:36 by jevan-de      #+#    #+#                 */
-/*   Updated: 2021/11/05 16:38:36 by jevan-de      ########   odam.nl         */
+/*   Created: 2021/12/26 11:48:35 by jessevander...#+#    #+#                 */
+/*   Updated: 2021/12/26 11:48:35 by jessevander...########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 # define DEFAULT_PROMPT "shelly3.2$ "
 # define HEREDOC_PROMPT "> "
 # define SHELL_NAME "shelly"
+# ifdef REGRESSION_TEST
+#  undef SHELL_NAME
+#  define SHELL_NAME "bash"
+# endif
 # define FMT_ERR ": %s: %s\n"
 # define SYNTAX_ERR ": syntax error near unexpected token `%s'\n"
 # define INPUTRC_OPTION "set echo-control-characters Off\n"
@@ -91,7 +95,7 @@ typedef struct s_exe
 
 typedef struct s_builtin
 {
-	char 		*name;
+	char		*name;
 	int			(*function)(char **, t_exe *);
 }	t_builtin;
 
@@ -173,5 +177,6 @@ int			close_pipe_ends(int **pipes_fds, int idx);
 // EXECUTION
 char		*get_full_path(char *cmd, t_exe *exe);
 void		execute_cmd(char **cmd, t_exe *exe);
+int			execute_single(t_shell *shell, char *argv[]);
 
 #endif

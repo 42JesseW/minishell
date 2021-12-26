@@ -12,16 +12,6 @@
 
 #include <minishell.h>
 
-static const char	g_prompt_startup[] = "\n"
-	"        ______       ____         " B " .════. " R "    @   @\n"
-	"       / __/ /  ___ / / /_ __   " B " / .═\"═.`. " R "   \\\\v/\n"
-	"      _\\ \\/ _ \\/ -_) / / // /  " B "  ║ ║ '\\ \\ \\ " R "_/ )\n"
-	"     /___/_//_/\\__/_/_/\\_, /  ,- " B "\\ `═.' /.' " R " / \n"
-	"                      /___/   '--- " B "`════' " R "----'\n"
-	"\n"
-	"          -- created by aheister & jevan-de --"
-	"\n";
-
 /* remove OLDPWD and increment SHLVL */
 static int	init_environment(t_list **environ)
 {
@@ -69,6 +59,5 @@ t_shell	*shell_init(const char *envp[])
 	shell->exit_code = 0;
 	shell->environ = environ;
 	shell->cmd_nodes = NULL;
-	printf("%s\n", g_prompt_startup);
 	return (shell);
 }

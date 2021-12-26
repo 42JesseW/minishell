@@ -81,6 +81,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  executor/pipe/pipe_close.c \
 			  executor/pipe/pipe_fds_del.c \
 			  executor/pipe/pipe_malloc_fds.c \
+			  executor/execute_single.c \
 			  executor/executor.c \
 			  main.c
 
@@ -146,6 +147,10 @@ fclean: clean
 	@make --directory=$(LIBFTDIR) fclean
 
 re: fclean all
+
+regression-test:
+	@make fclean
+
 
 test:
 	@mkdir -p $(CMAKE_DIR)
