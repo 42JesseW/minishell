@@ -36,7 +36,7 @@ static int	create_inputrc_file(const char *file_path)
 	if (fd == SYS_ERROR)
 		return (SYS_ERROR);
 	rc_data = ft_strdup("$include /etc/inputrc\n"
-						"set echo-control-characters Off\n\n");
+			"set echo-control-characters Off\n\n");
 	if (!rc_data || write(fd, rc_data, ft_strlen(rc_data)) < 0)
 		return (SYS_ERROR);
 	free(rc_data);

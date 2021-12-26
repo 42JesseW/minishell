@@ -58,7 +58,8 @@ static void	move_and_unlink_token(t_list **tokens, t_list **node)
 **	2. In all cases, the *cmd_node is added to the
 **	   the list of nodes in shell.cmd_nodes
 */
-static int	reset_cmd_node(t_shell *shell, t_list **cmd_node, t_list *token_node)
+static int	reset_cmd_node(t_shell *shell, t_list **cmd_node,
+							t_list *token_node)
 {
 	t_list	*cmd;
 	t_node	*node;

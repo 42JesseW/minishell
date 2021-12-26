@@ -14,7 +14,7 @@ N=$(tput sgr0)
 
 BASH_SHELL=/bin/bash
 YOUR_SHELL=$(ps -o comm= $PPID)
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
 # tests check for the following
 # 1. exit_code
@@ -57,7 +57,7 @@ norm_paths=(
 	"$SCRIPT_DIR/../libft/srcs"
 	"$SCRIPT_DIR/../srcs"
 )
-norminette "${norm_paths[@]}" # TODO norminette output parsing
+norminette "${norm_paths[@]}" | grep --invert-match "OK" # TODO norminette output parsing
 if [[ "$?" -eq 1 ]]; then
 	EXITCODE=1
 fi
