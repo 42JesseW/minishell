@@ -35,7 +35,10 @@ static int	execute(t_shell *shell, char *arg)
 int	shell_noninteractive(t_shell *shell, char **argv)
 {
 	if (!argv[1])
+	{
+		errno = 0;
 		return (execute(shell, NULL));
+	}
 	if (ft_strcmp(argv[1], "-c") != 0)
 	{
 		ft_dprintf(STDERR_FILENO,

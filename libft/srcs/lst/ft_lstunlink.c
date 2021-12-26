@@ -13,7 +13,7 @@
 #include <libft.h>
 
 /* unlink node from list starting at root returning node */
-t_list	*ft_lstunlink(t_list **root, t_list *node)	// TODO testcase
+t_list	*ft_lstunlink(t_list **root, t_list *node)
 {
 	t_list	*traverse;
 	t_list	*prev;
