@@ -32,9 +32,9 @@ void	execute_cmd(char **cmd, t_exe *exe)
 		exit (EXIT_FAILURE);
 	if (execve(path, cmd, exe->envp) == -1)
 	{
+		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path,
+			"command not found");
 		free(path);
-		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "execution",
-			strerror(errno));
 		exit (EXIT_FAILURE);
 	}
 }

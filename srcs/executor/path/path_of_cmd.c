@@ -27,18 +27,13 @@ char	*get_path_environ(char *cmd, t_exe *exe)
 	{
 		path = ft_strjoin(exe->paths->content, cmd);
 		if (path == NULL)
-		{
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "malloc",
-				strerror(errno));
 			return (NULL);
-		}
 		if (access(path, F_OK) != -1)
 			return (path);
 		exe->paths = exe->paths->next;
 		len--;
 	}
-	ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path, strerror(errno));
-	return (NULL);
+	return (cmd);
 }
 
 char	*get_path_relative(char *cmd)
