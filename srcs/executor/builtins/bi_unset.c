@@ -10,11 +10,60 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO unlinken van node gaat fout
-// TODO PATH* - unset: `PATH*': not a valid identifier
-// TODO unset <key1> <key2> <key3> ... moet alle keys verwijderen
+// TODO - Keys met value ook handlen
+// TODO - Check unset in combinatie met pipes
 
 #include <minishell.h>
+
+int	check_all_alpha(char *cmd)
+{
+	int		idx;
+	char	*message;
+
+	idx = 0;
+	while (idx < (int)ft_strlen(cmd))
+	{
+		if (ft_isalpha(cmd[idx]) == 0 && cmd[idx] != '_')
+		{
+			message = ft_strnjoin(3, "unset: '", cmd, "'");
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, message,
+				"not a valid identifier");
+			free (message);
+			return (EXIT_FAILURE);
+		}
+		idx++;
+	}
+	return (EXIT_SUCCESS);
+}
+
+void	key_loop(char **cmd, t_exe *exe)
+{
+	int		idx;
+	t_pair	*pair;
+	t_list	*node;
+
+	idx = 1;
+	while (idx < ft_strarrlen(cmd))
+	{
+		if (check_all_alpha(cmd[idx]) == EXIT_SUCCESS)
+		{
+			node = *exe->environ;
+			while (node)
+			{
+				pair = node->content;
+				if (ft_strncmp(pair->key, cmd[idx], ft_strlen(cmd[idx])) == 0)
+				{
+					ft_lstunlink(exe->environ, node);
+					ft_lstdelone(node, pair_del);
+					break ;
+				}
+				else
+					node = node->next;
+			}
+		}
+		idx++;
+	}
+}
 
 /*
 ** DESCRIPTION
@@ -24,28 +73,13 @@
 
 int	builtin_unset(char **cmd, t_exe *exe)
 {
-	t_pair	*pair;
-	t_list	*node;
-
-	if (ft_strarrlen(cmd) < 2 || ft_strarrlen(cmd) > 2)
+	if (ft_strarrlen(cmd) < 2)
 	{
 		if (ft_strarrlen(cmd) == 1)
 			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "unset",
 				"not enough arguments");
 		return (SUCCESS);
 	}
-	node = *exe->environ;
-	while (node)
-	{
-		pair = node->content;
-		if (ft_strncmp(pair->key, cmd[1], ft_strlen(cmd[1])) == 0)
-		{
-			ft_lstunlink(exe->environ, node);
-			ft_lstdelone(node, pair_del);
-			return (SUCCESS);
-		}
-		else
-			node = node->next;
-	}
+	key_loop(cmd, exe);
 	return (EXIT_SUCCESS);
 }

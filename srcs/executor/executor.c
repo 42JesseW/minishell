@@ -11,12 +11,14 @@
 /* ************************************************************************** */
 
 // TODO - Overal alles veilig maken en op goede moment alles freeen
-// TODO - Sommige builtins werken anders tussen pipes [unset, export <key>=<val>, cd]
-// TODO - Overal descriptions bij maken
+// TODO - return status checken : NAVRAGEN HOE?
+// TODO - Alles checken op memory leaks
+// TODO - Sommige builtins werken anders tussen pipes
+//  	  [unset, export <key>=<val>, cd]
 // TODO - builtin unset afmaken
-// TODO - builtin echo -n -n oplossen
 // TODO - builtin exit maken
 // TODO - builtin export maken
+// TODO - FOUT: bash-3.2$ env bla bla - env: bla: No such file or directory
 // TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
 //        bi_check, bi_unset
 // TODO - Uitzoeken of eindigen met ctrl-C, ctrl-D en ctrl-\ werkt
