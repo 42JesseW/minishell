@@ -38,6 +38,12 @@ static int	get_tokenize_fail_exit(void)
 	return (exit_code);
 }
 
+static int	parse_fail_exit(t_shell *shell)
+{
+	shell->exit_code = EXIT_PARSE_FAIL;
+	return (NONFATAL);
+}
+
 /*
 ** parse_input_string() checks the incoming string
 ** from readline() and converts it into a list of
@@ -84,14 +90,14 @@ int	parse_input_string(char *input_string, t_shell *shell)
 	if (!tokens)
 		return (get_tokenize_fail_exit());
 	if (!redir_merge(tokens) || !correct_dollar(tokens))
-		return (NONFATAL);
+		return (parse_fail_exit(shell));
 	remove_spaces(&tokens);
 	if (!validate_syntax(tokens))
-		return (NONFATAL);
+		return (parse_fail_exit(shell));
 	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);
 	if (resolve_quotes(&tokens) == SYS_ERROR)
-		return (0);
+		return (SYS_ERROR);
 	normalize(&tokens);
 	if (group_tokens(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);

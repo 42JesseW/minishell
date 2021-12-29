@@ -14,6 +14,8 @@
 
 # define MINISHELL_H
 
+# define EXIT_CMD_NOT_FOUND 127
+# define EXIT_PARSE_FAIL 258
 # define SYS_ERROR -1
 # define NONFATAL 0
 # define SUCCESS 1
@@ -88,6 +90,7 @@ typedef struct s_exe
 	int		**pipe_fds;
 	char	**envp;
 	int		amount_cmds;
+	int		*exit_code;
 	t_list	**environ;
 	t_list	*pids;
 	t_list	*paths;

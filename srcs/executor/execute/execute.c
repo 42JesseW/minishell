@@ -12,6 +12,8 @@
 
 #include <minishell.h>
 
+// TODO test following command "touch DANG ; chmod u-r DANG ; cat DANG"
+
 /*
 ** DESCRIPTION
 **	- Finds the path to the folder from where the cmd can be executed
@@ -35,6 +37,6 @@ void	execute_cmd(char **cmd, t_exe *exe)
 		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path,
 			"command not found");
 		free(path);
-		exit (EXIT_FAILURE);
+		exit (EXIT_CMD_NOT_FOUND);
 	}
 }

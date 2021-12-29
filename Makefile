@@ -15,15 +15,14 @@ CMAKE_DIR	= cmake-build
 LIB_DIR     = .
 
 UNAME_S		= $(shell uname -s)
-HOSTNAME	= $(shell scutil --get LocalHostName)
 ifeq ($(UNAME_S), Darwin)
-  ifeq ($(HOSTNAME), jesses-MacBook-Pro)
+
     INCLUDE_DIR	+= /usr/local/Cellar/readline/8.1.1/include
     LIB_DIR		+= /usr/local/Cellar/readline/8.1.1/lib
-  else
+
     INCLUDE_DIR	+= ${HOME}/.brew/opt/readline/include
     LIB_DIR     += ${HOME}/.brew/opt/readline/lib
-  endif
+
 endif
 
 CLINKS 		= -ltermcap -lreadline -lft
@@ -130,7 +129,7 @@ $(OBJECT_DIR)/%.o: %.c
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/shell/environ/pair
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/parser/{node,redir,token}
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/executor/{builtins,dup,execute,fork,path,pipe}
-	@if $(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; then \
+	@if $(CC) -c -o $@ $< $(INCLUDES) $(CFLAGS); then \
 		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
 	else \
 	  	printf "\n[$(R)ERROR$(W)]: Failed to create object file %-33.33s\n" $@; \

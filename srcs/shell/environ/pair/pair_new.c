@@ -56,6 +56,7 @@ void	*pair_new_cpy(void *cpy)
 
 t_pair	*pair_new_val(const char *kv)
 {
+	t_pair	*pair;
 	char	*key;
 	char	*val;
 	char	*p;
@@ -75,7 +76,10 @@ t_pair	*pair_new_val(const char *kv)
 		free(val);
 		return (NULL);
 	}
-	return (pair_new_kv(key, val));
+	pair = pair_new_kv(key, val);
+	free(key);
+	free(val);
+	return (pair);
 }
 
 t_pair	*pair_new_kv(const char *key, const char *val)

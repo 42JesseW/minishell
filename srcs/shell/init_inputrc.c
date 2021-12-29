@@ -14,7 +14,6 @@
 
 static const char	*get_inputrc_file_path(void)
 {
-	const char	*file_path;
 	const char	*home;
 
 	home = getenv("HOME");
@@ -23,8 +22,7 @@ static const char	*get_inputrc_file_path(void)
 		ft_dprintf(STDERR_FILENO, "get_inputrc_file_path: HOME not set");
 		return (NULL);
 	}
-	file_path = ft_strjoin(home, "/.inputrc");
-	return (file_path);
+	return (ft_strjoin(home, "/.inputrc"));
 }
 
 static int	create_inputrc_file(const char *file_path)
@@ -33,12 +31,16 @@ static int	create_inputrc_file(const char *file_path)
 	int		fd;
 
 	fd = open(file_path, O_CREAT | O_WRONLY, 0644);
+	free((void *)file_path);
 	if (fd == SYS_ERROR)
 		return (SYS_ERROR);
 	rc_data = ft_strdup("$include /etc/inputrc\n"
 			"set echo-control-characters Off\n\n");
 	if (!rc_data || write(fd, rc_data, ft_strlen(rc_data)) < 0)
+	{
+		free(rc_data);
 		return (SYS_ERROR);
+	}
 	free(rc_data);
 	close(fd);
 	return (SUCCESS);
@@ -71,6 +73,7 @@ static int	append_option(const char *file_path)
 	int	fd;
 
 	fd = open(file_path, O_RDWR | O_APPEND);
+	free((void *)file_path);
 	if (fd == SYS_ERROR)
 		return (SYS_ERROR);
 	ret = option_exists(fd);
@@ -98,6 +101,7 @@ int	init_inputrc(void)
 	{
 		if (access(file_path, R_OK | W_OK) < 0)
 		{
+			free((void *)file_path);
 			ft_dprintf(STDERR_FILENO, "init_inputrc: invalid rights");
 			return (SYS_ERROR);
 		}
