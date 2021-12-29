@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO - Overal alles veilig maken en op goede moment alles freeen
 // TODO - return status checken : NAVRAGEN HOE?
 // TODO - Alles checken op memory leaks
 // TODO - Sommige builtins werken anders tussen pipes
@@ -31,8 +30,10 @@
 
 void	free_exe(t_exe *exe, t_shell *shell)
 {
-	ft_lstclear(&exe->paths, free);
 	ft_strarrfree(&exe->envp);
+	ft_lstclear(&exe->pids, free);
+	ft_lstclear(&exe->paths, free);
+	ft_lstclear(&exe->builtins, free);
 	ft_lstclear(&shell->cmd_nodes, node_del);
 	free(exe);
 }
