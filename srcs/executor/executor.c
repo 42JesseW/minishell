@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO - return status checken : NAVRAGEN HOE?
-// TODO - Alles checken op memory leaks
 // TODO - Sommige builtins werken anders tussen pipes
 //  	  [unset, export <key>=<val>, cd]
 // TODO - builtin unset afmaken

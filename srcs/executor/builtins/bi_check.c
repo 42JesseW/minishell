@@ -22,10 +22,21 @@ int	restore_fds(int old_stdout, int old_stdin)
 	return (SUCCESS);
 }
 
+int	check_special_builtin(t_builtin *builtin)
+{
+	if (ft_strcmp(builtin->name, "cd") == 0 || ft_strcmp(builtin->name
+			, "exit") == 0 || ft_strcmp(builtin->name, "unset") == 0)
+		return (SUCCESS);
+	else
+		return (0);
+}
+
 int	execute_builtin(int idx, t_builtin *builtin, t_node *node, t_exe *exe)
 {
 	if (exe->amount_cmds > 1)
 	{
+		if (check_special_builtin(builtin) == SUCCESS)
+			return (SUCCESS);
 		if (dup_pipes(idx, 1, exe) == SYS_ERROR)
 			return (SYS_ERROR);
 	}

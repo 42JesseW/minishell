@@ -11,11 +11,10 @@
 /* ************************************************************************** */
 
 // TODO - Keys met value ook handlen
-// TODO - Check unset in combinatie met pipes
 
 #include <minishell.h>
 
-int	check_all_alpha(char *cmd)
+int	check_all_alpha(char *builtin_name, char *cmd)
 {
 	int		idx;
 	char	*message;
@@ -23,12 +22,13 @@ int	check_all_alpha(char *cmd)
 	idx = 0;
 	while (idx < (int)ft_strlen(cmd))
 	{
-		if (ft_isalpha(cmd[idx]) == 0 && cmd[idx] != '_')
+		if ((idx == 0 && ft_isalpha(cmd[idx]) == 0 && cmd[idx] != '_')
+			|| (ft_isalnum(cmd[idx]) == 0 && cmd[idx] != '_'))
 		{
-			message = ft_strnjoin(3, "unset: '", cmd, "'");
+			message = ft_strnjoin(4, builtin_name, ": '", cmd, "'");
 			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, message,
 				"not a valid identifier");
-			free (message);
+			free(message);
 			return (EXIT_FAILURE);
 		}
 		idx++;
@@ -45,7 +45,7 @@ void	key_loop(char **cmd, t_exe *exe)
 	idx = 1;
 	while (idx < ft_strarrlen(cmd))
 	{
-		if (check_all_alpha(cmd[idx]) == EXIT_SUCCESS)
+		if (check_all_alpha("unset", cmd[idx]) == EXIT_SUCCESS)
 		{
 			node = *exe->environ;
 			while (node)
