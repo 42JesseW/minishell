@@ -15,7 +15,7 @@
 int	builtin_exit(char **cmd, t_exe *exe)
 {
 	(void)cmd;
-	ft_printf("exit\n\r");
+	ft_printf("exit\n");
 	//*exe->exit_code = 256;
 	*exe->shell_exit = 1;
 	return (SUCCESS);

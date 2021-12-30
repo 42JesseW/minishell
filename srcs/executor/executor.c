@@ -12,7 +12,7 @@
 
 // TODO - Sommige builtins werken anders tussen pipes
 //  	  [export <key>=<val>]
-// TODO - builtin exit maken
+// TODO - error code in builtin_exit checken: in bash lijkt die gewoon 0
 // TODO - builtin export maken
 // TODO - FOUT: bash-3.2$ env bla bla - env: bla: No such file or directory
 // TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
