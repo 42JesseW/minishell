@@ -25,6 +25,11 @@ int	builtin_env(char **cmd, t_exe *exe)
 	int	len;
 
 	(void)cmd;
+	if (ft_strarrlen(cmd) > 1)
+	{
+		printf("env: %s: No such file or directory\n", cmd[1]);
+		return (SUCCESS);
+	}
 	idx = 0;
 	len = ft_strarrlen(exe->envp);
 	while (idx < len)
