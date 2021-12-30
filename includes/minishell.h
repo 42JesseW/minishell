@@ -81,6 +81,7 @@ typedef struct s_pair
 typedef struct s_shell
 {
 	int		exit_code;
+	int		shell_exit;
 	t_list	*environ;
 	t_list	*cmd_nodes;
 }	t_shell;
@@ -91,6 +92,7 @@ typedef struct s_exe
 	char	**envp;
 	int		amount_cmds;
 	int		*exit_code;
+	int		*shell_exit;
 	t_list	**environ;
 	t_list	*pids;
 	t_list	*paths;
@@ -148,6 +150,7 @@ void		nodes_print_stdout(t_list *cmd_nodes);
 int			builtin_check(int idx, t_node *node, t_exe *exe);
 int			builtin_echo(char **cmd, t_exe *exe);
 int			builtin_env(char **cmd, t_exe *exe);
+int			builtin_exit(char **cmd, t_exe *exe);
 int			builtin_pwd(char **cmd, t_exe *exe);
 int			builtin_unset(char **cmd, t_exe *exe);
 int			builtin_cd(char **cmd, t_exe *exe);

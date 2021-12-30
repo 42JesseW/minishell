@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 // TODO - Sommige builtins werken anders tussen pipes
-//  	  [unset, export <key>=<val>, cd]
-// TODO - builtin unset afmaken
+//  	  [export <key>=<val>]
 // TODO - builtin exit maken
 // TODO - builtin export maken
 // TODO - FOUT: bash-3.2$ env bla bla - env: bla: No such file or directory
@@ -134,6 +133,7 @@ int	init_exe(t_shell *shell)
 	exe->pids = NULL;
 	exe->environ = &shell->environ;
 	exe->exit_code = &shell->exit_code;
+	exe->shell_exit = &shell->shell_exit;
 	exe->envp = environ_to_envp(shell->environ);
 	if (init_paths(exe, shell) == SYS_ERROR)
 		return (SYS_ERROR);

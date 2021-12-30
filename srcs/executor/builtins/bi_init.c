@@ -31,7 +31,7 @@ static t_builtin	g_builtins[] = {
 {"cd", &builtin_cd},
 {"echo", &builtin_echo},
 {"env", &builtin_env},
-{"exit", NULL},
+{"exit", &builtin_exit},
 {"export", NULL},
 {"pwd", &builtin_pwd},
 {"unset", &builtin_unset},

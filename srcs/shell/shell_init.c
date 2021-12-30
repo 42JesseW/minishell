@@ -57,6 +57,7 @@ t_shell	*shell_init(const char *envp[])
 		return (NULL);
 	}
 	shell->exit_code = 0;
+	shell->shell_exit = 0;
 	shell->environ = environ;
 	shell->cmd_nodes = NULL;
 	return (shell);

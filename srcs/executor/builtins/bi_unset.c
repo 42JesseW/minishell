@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO - Keys met value ook handlen
-
 #include <minishell.h>
 
 int	check_all_alpha(char *builtin_name, char *cmd)

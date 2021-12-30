@@ -47,7 +47,7 @@ int	main(int argc, char *argv[], const char *envp[])
 		if (parse_input_string(input_string, shell) == SYS_ERROR)
 			break ;
 		add_history(input_string);
-		if (init_exe(shell) == SYS_ERROR)
+		if (init_exe(shell) == SYS_ERROR || shell->shell_exit == 1)
 			break ;
 		free(input_string);
 		input_string = readline(DEFAULT_PROMPT);
