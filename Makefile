@@ -42,6 +42,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  shell/environ/environ_update.c \
 			  shell/environ/environ_remove.c \
 			  shell/shell_init.c \
+			  shell/shell_exit.c \
 			  shell/shell_destroy.c \
 			  shell/shell_noninteractive.c \
 			  shell/init_inputrc.c \

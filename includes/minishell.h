@@ -124,7 +124,8 @@ void		environ_remove(t_list **environ, char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[]);
-int			shell_noninteractive(t_shell *shell, char **argv);
+int			shell_exit(t_shell **shell);
+int			shell_noninteractive(t_shell **shell, char **argv);
 int			init_inputrc(void);
 void		set_signals(bool is_parent);
 
