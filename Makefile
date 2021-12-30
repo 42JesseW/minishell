@@ -68,8 +68,9 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/create_redir_files.c \
 			  parser/parse_input_string.c \
 			  executor/builtins/bi_check.c \
-			  executor/builtins/bi_env.c \
 			  executor/builtins/bi_echo.c \
+			  executor/builtins/bi_env.c \
+			  executor/builtins/bi_exit.c \
 			  executor/builtins/bi_init.c \
 			  executor/builtins/bi_pwd.c \
 			  executor/builtins/bi_cd.c \
