@@ -12,15 +12,56 @@
 
 #include <minishell.h>
 
+int	check_isdigit(char *str)
+{
+	int	idx;
+	int	len;
+
+	idx = 0;
+	len = (int)ft_strlen(str);
+	while (idx < len)
+	{
+		if (ft_isdigit(str[idx]) == 0)
+			return (0);
+		idx++;
+	}
+	return (SUCCESS);
+}
+
+int	calculate_error_code(char *cmd)
+{
+	int	exit_code;
+
+	exit_code = ft_atoi(cmd);
+	if (exit_code > 255)
+		exit_code = exit_code % 256;
+	return (exit_code);
+}
+
 int	builtin_exit(char **cmd, t_exe *exe)
 {
-	(void)cmd;
 	ft_printf("exit\n");
+	if (ft_strarrlen(cmd) == 1)
+	{
+		*exe->exit_code = 1;
+		*exe->shell_exit = 1;
+	}
 	if (ft_strarrlen(cmd) > 1)
 	{
-		printf("shelly: %s: too many arguments\n", cmd[0]);
-		*exe->exit_code = 255;
+		if (ft_strarrlen(cmd) == 2 && check_isdigit(cmd[1]))
+		{
+			*exe->exit_code = calculate_error_code(cmd[1]);
+			*exe->shell_exit = 1;
+		}
+		else if (ft_strarrlen(cmd) >= 2 && !check_isdigit(cmd[1]))
+		{
+			*exe->exit_code = 255;
+			*exe->shell_exit = 1;
+			ft_printf("shelly: %s: %s: numeric argument required\n",
+				cmd[0], cmd[1]);
+		}
+		else
+			ft_printf("shelly: %s: too many arguments\n", cmd[0]);
 	}
-	*exe->shell_exit = 1;
 	return (SUCCESS);
 }
