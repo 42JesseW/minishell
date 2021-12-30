@@ -16,9 +16,16 @@ echo testOne testTwo testThree
 cd
 //cd NOT_EXISTING_DIR
 cd tests
+cd tests;pwd
 //cd NOT_EXISTING_FILE
 //cd LICENSE
 cd ..
+cd ..;pwd
 cd tests/../srcs
 //cd ../srcs/../srcs/env
-cd ..;pwd
+
+#BUILTIN export
+export NEW_VAR;export | grep "NEW_VAR"
+export NEW_VAR;export NEW_VAR=t;export | grep "NEW_VAR"
+export NEW_VAR=t;export NEW_VAR=test;export | grep "NEW_VAR"
+
