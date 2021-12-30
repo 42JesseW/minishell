@@ -40,7 +40,9 @@ int	calculate_error_code(char *cmd)
 
 int	builtin_exit(char **cmd, t_exe *exe)
 {
-	ft_printf("exit\n");
+	if (isatty(STDIN_FILENO))
+		ft_printf("exit\n");
+	errno = 0;
 	if (ft_strarrlen(cmd) == 1)
 	{
 		*exe->exit_code = 1;
@@ -57,11 +59,11 @@ int	builtin_exit(char **cmd, t_exe *exe)
 		{
 			*exe->exit_code = 255;
 			*exe->shell_exit = 1;
-			ft_printf("shelly: %s: %s: numeric argument required\n",
-				cmd[0], cmd[1]);
+			ft_printf("%s: %s: %s: numeric argument required\n",
+				SHELL_NAME, cmd[0], cmd[1]);
 		}
 		else
-			ft_printf("shelly: %s: too many arguments\n", cmd[0]);
+			ft_printf("%s: %s: too many arguments\n", SHELL_NAME, cmd[0]);
 	}
 	return (SUCCESS);
 }

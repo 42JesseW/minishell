@@ -22,3 +22,44 @@ cd ..
 cd tests/../srcs
 //cd ../srcs/../srcs/env
 cd ..;pwd
+
+#BUILTIN exit
+exit
+exit 255
+exit 10000
+exit bla 24
+exit 24 bla
+exit bla bla
+exit bla bla bla
+exit 1 2 3
+exit -3
+exit -3 7
+
+#BUILTIN env
+env
+env bla
+export a;env
+
+#BUILTIN pwd
+pwd
+pwd bla
+pwd 1
+pwd bla bla
+
+#BUILTIN unset
+unset USER
+env | grep USER=;unset USER;env | grep USER=
+unset BLA
+unset bla
+unset PATH1
+unset 1PATH
+unset PATH*
+unset PATH USER
+unset PATH USER LOGNAME
+unset _PATH
+unset PATH_
+
+#PIPES
+ls -l | wc -l
+echo "bla di bla" | wc -l
+echo "bla di bla" | grep "bla" | wc -l

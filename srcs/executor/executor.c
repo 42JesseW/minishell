@@ -10,11 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO - Sommige builtins werken anders tussen pipes
-//  	  [export <key>=<val>]
-// TODO - builtin export maken
 // TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
 //        bi_check, bi_unset
+// TODO - builtin exit: negatieve getallen checken
+//		  				normproof maken
+// TODO - builtin echo : echo "bla di bla" | grep "bla" | wc -l blijft hangen
+// TODO - builtin env: moet alleen keys printen die ook een value hebben
 // TODO - Kijken naar melding: shelly: system error: Interrupted system call
 //        wanneer je langer wacht met afsluiten. Klopt niet
 // TODO - PUNTEN NAV EVALSHEET
