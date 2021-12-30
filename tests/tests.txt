@@ -14,6 +14,7 @@ echo testOne testTwo testThree
 
 #BUILTIN cd
 cd
+cd;pwd
 //cd NOT_EXISTING_DIR
 cd tests
 cd tests;pwd
@@ -23,9 +24,18 @@ cd ..
 cd ..;pwd
 cd tests/../srcs
 //cd ../srcs/../srcs/env
+echo $PWD
+echo $OLDPWD
+cd ..;echo $PWD;echo $OLDPWD;pwd
+cd ..;cd -;echo $PWD;echo $OLDPWD;pwd
 
 #BUILTIN export
 export NEW_VAR;export | grep "NEW_VAR"
 export NEW_VAR;export NEW_VAR=t;export | grep "NEW_VAR"
 export NEW_VAR=t;export NEW_VAR=test;export | grep "NEW_VAR"
-
+export NEW_VAR=t;export NEW_VAR+=e;export NEW_VAR+=s;export NEW_VAR+=t;export | grep "NEW_VAR"
+export NEW_VAR=a;export NEW_VAR=a=b;export NEW_VAR+==c=d;export | grep "NEW_VAR"
+export NEW_VAR=a;export NEW_VAR;export | grep "NEW_VAR"
+export _NEW_VAR;export | grep "_NEW_VAR"
+export ___NEW_VAR;export | grep "___NEW_VAR"
+export _NEW_VAR1;export | grep "_NEW_VAR1"

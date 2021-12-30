@@ -42,6 +42,8 @@ int	environ_update(t_list **environ, char *key, const char *val, bool append)
 		pair = node->content;
 		if (ft_strcmp(pair->key, key) == 0)
 		{
+			if (!val && pair->val)
+				return (SUCCESS);
 			if (append)
 				new_val = ft_strjoin(pair->val, val);
 			else
