@@ -13,13 +13,6 @@
 // TODO - Sommige builtins werken anders tussen pipes
 //  	  [export <key>=<val>]
 // TODO - builtin export maken
-// TODO - Hoe exit code in te stellen bij exit. Mogelijke situaties:
-//		  - exit
-//		  -	exit getal (exits met exit_code = tot 255, 1 op 1, daarna mod 256)
-//		  - exit getal getal (exits niet) | bash: exit: too many arguments
-//		  - exit str str (exits) | bash: exit: bla: numeric argument required
-//		  - exit getal str (exits niet) | bash: exit: too many arguments
-//		  - exit str getal (exits 255) | bash: exit: bla: numeric argument ...
 // TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
 //        bi_check, bi_unset
 // TODO - Kijken naar melding: shelly: system error: Interrupted system call
