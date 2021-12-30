@@ -16,7 +16,7 @@ LIB_DIR     = .
 
 UNAME_S		= $(shell uname -s)
 ifeq ($(UNAME_S), Darwin)
-
+	# TODO more elegant solution (Make sure a specific readline version is used -> look into why on linux CTRL + D no newline)
     INCLUDE_DIR	+= /usr/local/Cellar/readline/8.1.1/include
     LIB_DIR		+= /usr/local/Cellar/readline/8.1.1/lib
 
@@ -26,7 +26,7 @@ ifeq ($(UNAME_S), Darwin)
 endif
 
 CLINKS 		= -ltermcap -lreadline -lft
-CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS		= -Wall -Wextra -Werror -g #-fsanitize=address
 
 ifdef TESTRUN
   CFLAGS	+= -D TESTRUN
@@ -73,6 +73,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  executor/builtins/bi_init.c \
 			  executor/builtins/bi_pwd.c \
 			  executor/builtins/bi_cd.c \
+			  executor/builtins/bi_export.c \
 			  executor/builtins/bi_unset.c \
 			  executor/dup/dup_pipes.c \
 			  executor/dup/dup_redirect.c \

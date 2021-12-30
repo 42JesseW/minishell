@@ -115,7 +115,8 @@ t_pair		*pair_new_val(const char *kv);
 int			environ_from_envp(t_list **root, const char **envp);
 char		**environ_to_envp(t_list *root);
 const char	*environ_get(t_list *environ, const char *key);
-int			environ_update(t_list **environ, char *key, const char *val);
+int			environ_update(t_list **environ, char *key, const char *val,
+				bool append);
 t_list		*environ_new(char *key, const char *val);
 void		environ_remove(t_list **environ, char *key);
 
@@ -151,6 +152,7 @@ int			builtin_env(char **cmd, t_exe *exe);
 int			builtin_pwd(char **cmd, t_exe *exe);
 int			builtin_unset(char **cmd, t_exe *exe);
 int			builtin_cd(char **cmd, t_exe *exe);
+int			builtin_export(char **cmd, t_exe *exe);
 int			init_builtins(t_exe *exe);
 
 // INITIALISATION
