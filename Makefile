@@ -76,6 +76,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  executor/builtins/bi_pwd.c \
 			  executor/builtins/bi_cd.c \
 			  executor/builtins/bi_export.c \
+			  executor/builtins/bi_export_utils.c \
 			  executor/builtins/bi_unset.c \
 			  executor/dup/dup_pipes.c \
 			  executor/dup/dup_redirect.c \

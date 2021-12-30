@@ -157,6 +157,8 @@ int			builtin_pwd(char **cmd, t_exe *exe);
 int			builtin_unset(char **cmd, t_exe *exe);
 int			builtin_cd(char **cmd, t_exe *exe);
 int			builtin_export(char **cmd, t_exe *exe);
+bool		is_valid_key(t_pair *pair);
+char		**envp_lexical_sort(char **envp);
 int			init_builtins(t_exe *exe);
 
 // INITIALISATION

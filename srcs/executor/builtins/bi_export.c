@@ -12,29 +12,7 @@
 
 #include <minishell.h>
 
-bool	is_valid_key(t_pair *pair)
-{
-	int	idx;
-
-	idx = 0;
-	while (pair->key[idx])
-	{
-		if (idx == 0 && !(ft_isalpha(pair->key[idx]) || pair->key[idx] == '_'))
-			return (false);
-		else
-		{
-			if (!ft_isalnum(pair->key[idx]))
-			{
-				if (!(pair->key[idx] == '+' && !pair->key[idx + 1]))
-					return (false);
-			}
-		}
-		idx++;
-	}
-	return (true);
-}
-
-void	invalid_key_msg(char *key, int *exit_code)
+static void	invalid_key_msg(char *key, int *exit_code)
 {
 	if (*exit_code == EXIT_SUCCESS)
 		*exit_code = EXIT_FAILURE;
@@ -42,7 +20,7 @@ void	invalid_key_msg(char *key, int *exit_code)
 		SHELL_NAME, key);
 }
 
-int	export(t_exe *exe, t_pair *pair)
+static int	export(t_exe *exe, t_pair *pair)
 {
 	bool	append;
 	char	*key;
@@ -65,10 +43,49 @@ int	export(t_exe *exe, t_pair *pair)
 	return (exit_code);
 }
 
-int	export_write_stdout(t_list *environ)
+static void	write_stdout(char *arg, char **split)
 {
-	(void)environ;
-	printf("TEST\n");
+	int	idx;
+
+	if (ft_strchr(arg, '=') && !split[1])
+		ft_printf("=\"\"");
+	if (split[1])
+	{
+		idx = 2;
+		ft_printf("=\"%s", split[1]);
+		while (split[idx])
+		{
+			ft_printf("=%s", split[idx]);
+			idx++;
+		}
+		ft_printf("\"");
+	}
+}
+
+static int	export_write_stdout(t_list *environ)
+{
+	char	**sorted;
+	char	**split;
+	char	**envp;
+	int		idx;
+
+	envp = environ_to_envp(environ);
+	sorted = envp_lexical_sort(envp);
+	if (!sorted)
+		return (EXIT_FAILURE);
+	idx = 0;
+	while (sorted[idx])
+	{
+		split = ft_strsplit(sorted[idx], '=');
+		if (!split)
+			return (EXIT_FAILURE);
+		ft_printf("declare -x %s", split[0]);
+		write_stdout(sorted[idx], split);
+		ft_printf("\n");
+		ft_strarrfree(&split);
+		idx++;
+	}
+	ft_strarrfree(&envp);
 	return (EXIT_SUCCESS);
 }
 
@@ -78,8 +95,6 @@ int	builtin_export(char **cmd, t_exe *exe)
 	int		exit_code;
 	int		idx;
 
-	if (!cmd || !cmd[0] || ft_strcmp(cmd[0], "export") != 0)
-		return (EXIT_FAILURE);
 	if (!cmd[1])
 		return (export_write_stdout(*exe->environ));
 	idx = 1;
