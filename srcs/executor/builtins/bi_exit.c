@@ -16,7 +16,11 @@ int	builtin_exit(char **cmd, t_exe *exe)
 {
 	(void)cmd;
 	ft_printf("exit\n");
-	//*exe->exit_code = 256;
+	if (ft_strarrlen(cmd) > 1)
+	{
+		printf("shelly: %s: too many arguments\n", cmd[0]);
+		*exe->exit_code = 255;
+	}
 	*exe->shell_exit = 1;
 	return (SUCCESS);
 }

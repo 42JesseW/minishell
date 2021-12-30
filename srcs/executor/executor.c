@@ -12,9 +12,9 @@
 
 // TODO - Sommige builtins werken anders tussen pipes
 //  	  [export <key>=<val>]
-// TODO - error code in builtin_exit checken: in bash lijkt die gewoon 0
-// TODO - builtin export maken
+// TODO - Hoe exit code in te stellen bij exit bla: too many arguments
 // TODO - FOUT: bash-3.2$ env bla bla - env: bla: No such file or directory
+// TODO - builtin export maken
 // TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
 //        bi_check, bi_unset
 // TODO - Uitzoeken of eindigen met ctrl-C, ctrl-D en ctrl-\ werkt
