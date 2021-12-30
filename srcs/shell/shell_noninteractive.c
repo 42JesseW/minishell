@@ -12,6 +12,7 @@
 
 #include <minishell.h>
 
+// TODO must be able to loop multiple times (i.e. cat << EOF {pwd pwd} EOF | ./minishell
 static int	execute(t_shell *shell, char *arg)
 {
 	char	*input_string;

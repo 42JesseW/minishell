@@ -12,4 +12,5 @@ RUN apt-get update \
         valgrind \
         make \
         gcc \
-        libreadline-dev
+        libreadline-dev \
+        vim

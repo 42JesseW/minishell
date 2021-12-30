@@ -12,6 +12,9 @@
 
 #include <minishell.h>
 
+// TODO check in container "ls -la | wc -l" leaks in group_tokens
+// TODO "env | grep "a" | cat -e" blijft nu hangen
+
 /*
 ** The tokenizer can fail for 3 reasons:
 **	1. input_string is empty

@@ -24,7 +24,8 @@ static int	init_environment(t_list **environ)
 		old_val = "1";
 	shell_level = ft_atoi(old_val) + 1;
 	new_val = ft_itoa(shell_level);
-	if (!new_val || environ_update(environ, "SHLVL", new_val) == SYS_ERROR)
+	if (!new_val || environ_update(environ, "SHLVL", new_val, false)
+		== SYS_ERROR)
 		return (SYS_ERROR);
 	environ_remove(environ, "OLDPWD");
 	free(new_val);

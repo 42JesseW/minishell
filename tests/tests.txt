@@ -11,3 +11,14 @@ echo test -n -n
 echo -n -n test
 echo -n test -n
 echo testOne testTwo testThree
+
+#BUILTIN cd
+cd
+//cd NOT_EXISTING_DIR
+cd tests
+//cd NOT_EXISTING_FILE
+//cd LICENSE
+cd ..
+cd tests/../srcs
+//cd ../srcs/../srcs/env
+cd ..;pwd

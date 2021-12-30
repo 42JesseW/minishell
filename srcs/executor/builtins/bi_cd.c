@@ -22,10 +22,10 @@ int	reset_pwd_env(t_list **environ)
 	pwd_val = environ_get(*environ, "PWD");
 	if (pwd_val)
 	{
-		if (environ_update(environ, "OLDPWD", pwd_val) == SYS_ERROR)
+		if (environ_update(environ, "OLDPWD", pwd_val, false) == SYS_ERROR)
 			return (SYS_ERROR);
 	}
-	return (environ_update(environ, "PWD", cwd));
+	return (environ_update(environ, "PWD", cwd, false));
 }
 
 int	cd_env(t_list **environ, char *env)
@@ -44,6 +44,7 @@ int	cd_env(t_list **environ, char *env)
 	{
 		ft_dprintf(STDERR_FILENO, "%s: cd: %s: %s\n", SHELL_NAME, dir,
 			strerror(errno));
+		errno = 0;
 		return (EXIT_FAILURE);
 	}
 	if (ft_strcmp(env, "OLDPWD") == 0)
@@ -81,6 +82,7 @@ int	builtin_cd(char **cmd, t_exe *exe)
 	{
 		ft_dprintf(STDERR_FILENO, "%s: cd: %s: %s\n", SHELL_NAME, cmd[1],
 			strerror(errno));
+		errno = 0;
 		return (EXIT_FAILURE);
 	}
 	reset_pwd_env(exe->environ);
