@@ -12,7 +12,8 @@
 
 // TODO - Sommige builtins werken anders tussen pipes
 //  	  [export <key>=<val>]
-// TODO - Hoe exit code in te stellen bij exit bla: too many arguments
+// TODO - Hoe exit code in te stellen bij exit bla: too many arguments.
+//		  Gedrag samen bepalen
 // TODO - builtin export maken
 // TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
 //        bi_check, bi_unset
@@ -21,6 +22,28 @@
 //		  opvangen met WIFSIGNALED(w_status) waar w_status komt uit
 //		  waitpid(pid, &w_status, 0) met WTERMSIG(w_status) kan gekeken worden
 //		  welke signal. SIGQUIT (ctrl-\) is 3.
+// TODO - Kijken naar melding: shelly: system error: Interrupted system call
+//        wanneer je langer wacht met afsluiten. Klopt niet
+// TODO - PUNTEN NAV EVALSHEET
+//  	  - check make -n : rare printf state
+//		  - versie readline: ld: warning: directory not found for option
+//		    '-L/usr/local/Cellar/readline/8.1.1/lib'
+//		  - Hebben we nu een global? Zoja waar en waarom?
+//		  - Tab doet raar: 2e keer toont hij alle mappen
+//		  - echo "cat lol.c | cat > lol.c" GAAT FOUT.
+//			GEEFT TERUG: shelly: syntax error near unexpected token `|'
+//          MOET TERUGGEVEN cat lol.c | cat > lol.c
+//		  - Voorbeelden verzamelen van cmds met relatieve paden
+//		  - Hoe kom je uit
+//		  - unset PATH en erna env moet een foutmelding geven en niet
+//	   	    de variables zonder PATH tonen
+//		  - CHECK DEZE ALS EXPORT ER IS: Set the $PATH to a multiple
+//		    directory value (directory1:directory2) and check that directories
+//		    are checked in order from left to right
+//		  - << test2 echo cat wijkt af van bash
+//		  - Check that double quotes interpolate $: wat is interpolate?
+//		  - Try to execute a long command with a ton of arguments: voorbeeld?
+//		  - echo $"PATH" moet PATH teruggeven maar geeft nu syntaxerror
 
 #include <minishell.h>
 
