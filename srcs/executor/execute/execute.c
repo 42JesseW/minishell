@@ -29,6 +29,8 @@ void	execute_cmd(char **cmd, t_exe *exe)
 {
 	char	*path;
 
+	if (cmd == NULL)
+		exit (EXIT_SUCCESS);
 	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
 		exit (EXIT_FAILURE);
