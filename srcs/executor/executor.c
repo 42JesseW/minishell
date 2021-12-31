@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO - builtin exit: negatieve getallen checken
-//		  				normproof maken
 // TODO - <IN, >OUT segfault
 // TODO - builtin echo : echo "bla di bla" | grep "bla" | wc -l blijft hangen
 
@@ -22,9 +20,6 @@
 // TODO - PUNTEN NAV EVALSHEET
 //		  - versie readline: ld: warning: directory not found for option
 //		    '-L/usr/local/Cellar/readline/8.1.1/lib'
-//		  - echo "cat lol.c | cat > lol.c" GAAT FOUT.
-//			GEEFT TERUG: shelly: syntax error near unexpected token `|'
-//          MOET TERUGGEVEN cat lol.c | cat > lol.c
 //		  - << test2 echo cat wijkt af van bash met control D:
 //			  readline setting -> input rc file
 // TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,

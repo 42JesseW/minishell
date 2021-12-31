@@ -19,6 +19,8 @@ int	check_isdigit(char *str)
 
 	idx = 0;
 	len = (int)ft_strlen(str);
+	if (ft_strncmp(str, "-", 1) == 0)
+		idx++;
 	while (idx < len)
 	{
 		if (ft_isdigit(str[idx]) == 0)
@@ -48,22 +50,19 @@ int	builtin_exit(char **cmd, t_exe *exe)
 		*exe->exit_code = 1;
 		*exe->shell_exit = 1;
 	}
-	if (ft_strarrlen(cmd) > 1)
+	else if (ft_strarrlen(cmd) == 2 && check_isdigit(cmd[1]))
 	{
-		if (ft_strarrlen(cmd) == 2 && check_isdigit(cmd[1]))
-		{
-			*exe->exit_code = calculate_error_code(cmd[1]);
-			*exe->shell_exit = 1;
-		}
-		else if (ft_strarrlen(cmd) >= 2 && !check_isdigit(cmd[1]))
-		{
-			*exe->exit_code = 255;
-			*exe->shell_exit = 1;
-			ft_printf("%s: %s: %s: numeric argument required\n",
-				SHELL_NAME, cmd[0], cmd[1]);
-		}
-		else
-			ft_printf("%s: %s: too many arguments\n", SHELL_NAME, cmd[0]);
+		*exe->exit_code = calculate_error_code(cmd[1]);
+		*exe->shell_exit = 1;
 	}
+	else if (ft_strarrlen(cmd) >= 2 && !check_isdigit(cmd[1]))
+	{
+		*exe->exit_code = 255;
+		*exe->shell_exit = 1;
+		ft_printf("%s: %s: %s: numeric argument required\n",
+			SHELL_NAME, cmd[0], cmd[1]);
+	}
+	else
+		ft_printf("%s: %s: too many arguments\n", SHELL_NAME, cmd[0]);
 	return (SUCCESS);
 }
