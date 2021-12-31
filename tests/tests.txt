@@ -66,6 +66,10 @@ unset PATH USER LOGNAME
 unset _PATH
 unset PATH_
 
+#REDIRECTS
+<IN
+>OUT;rm OUT
+
 #PIPES
 ls -l | wc -l
 echo "bla di bla" | wc -l

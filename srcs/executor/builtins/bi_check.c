@@ -69,7 +69,7 @@ int	builtin_check(int idx, t_node *node, t_exe *exe)
 	while (bi_node)
 	{
 		builtin = bi_node->content;
-		if (ft_strcmp(node->cmd[0], builtin->name) == 0)
+		if (node->cmd && ft_strcmp(node->cmd[0], builtin->name) == 0)
 		{
 			if (execute_builtin(idx, builtin, node, exe) == SYS_ERROR)
 				return (SYS_ERROR);
