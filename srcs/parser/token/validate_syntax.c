@@ -23,7 +23,9 @@ static bool	is_quote(t_token_type type)
 **	in a valid position. If a pipe is placed at the
 **	start of the token list or there is no token on
 **	the right side of the the token, it is immediately
-**	flagged as incorrect.
+**	flagged as incorrect. Noclobber option is also not
+**  implented: >|
+**  https://unix.stackexchange.com/questions/45201/bash-what-does-do
 **
 ** PARAMERS
 **	- {scan_from} : points to the token before the pipe

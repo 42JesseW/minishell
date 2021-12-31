@@ -95,12 +95,12 @@ int	parse_input_string(char *input_string, t_shell *shell)
 	if (!redir_merge(tokens) || !correct_dollar(tokens))
 		return (parse_fail_exit(shell));
 	remove_spaces(&tokens);
-	if (!validate_syntax(tokens))
-		return (parse_fail_exit(shell));
 	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);
 	if (resolve_quotes(&tokens) == SYS_ERROR)
 		return (SYS_ERROR);
+	if (!validate_syntax(tokens))
+		return (parse_fail_exit(shell));
 	normalize(&tokens);
 	if (group_tokens(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);
