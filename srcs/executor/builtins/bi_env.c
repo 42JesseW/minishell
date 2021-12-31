@@ -21,8 +21,8 @@
 
 int	builtin_env(char **cmd, t_exe *exe)
 {
-	int	idx;
-	int	len;
+	t_pair	*pair;
+	t_list	*node;
 
 	(void)cmd;
 	if (ft_strarrlen(cmd) > 1)
@@ -30,12 +30,16 @@ int	builtin_env(char **cmd, t_exe *exe)
 		printf("env: %s: No such file or directory\n", cmd[1]);
 		return (SUCCESS);
 	}
-	idx = 0;
-	len = ft_strarrlen(exe->envp);
-	while (idx < len)
+	node = *exe->environ;
+	while (node)
 	{
-		ft_printf("%s\n", exe->envp[idx]);
-		idx++;
+		pair = node->content;
+		if (pair->val)
+		{
+			ft_printf("%s=", pair->key);
+			ft_printf("%s\n", pair->val);
+		}
+		node = node->next;
 	}
 	return (SUCCESS);
 }

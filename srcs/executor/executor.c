@@ -10,12 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
-//        bi_check, bi_unset
 // TODO - builtin exit: negatieve getallen checken
 //		  				normproof maken
+// TODO - <IN, >OUT segfault
 // TODO - builtin echo : echo "bla di bla" | grep "bla" | wc -l blijft hangen
-// TODO - builtin env: moet alleen keys printen die ook een value hebben
+
 // TODO - Kijken naar melding: shelly: system error: Interrupted system call
 //        wanneer je langer wacht met afsluiten. Klopt niet
 //			-> Doet hij dit ook als er nog geen command line is uitgevoerd (en
@@ -26,10 +25,10 @@
 //		  - echo "cat lol.c | cat > lol.c" GAAT FOUT.
 //			GEEFT TERUG: shelly: syntax error near unexpected token `|'
 //          MOET TERUGGEVEN cat lol.c | cat > lol.c
-//		  - Voorbeelden verzamelen van cmds met relatieve paden
 //		  - << test2 echo cat wijkt af van bash met control D:
 //			  readline setting -> input rc file
-//		  - Try to execute a long command with a ton of arguments: voorbeeld?
+// TODO - Descriptions toevoegen: path_of_cmd, fork, dup_pipes, dup_redirect,
+//        bi_check, bi_unset
 
 #include <minishell.h>
 
@@ -59,6 +58,7 @@ int	wait_process_end(t_shell *shell, t_list	*pid_node)
 	pid_t	*pid;
 	int		w_status;
 
+	(void)shell;
 	while (pid_node)
 	{
 		pid = pid_node->content;
