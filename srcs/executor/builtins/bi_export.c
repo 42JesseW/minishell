@@ -16,8 +16,10 @@ static void	invalid_key_msg(char *key, int *exit_code)
 {
 	if (*exit_code == EXIT_SUCCESS)
 		*exit_code = EXIT_FAILURE;
-	ft_dprintf(STDERR_FILENO, "%s: export: `%s': not a valid identifier\n",
-		SHELL_NAME, key);
+	ft_dprintf(STDERR_FILENO,
+		"%s: export: `%s': not a valid identifier\n",
+		SHELL_NAME,
+		key);
 }
 
 static int	export(t_exe *exe, t_pair *pair)

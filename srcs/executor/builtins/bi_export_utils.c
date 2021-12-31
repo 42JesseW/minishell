@@ -23,7 +23,7 @@ bool	is_valid_key(t_pair *pair)
 			return (false);
 		else
 		{
-			if (!ft_isalnum(pair->key[idx]))
+			if (!(ft_isalnum(pair->key[idx]) || pair->key[idx] == '_'))
 			{
 				if (!(pair->key[idx] == '+' && !pair->key[idx + 1]))
 					return (false);

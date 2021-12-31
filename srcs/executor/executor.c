@@ -18,6 +18,8 @@
 // TODO - builtin env: moet alleen keys printen die ook een value hebben
 // TODO - Kijken naar melding: shelly: system error: Interrupted system call
 //        wanneer je langer wacht met afsluiten. Klopt niet
+//			-> Doet hij dit ook als er nog geen command line is uitgevoerd (en
+//			   onze functies nog niet zijn uitgevoerd -> readline is probleem)
 // TODO - PUNTEN NAV EVALSHEET
 //		  - versie readline: ld: warning: directory not found for option
 //		    '-L/usr/local/Cellar/readline/8.1.1/lib'

@@ -12,7 +12,26 @@
 
 #include <minishell.h>
 
-/* remove OLDPWD and increment SHLVL */
+static void	erase_oldpwd(t_list *environ)
+{
+	t_list	*env;
+	t_pair	*pair;
+
+	env = environ;
+	while (env)
+	{
+		pair = (t_pair *)env->content;
+		if (ft_strcmp(pair->key, "OLDPWD") == 0)
+		{
+			free(pair->val);
+			pair->val = NULL;
+			break ;
+		}
+		env = env->next;
+	}
+}
+
+/* remove OLDPWD value and increment SHLVL */
 static int	init_environment(t_list **environ)
 {
 	const char	*old_val;
@@ -27,7 +46,10 @@ static int	init_environment(t_list **environ)
 	if (!new_val || environ_update(environ, "SHLVL", new_val, false)
 		== SYS_ERROR)
 		return (SYS_ERROR);
-	environ_remove(environ, "OLDPWD");
+	if (!environ_get(*environ, "OLDPWD"))
+		environ_update(environ, "OLDPWD", NULL, false);
+	else
+		erase_oldpwd(*environ);
 	free(new_val);
 	return (SUCCESS);
 }
