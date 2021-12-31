@@ -27,6 +27,7 @@ typedef enum e_token_type
 	TOK_PIPE,
 	TOK_WORD,
 	TOK_DQUOTE,
+	TOK_MERGE,
 }	t_token_type;
 
 typedef struct s_token_map

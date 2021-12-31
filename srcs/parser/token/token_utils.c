@@ -79,3 +79,26 @@ bool	quote_is_type(bool match_type, t_quote *quote, t_token_type type)
 	}
 	return (match_type && type_matches && is_quote_type);
 }
+
+void	token_display_stdout(t_list *tokens) // TODO not norm
+{
+	printf("[list size: %d]\n[type  :  token]\n", ft_lstsize(tokens));
+	for (t_list *node = tokens; node != NULL; node = node->next)
+	{
+		t_token	*token = node->content;
+		if (token->type == TOK_WORD)
+			printf("\"word\"");
+		if (token->type == TOK_MERGE)
+			printf("\"merge\"");
+		for (int idx = 0; idx < (int)(sizeof(g_map) / sizeof(t_token_map)); idx++)
+		{
+			if (g_map[idx].type == token->type)
+				printf("\"%4s\"", g_map[idx].c);
+		}
+		if (token->type == TOK_DGREAT)
+			printf("\"%4s\"", ">>");
+		if (token->type == TOK_DLESS)
+			printf("\"%4s\"", "<<");
+		printf(" | \"%s\"\n", token->token);
+	}
+}

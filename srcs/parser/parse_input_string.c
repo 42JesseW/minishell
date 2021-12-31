@@ -12,9 +12,6 @@
 
 #include <minishell.h>
 
-// TODO check in container "ls -la | wc -l" leaks in group_tokens
-// TODO "env | grep "a" | cat -e" blijft nu hangen
-
 /*
 ** The tokenizer can fail for 3 reasons:
 **	1. input_string is empty
@@ -94,11 +91,14 @@ int	parse_input_string(char *input_string, t_shell *shell)
 		return (get_tokenize_fail_exit());
 	if (!redir_merge(tokens) || !correct_dollar(tokens))
 		return (parse_fail_exit(shell));
+	if (insert_merge_token(&tokens) == SYS_ERROR)
+		return (SYS_ERROR);
 	remove_spaces(&tokens);
 	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);
 	if (resolve_quotes(&tokens) == SYS_ERROR)
 		return (SYS_ERROR);
+	token_display_stdout(tokens);
 	if (!validate_syntax(tokens))
 		return (parse_fail_exit(shell));
 	normalize(&tokens);

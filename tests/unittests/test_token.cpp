@@ -585,6 +585,8 @@ TEST_CASE_METHOD(GroupTokensFixture, "Small edge cases") {
 	ft_lstclear(&shell->cmd_nodes, node_del);
 }
 
+
+
 TEST_CASE_METHOD(GroupTokensFixture, "One simple node") {
 	t_node	*node;
 	t_redir	*redir;
