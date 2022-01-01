@@ -17,7 +17,7 @@ int	dup_pipe_write(int idx, int is_builtin, t_exe *exe)
 	int	fd_out;
 
 	fd_out = dup2(exe->pipe_fds[idx][1], STDOUT_FILENO);
-	if (is_builtin == 1)
+	if (is_builtin == 1 && idx != 0)
 	{
 		if (close(exe->pipe_fds[idx][1]) == -1)
 			return (SYS_ERROR);
