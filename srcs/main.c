@@ -47,8 +47,6 @@ int	main(int argc, char *argv[], const char *envp[])
 		if (parse_input_string(input_string, shell) == SYS_ERROR)
 			break ;
 		add_history(input_string);
-		printf("%s\n", input_string);
-		nodes_print_stdout(shell->cmd_nodes);
 		if (init_exe(shell) == SYS_ERROR || shell->shell_exit)
 			break ;
 		free(input_string);

@@ -34,14 +34,14 @@ static int	init_cmd_nodes(t_list **cmd_node)
 		return (SYS_ERROR);
 	}
 	*cmd_node = cmd;
-	return (1);
+	return (SUCCESS);
 }
 
 static void	move_and_unlink_token(t_list **tokens, t_list **node)
 {
 	t_list	*unlinked;
 
-	*node = (*node)->next;
+    *node = (*node)->next;
 	unlinked = ft_lstunlink(tokens, *tokens);
 	ft_lstdelone(unlinked, token_del);
 }

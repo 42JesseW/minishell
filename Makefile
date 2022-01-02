@@ -26,7 +26,7 @@ ifeq ($(UNAME_S), Darwin)
 endif
 
 CLINKS 		= -ltermcap -lreadline -lft
-CFLAGS		= -Wall -Wextra -Werror -g #-fsanitize=address
+CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
 
 ifdef TESTRUN
   CFLAGS	+= -D TESTRUN

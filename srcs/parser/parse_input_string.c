@@ -98,7 +98,6 @@ int	parse_input_string(char *input_string, t_shell *shell)
 		return (SYS_ERROR);
 	if (resolve_quotes(&tokens) == SYS_ERROR)
 		return (SYS_ERROR);
-	token_display_stdout(tokens);
 	if (!validate_syntax(tokens))
 		return (parse_fail_exit(shell));
 	normalize(&tokens);

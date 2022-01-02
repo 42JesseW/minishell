@@ -81,6 +81,7 @@ echo one | cat -e | cat -e | grep one
 ls -l | wc -l | echo cat
 ls -l | wc -l | echo cat | wc -l
 pwd | wc -l | echo cat | wc -l
+ls -l | head -n 6 | tail -n 5 | head -n 4 | tail -n 3 | head -n 2 | wc -l
 
 #BUILTIN export
 export | grep --invert-match 'declare -x _='

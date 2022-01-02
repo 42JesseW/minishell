@@ -31,7 +31,10 @@ static int	execute_read_stdin(t_shell **shell)
 		if (init_exe(p) == SYS_ERROR || p->shell_exit)
 			break ;
 		free(input_string);
+		input_string = NULL;
 	}
+	if (input_string)
+		free(input_string);
 	return (shell_exit(shell));
 }
 

@@ -25,10 +25,12 @@
 
 int	pipe_loop(t_exe *exe, t_shell *shell)
 {
+    t_list  *cmd_node;
 	int		idx;
 	int		amount_pipes;
 
 	idx = 0;
+    cmd_node = shell->cmd_nodes;
 	amount_pipes = exe->amount_cmds - 1;
 	while (idx < exe->amount_cmds)
 	{
@@ -37,10 +39,10 @@ int	pipe_loop(t_exe *exe, t_shell *shell)
 			if (pipe(exe->pipe_fds[idx]) != 0)
 				return (SYS_ERROR);
 		}
-		if (builtin_check(idx, shell->cmd_nodes->content, exe)
+		if (builtin_check(idx, cmd_node->content, exe)
 			== SYS_ERROR)
 			return (SYS_ERROR);
-		shell->cmd_nodes = shell->cmd_nodes->next;
+		cmd_node = cmd_node->next;
 		idx++;
 	}
 	return (SUCCESS);
