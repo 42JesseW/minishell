@@ -40,6 +40,8 @@ bool	is_quote_tok(t_token_type type)
 	return (type == TOK_DQUOTE || type == TOK_QUOTE);
 }
 
+// TODO must work with TOK_DOLLAR
+// TODO must also work on both sides (i.e.) echo "$PWD"$SHLVL and $PWD"$SHLVL"
 bool	check_prev(t_token *cur_token, t_list *prev)
 {
 	t_token	*prev_token;
@@ -48,7 +50,7 @@ bool	check_prev(t_token *cur_token, t_list *prev)
 		return (false);
 	prev_token = (t_token *)prev->content;
 	return ((is_quote_tok(cur_token->type) && is_quote_tok(prev_token->type))
-		|| (is_quote_tok(cur_token->type) && prev_token->type == TOK_WORD));
+		|| (is_quote_tok(cur_token->type) && (prev_token->type == TOK_WORD || prev_token->type == TOK_DOLLAR)));
 }
 
 /*

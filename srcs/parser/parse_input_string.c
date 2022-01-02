@@ -22,7 +22,7 @@
 ** already checks for this. For option 3, malloc will
 ** set {errno} to reflect the error.
 */
-static int	get_tokenize_fail_exit(void)
+static int	get_tokenize_fail_exit(t_list **tokens)
 {
 	int		exit_code;
 
@@ -35,11 +35,15 @@ static int	get_tokenize_fail_exit(void)
 	}
 	else
 		ft_dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, "multiline");
+	if (*tokens)
+		ft_lstclear(tokens, token_del);
 	return (exit_code);
 }
 
-static int	parse_fail_exit(t_shell *shell)
+static int	parse_fail_exit(t_shell *shell, t_list **tokens)
 {
+	if (*tokens)
+		ft_lstclear(tokens, token_del);
 	shell->exit_code = EXIT_PARSE_FAIL;
 	return (NONFATAL);
 }
@@ -88,9 +92,9 @@ int	parse_input_string(char *input_string, t_shell *shell)
 		return (SUCCESS);
 	tokens = tokenize(input_string);
 	if (!tokens)
-		return (get_tokenize_fail_exit());
+		return (get_tokenize_fail_exit(&tokens));
 	if (!redir_merge(tokens) || !correct_dollar(tokens))
-		return (parse_fail_exit(shell));
+		return (parse_fail_exit(shell, &tokens));
 	if (insert_merge_token(&tokens) == SYS_ERROR)
 		return (SYS_ERROR);
 	remove_spaces(&tokens);
@@ -99,7 +103,7 @@ int	parse_input_string(char *input_string, t_shell *shell)
 	if (resolve_quotes(&tokens) == SYS_ERROR)
 		return (SYS_ERROR);
 	if (!validate_syntax(tokens))
-		return (parse_fail_exit(shell));
+		return (parse_fail_exit(shell, &tokens));
 	normalize(&tokens);
 	if (group_tokens(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);

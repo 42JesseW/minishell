@@ -47,7 +47,7 @@ int	builtin_exit(char **cmd, t_exe *exe)
 	errno = 0;
 	if (ft_strarrlen(cmd) == 1)
 	{
-		*exe->exit_code = 1;
+		*exe->exit_code = EXIT_SUCCESS;
 		*exe->shell_exit = 1;
 	}
 	else if (ft_strarrlen(cmd) == 2 && check_isdigit(cmd[1]))

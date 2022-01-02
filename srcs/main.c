@@ -52,5 +52,7 @@ int	main(int argc, char *argv[], const char *envp[])
 		free(input_string);
 		input_string = readline(DEFAULT_PROMPT);
 	}
+	if (input_string)
+		free(input_string);
 	return (shell_exit(&shell));
 }

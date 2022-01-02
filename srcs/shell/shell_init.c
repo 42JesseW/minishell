@@ -31,26 +31,43 @@ static void	erase_oldpwd(t_list *environ)
 	}
 }
 
-/* remove OLDPWD value and increment SHLVL */
-static int	init_environment(t_list **environ)
+static int	increment_shell_level(t_list **environ)
 {
 	const char	*old_val;
 	char		*new_val;
 	int			shell_level;
+	int			exit_code;
 
+	exit_code = SUCCESS;
 	old_val = environ_get(*environ, "SHLVL");
 	if (!old_val)
 		old_val = "1";
 	shell_level = ft_atoi(old_val) + 1;
 	new_val = ft_itoa(shell_level);
-	if (!new_val || environ_update(environ, "SHLVL", new_val, false)
-		== SYS_ERROR)
-		return (SYS_ERROR);
+	if (!new_val)
+		exit_code = SYS_ERROR;
+	else
+	{
+		if (environ_update(environ, "SHLVL", new_val, false) == SYS_ERROR)
+			exit_code = SYS_ERROR;
+		free(new_val);
+	}
+	return (exit_code);
+}
+
+/* remove OLDPWD value and increment SHLVL */
+static int	init_environment(t_list **environ)
+{
+	if (isatty(STDIN_FILENO))
+	{
+		if (increment_shell_level(environ) == SYS_ERROR)
+			return (SYS_ERROR);
+	}
+	errno = 0;
 	if (!environ_get(*environ, "OLDPWD"))
 		environ_update(environ, "OLDPWD", NULL, false);
 	else
 		erase_oldpwd(*environ);
-	free(new_val);
 	return (SUCCESS);
 }
 

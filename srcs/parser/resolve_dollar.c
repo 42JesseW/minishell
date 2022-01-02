@@ -12,6 +12,14 @@
 
 #include <minishell.h>
 
+static void	swap_ptr(t_list **tokens, t_list **word, t_list **next_node)
+{
+	*word = (*next_node)->next;
+	ft_lstunlink(tokens, *next_node);
+	ft_lstdelone(*next_node, token_del);
+	*next_node = *word;
+}
+
 /*
 ** resolve() should do the following:
 **	1. unlink the TOK_DOLLAR node
@@ -29,9 +37,7 @@ static int	resolve(t_shell *shell, t_list **tokens, t_list **node)
 	const char	*kv[2];
 	char		*token_string;
 
-	word = (*node)->next;
-	ft_lstunlink(tokens, *node);
-	*node = word;
+	swap_ptr(tokens, &word, node);
 	token = (t_token *)word->content;
 	kv[0] = token->token;
 	if (ft_strcmp(kv[0], "?") == 0)

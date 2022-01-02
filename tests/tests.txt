@@ -76,7 +76,7 @@ echo "bla di bla" | wc -l
 echo "bla di bla" | grep "bla" | wc -l
 env | ls -l | wc -l
 echo cat | wc -l | cat
-pwd | cat | env
+pwd | cat | env | sort
 echo one | cat -e | cat -e | grep one
 ls -l | wc -l | echo cat
 ls -l | wc -l | echo cat | wc -l
