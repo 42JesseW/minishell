@@ -20,6 +20,8 @@
 # define NONFATAL 0
 # define SUCCESS 1
 
+# define DF_OPEN_PERM 0664
+
 # define B "\e[0;38;2;218;165;32m"
 # define R "\e[m"
 

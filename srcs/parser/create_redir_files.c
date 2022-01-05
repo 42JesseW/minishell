@@ -103,7 +103,7 @@ static int	get_redir_fd(t_shell *shell, t_redir *node)
 	int	mode;
 	int	fd;
 
-	mode = 0644;
+	mode = DF_OPEN_PERM;
 	if (node->type == REDIR_DELIM)
 		fd = convert_heredoc(shell, node, mode);
 	else if (node->type == REDIR_IN)

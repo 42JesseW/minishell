@@ -35,7 +35,6 @@ static int	merge(t_list *redir1, t_list *redir2)
 		token1->type = TOK_DLESS;
 		token1->token = ft_strdup("<<");
 	}
-	token2->token = NULL;
 	redir1->next = redir2->next;
 	ft_lstdelone(redir2, redir_del);
 	return (SUCCESS);

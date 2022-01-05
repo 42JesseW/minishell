@@ -109,6 +109,7 @@ static int	merge_word(t_list **tokens, t_list **node, t_list **prev)
 {
 	t_token	*left_word;
 	t_token	*right_word;
+	t_list	*unlinked;
 	char	*new_token;
 
 	left_word = (*prev)->content;
@@ -118,8 +119,10 @@ static int	merge_word(t_list **tokens, t_list **node, t_list **prev)
 		return (SYS_ERROR);
 	free(left_word->token);
 	left_word->token = new_token;
-	ft_lstunlink(tokens, (*node)->next);
-	ft_lstunlink(tokens, (*node));
+	unlinked = ft_lstunlink(tokens, (*node)->next);
+	ft_lstdelone(unlinked, token_del);
+	unlinked = ft_lstunlink(tokens, (*node));
+	ft_lstdelone(unlinked, token_del);
 	*node = (*prev)->next;
 	return (1);
 }

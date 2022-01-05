@@ -66,9 +66,42 @@ unset PATH USER LOGNAME
 unset _PATH
 unset PATH_
 
-#REDIRECTS
-<IN
->OUT;rm OUT
+#QUOTES single quote
+echo 'hello there'
+echo '"hello there"'
+echo ''hello''
+echo '$PWD'
+echo 'I am a pipe | and I am a redirect > < << >>'
+
+#QUOTES double quote
+echo "hello there"
+echo "'hello there'"
+echo ""hello""
+echo "$PWD"
+echo "I am a pipe | and I am a redirect > < << >>"
+
+#REDIRECT input
+< Makefile
+cat < Makefile
+cat < LICENSE < Makefile
+cat < Dockerfile < LICENSE < Makefile
+
+#REDIRECT output
+>OUT;cat OUT;rm OUT
+ls -la > OUT;cat OUT;rm OUT
+cat < Makefile > OUT; cat OUT;rm OUT
+ls -la > OUT1 > OUT2;ls;cat OUT1;cat OUT2;rm OUT1 OUT2
+ls -la > OUT1 > OUT2 > OUT3;ls;cat OUT1;cat OUT2;cat OUT3;rm OUT1 OUT2 OUT3
+
+#REDIRECT append
+>>OUT;cat OUT;rm OUT
+ls -la >> OUT;cat OUT;rm OUT
+cat < Makefile >> OUT; cat OUT;rm OUT
+ls -la >> OUT1 >> OUT2;ls;cat OUT1;cat OUT2;rm OUT1 OUT2
+ls -la >> OUT1 >> OUT2 >> OUT3;ls;cat OUT1;cat OUT2;cat OUT3;rm OUT1 OUT2 OUT3
+echo one >> OUT;echo two >> OUT;echo tree >> OUT;cat OUT;rm OUT
+
+#REDIRECT heredoc
 
 #PIPES
 ls -l | wc -l
@@ -94,3 +127,32 @@ export NEW_VAR=a;export NEW_VAR;export | grep "NEW_VAR"
 export _NEW_VAR;export | grep "_NEW_VAR"
 export ___NEW_VAR;export | grep "___NEW_VAR"
 export _NEW_VAR1;export | grep "_NEW_VAR1"
+
+#PARSER spaces
+echo one  two   three    four
+cat<Makefile|grep NAME>OUT;cat OUT;rm OUT
+
+#PARSER word splitting
+cat Make'file'
+cat 'Make'file
+cat Make"file"
+cat "Make"file
+cat "Make"'file'
+cat 'Make'"file"
+cat $HOME"/.bashrc"
+ls "$HOME"'/../'$USER
+echo $USER$PWD
+
+#PARSER normalization / word order
+< Makefile cat
+< LICENSE < Dockerfile < Makefile cat -e
+cat < Dockerfile < LICENSE < Makefile -e
+< LICENSE cat -e < Makefile
+> OUT cat -e < Makefile;cat OUT;rm OUT
+< Makefile grep NAME > OUT;cat OUT;rm OUT
+
+#ENVIRONMENT variables
+echo $
+echo $USER
+echo "$USER"
+echo "$USER $PWD $HOME"
