@@ -40,29 +40,63 @@ bool	is_quote_tok(t_token_type type)
 	return (type == TOK_DQUOTE || type == TOK_QUOTE);
 }
 
-// TODO must work with TOK_DOLLAR
-// TODO must also work on both sides (i.e.) echo "$PWD"$SHLVL and $PWD"$SHLVL"
-bool	check_prev(t_token *cur_token, t_list *prev)
+bool	from_quote(t_quote *quote, t_list *node, t_list *prev)
 {
+	t_token	*cur_token;
 	t_token	*prev_token;
 
+	if (!node->next)
+		return (false);
+	cur_token = (t_token *)node->content;
+	if (quote->between && is_quote_tok(cur_token->type))
+	{
+		prev_token = (t_token *)prev->content;
+		return (prev_token->type == TOK_WORD
+			|| prev_token->type == TOK_DOLLAR
+			|| is_quote_tok(prev_token->type));
+	}
+	return (false);
+}
+
+bool	from_other(t_quote *quote, t_list *node, t_list *prev)
+{
+	t_token	*cur_token;
+	t_token	*prev_token;
+
+	prev_token = (t_token *)prev->content;
+	if (!quote->between && is_quote_tok(prev_token->type))
+	{
+		cur_token = (t_token *)node->content;
+		return (cur_token->type == TOK_WORD || cur_token->type == TOK_DOLLAR);
+	}
+	return (false);
+}
+
+/*
+** Checks if a valid insert position for merge token. For example:
+**	"word"(x)"word" || 'word'(x)'word'
+**	"word"(x)'word' || 'word'(x)"word"
+**	'word'(x)word   || word(x)'word'
+**	...
+**
+*/
+bool	is_insert_pos(t_quote *quote, t_list *node, t_list *prev)
+{
 	if (!prev)
 		return (false);
-	prev_token = (t_token *)prev->content;
-	return ((is_quote_tok(cur_token->type) && is_quote_tok(prev_token->type))
-		|| (is_quote_tok(cur_token->type) && (prev_token->type == TOK_WORD || prev_token->type == TOK_DOLLAR)));
+	return (from_quote(quote, node, prev) || from_other(quote, node, prev));
 }
 
 /*
 ** Insert special tokens in the case that an opening
 ** quote is directly followed by a closing quote:
-** - export DOCK=dock ; cat "$DOCK"'er'"file"	// TODO testcase
+** - export DOCK=dock ; cat "$DOCK"'er'"file"
 **
 ** This is to prevent word splitting. The resolve_quotes
 ** function will use these to merge back TOK_WORD tokens
 ** if necessary.
 */
-int	insert_merge_token(t_list **tokens)		// TODO testcase
+int	insert_merge_token(t_list **tokens)
 {
 	t_list	*node;
 	t_list	*prev;
@@ -79,8 +113,7 @@ int	insert_merge_token(t_list **tokens)		// TODO testcase
 			quote.between = true;
 		else if (quote.between && quote_is_type(true, &quote, token->type))
 			quote.between = false;
-		//printf("tok: %s | %d\n", token->token, quote.between);
-		if (quote.between && check_prev(token, prev))
+		if (is_insert_pos(&quote, node, prev))
 		{
 			if (insert(tokens, &node, &prev) == SYS_ERROR)
 				return (SYS_ERROR);
