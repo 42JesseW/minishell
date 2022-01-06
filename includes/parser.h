@@ -4,7 +4,7 @@
 
 # include <stdio.h>
 # include <stdbool.h>
-# include <libft/includes/libft.h>
+# include <libft.h>
 
 # define REDIR_ALL 0
 # define REDIR_SINGLE 1

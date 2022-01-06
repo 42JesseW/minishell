@@ -46,9 +46,9 @@
 # include <sys/wait.h>
 # include <readline/history.h>
 # include <readline/readline.h>
-# include <libft/includes/libft.h>
-# include <libft/includes/printf.h>
-# include <libft/includes/get_next_line.h>
+# include <libft.h>
+# include <printf.h>
+# include <get_next_line.h>
 
 typedef enum e_redir_type
 {

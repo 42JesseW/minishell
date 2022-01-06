@@ -2,28 +2,29 @@ NAME = minishell
 
 SHELL = /bin/bash
 
-LIBFTDIR	= libft
+RL_VERSION	= 7.0
+
+LIB_DIR		= lib
+
+LIBFTDIR	= lib/libft
 LIBFTLIB	= libft.a
+LIB_DIR		+= $(LIBFTDIR)
 
 SOURCE_DIR 	= srcs
 OBJECT_DIR 	= obj
-INCLUDE_DIR	= includes .
+INCLUDE_DIR	= includes $(LIBFTDIR)/includes
 
 CMAKE_DIR	= cmake-build
 
-# `brew install readline` for function rl_replace_line
-LIB_DIR     = .
-
-UNAME_S		= $(shell uname -s)
-ifeq ($(UNAME_S), Darwin)
-	# TODO more elegant solution (Make sure a specific readline version is used -> look into why on linux CTRL + D no newline)
-    INCLUDE_DIR	+= /usr/local/Cellar/readline/8.1.1/include
-    LIB_DIR		+= /usr/local/Cellar/readline/8.1.1/lib
-
-    INCLUDE_DIR	+= ${HOME}/.brew/opt/readline/include
-    LIB_DIR     += ${HOME}/.brew/opt/readline/lib
-
+# https://ftp.gnu.org/gnu/readline/readline-7.0.tar.gz
+RL_SETUP	= 1
+RL_DIR		= $(PWD)/lib/readline-$(RL_VERSION)
+ifeq ("$(wildcard $(RL_DIR)/libreadline.a)", "")
+	RL_SETUP	= 0
 endif
+
+INCLUDE_DIR		+= $(PWD)/lib/readline-$(RL_VERSION)/include
+LIB_DIR			+= $(PWD)/lib/readline-$(RL_VERSION)/lib
 
 CLINKS 		= -ltermcap -lreadline -lft
 CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
@@ -126,7 +127,7 @@ all: ascii $(NAME)
 ascii:
 	@echo -e "$$ASCII"
 
-$(NAME): $(OBJECTS) $(LIBFTLIB)
+$(NAME): $(OBJECTS) $(LIBFTLIB) readline-install
 	@$(CC) $(OBJECTS) -o $@ $(LIBS) $(CLINKS) $(INCLUDES) $(CFLAGS)
 	@printf "[$(G)INFO$(W)]: Finished building program $(NAME)\n"
 
@@ -143,7 +144,15 @@ $(OBJECT_DIR)/%.o: %.c
 
 $(LIBFTLIB):
 	@make --directory=$(LIBFTDIR)
-	@cp $(LIBFTDIR)/$(LIBFTLIB) .
+
+readline-install:
+	@if [ "$(RL_SETUP)" -eq "0" ]; then \
+		cd $(RL_DIR) && ./configure --prefix="$(RL_DIR)" --exec-prefix="$(RL_DIR)"; \
+		cd $(RL_DIR) && make install; \
+  	fi
+
+readline-uninstall:
+	@make --directory=$(RL_DIR) distclean
 
 clean:
 	@rm -rf $(OBJECT_DIR) $(CMAKE_DIR)
