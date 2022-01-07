@@ -9,3 +9,5 @@ cmake-build*
 minishell
 *.gch
 ARCHIVE/
+*.dylib
+*.log

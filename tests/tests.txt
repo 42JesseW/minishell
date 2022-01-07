@@ -66,6 +66,18 @@ unset PATH USER LOGNAME
 unset _PATH
 unset PATH_
 
+#BUILTIN export
+export | grep --invert-match 'declare -x _='
+export NEW_VAR;export | grep "NEW_VAR"
+export NEW_VAR;export NEW_VAR=t;export | grep "NEW_VAR"
+export NEW_VAR=t;export NEW_VAR=test;export | grep "NEW_VAR"
+export NEW_VAR=t;export NEW_VAR+=e;export NEW_VAR+=s;export NEW_VAR+=t;export | grep "NEW_VAR"
+export NEW_VAR=a;export NEW_VAR=a=b;export NEW_VAR+==c=d;export | grep "NEW_VAR"
+export NEW_VAR=a;export NEW_VAR;export | grep "NEW_VAR"
+export _NEW_VAR;export | grep "_NEW_VAR"
+export ___NEW_VAR;export | grep "___NEW_VAR"
+export _NEW_VAR1;export | grep "_NEW_VAR1"
+
 #QUOTES single quote
 echo 'hello there'
 echo '"hello there"'
@@ -117,18 +129,6 @@ ls -l | wc -l | echo cat | wc -l
 pwd | wc -l | echo cat | wc -l
 ls -l | head -n 6 | tail -n 5 | head -n 4 | tail -n 3 | head -n 2 | wc -l
 
-#BUILTIN export
-export | grep --invert-match 'declare -x _='
-export NEW_VAR;export | grep "NEW_VAR"
-export NEW_VAR;export NEW_VAR=t;export | grep "NEW_VAR"
-export NEW_VAR=t;export NEW_VAR=test;export | grep "NEW_VAR"
-export NEW_VAR=t;export NEW_VAR+=e;export NEW_VAR+=s;export NEW_VAR+=t;export | grep "NEW_VAR"
-export NEW_VAR=a;export NEW_VAR=a=b;export NEW_VAR+==c=d;export | grep "NEW_VAR"
-export NEW_VAR=a;export NEW_VAR;export | grep "NEW_VAR"
-export _NEW_VAR;export | grep "_NEW_VAR"
-export ___NEW_VAR;export | grep "___NEW_VAR"
-export _NEW_VAR1;export | grep "_NEW_VAR1"
-
 #PARSER spaces
 echo one  two   three    four
 cat<Makefile|grep NAME>OUT;cat OUT;rm OUT
@@ -157,3 +157,5 @@ echo $
 echo $USER
 echo "$USER"
 echo "$USER $PWD $HOME"
+echo;echo $?
+echo one | grep -q two;echo $?

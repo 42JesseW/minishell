@@ -98,15 +98,15 @@ do
   fi
   # if the $cmd variable contains a ':' character, a HEREDOC is
   # specified.
-  if [[ "$cmd" =~ .*":".* ]]; then
-  	IFS=':' read -r -a heredoc_cmd <<< "$cmd"
-		cmd="$(printf "%s%s\n%s\n%s\n" \
-			"cat << " \
-			"${heredoc_cmd[0]}" \
-			"$(for sub in "${heredoc_cmd[@]:1:${#heredoc_cmd[@]}-2}"; do echo "$sub"; done)" \
-			"${heredoc_cmd[${#heredoc_cmd[@]}-1]}" \
-		)"
-  fi
+#  if [[ "$cmd" =~ .*":".* ]]; then
+#  	IFS=':' read -r -a heredoc_cmd <<< "$cmd"
+#		cmd="$(printf "%s%s\n%s\n%s\n" \
+#			"cat << " \
+#			"${heredoc_cmd[0]}" \
+#			"$(for sub in "${heredoc_cmd[@]:1:${#heredoc_cmd[@]}-2}"; do echo "$sub"; done)" \
+#			"${heredoc_cmd[${#heredoc_cmd[@]}-1]}" \
+#		)"
+#  fi
   bash_output=$(timeout $TIMEOUT echo "$cmd" | $BASH_SHELL 2>&1)
   bash_exit_code=$?
   your_output=$(timeout $TIMEOUT echo "$cmd" | $YOUR_SHELL 2>&1)

@@ -3,7 +3,7 @@ FROM debian:buster
 ARG APP_DIR=/app
 
 ADD includes    ${APP_DIR}/includes
-ADD libft       ${APP_DIR}/libft
+ADD lib         ${APP_DIR}/lib
 ADD srcs        ${APP_DIR}/srcs
 COPY ["Makefile", "CMakeLists.txt", "${APP_DIR}/"]
 

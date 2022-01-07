@@ -128,7 +128,7 @@ all: ascii $(NAME)
 ascii:
 	@echo -e "$$ASCII"
 
-$(NAME): $(OBJECTS) $(LIBFTLIB) readline-install
+$(NAME): $(OBJECTS) $(LIBFTDIR)/$(LIBFTLIB) $(RL_DIR)/libreadline.a
 	@$(CC) $(OBJECTS) -o $@ $(LIBS) $(CLINKS) $(INCLUDES) $(CFLAGS)
 	@printf "[$(G)INFO$(W)]: Finished building program $(NAME)\n"
 
@@ -143,10 +143,10 @@ $(OBJECT_DIR)/%.o: %.c
 	  	$(CC) $(INCLUDES) -c $(CFLAGS) -o $@ $<; \
 	fi
 
-$(LIBFTLIB):
+$(LIBFTDIR)/$(LIBFTLIB):
 	@make --directory=$(LIBFTDIR)
 
-readline-install:
+$(RL_DIR)/libreadline.a:
 	@if [ "$(RL_SETUP)" -eq "0" ]; then \
 		cd $(RL_DIR) && ./configure --prefix="$(RL_DIR)" --exec-prefix="$(RL_DIR)"; \
 		cd $(RL_DIR) && make install; \

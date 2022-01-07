@@ -20,7 +20,7 @@ int	shell_exit(t_shell **shell)
 	p = *shell;
 	exit_code = p->exit_code;
 	shell_destroy(shell);
-	if (errno == 0)
+	if (errno == 0 && isatty(STDIN_FILENO))
 		printf("exit\n");
 	return (exit_code);
 }

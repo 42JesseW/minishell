@@ -97,7 +97,8 @@ int	parse_input_string(char *input_string, t_shell *shell)
 		return (parse_fail_exit(shell, &tokens));
 	if (insert_merge_token(&tokens) == SYS_ERROR)
 		return (SYS_ERROR);
-	remove_spaces(&tokens);
+	if (remove_spaces(&tokens) == NONFATAL)
+		return (NONFATAL);
 	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);
 	if (resolve_quotes(&tokens) == SYS_ERROR)

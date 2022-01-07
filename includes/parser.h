@@ -64,7 +64,7 @@ t_list	*tokenize(const char *input_string);
 void	token_display_stdout(t_list *tokens);
 bool	token_is_word_end(int c);
 
-void	remove_spaces(t_list **tokens);
+int		remove_spaces(t_list **tokens);
 void	token_del(void *token);
 
 t_token	*token_new_def(void);
