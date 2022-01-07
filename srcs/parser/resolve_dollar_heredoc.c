@@ -42,7 +42,7 @@ char	*resolve_dollar_heredoc(t_shell *shell, char *line)
 	char	*resolved_line;
 
 	tokens = tokenize(line);
-	if (!tokens || !correct_dollar(tokens))
+	if (!tokens || !correct_dollar(tokens))	// TODO this breaks stuff ?!
 		return (NULL);
 	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
 	{
@@ -55,5 +55,6 @@ char	*resolve_dollar_heredoc(t_shell *shell, char *line)
 		ft_lstclear(&tokens, token_del);
 		return (NULL);
 	}
+	ft_lstclear(&tokens, token_del);
 	return (resolved_line);
 }
