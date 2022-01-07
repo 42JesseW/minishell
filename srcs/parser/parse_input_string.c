@@ -108,7 +108,5 @@ int	parse_input_string(char *input_string, t_shell *shell)
 	normalize(&tokens);
 	if (group_tokens(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);
-	if (create_redir_files(shell) == SYS_ERROR)
-		return (SYS_ERROR);
-	return (SUCCESS);
+	return (create_redir_files(shell));
 }

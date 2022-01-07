@@ -52,5 +52,5 @@ int	remove_spaces(t_list **tokens)
 			node = node->next;
 		}
 	}
-	return (tokens != NULL);
+	return (*tokens != NULL);
 }

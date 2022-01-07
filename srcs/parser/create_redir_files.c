@@ -160,5 +160,5 @@ int	create_redir_files(t_shell *shell)
 		}
 		cmd_node = cmd_node->next;
 	}
-	return (1);
+	return (SUCCESS);
 }
