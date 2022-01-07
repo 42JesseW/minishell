@@ -66,6 +66,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/token/consume_token.c \
 			  parser/token/group_tokens.c \
 			  parser/token/insert_merge_token.c \
+			  parser/token/is_insert_pos.c \
 			  parser/resolve_dollar.c \
 			  parser/resolve_dollar_heredoc.c \
 			  parser/create_redir_files.c \

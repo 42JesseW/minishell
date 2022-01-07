@@ -153,6 +153,36 @@ TEST_CASE_METHOD(WordSplittingFixture, "Edge cases - Seven") {
 	}
 }
 
+TEST_CASE_METHOD(WordSplittingFixture, "Edge cases - Eight") {
+	init_tokens(R"(echo one$USER)");
+	insert_merge_token(&tokens);
+	int	idx = 0;
+	for (t_list *node = tokens; node != NULL; node = node->next)
+	{
+		auto	*token = (t_token *)node->content;
+		if (idx == 3)
+			CHECK(token->type == TOK_MERGE);
+		else
+			CHECK(token->type != TOK_MERGE);
+		idx++;
+	}
+}
+
+TEST_CASE_METHOD(WordSplittingFixture, "Edge cases - Nine") {
+	init_tokens(R"(echo one$USER$PWD)");
+	insert_merge_token(&tokens);
+	int	idx = 0;
+	for (t_list *node = tokens; node != NULL; node = node->next)
+	{
+		auto	*token = (t_token *)node->content;
+		if (idx == 3 || idx == 6)
+			CHECK(token->type == TOK_MERGE);
+		else
+			CHECK(token->type != TOK_MERGE);
+		idx++;
+	}
+}
+
 TEST_CASE_METHOD(WordSplittingFixture, "Add two token same quote type") {
 	init_tokens(R"(echo "one""two""three")");
 	insert_merge_token(&tokens);

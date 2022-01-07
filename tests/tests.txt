@@ -103,6 +103,7 @@ echo one >> OUT;echo two >> OUT;echo tree >> OUT;cat OUT;rm OUT
 
 #REDIRECT heredoc
 
+
 #PIPES
 ls -l | wc -l
 echo "bla di bla" | wc -l

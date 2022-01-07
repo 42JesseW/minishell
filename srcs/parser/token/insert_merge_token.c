@@ -35,56 +35,12 @@ static int	insert(t_list **tokens, t_list **node, t_list **prev)
 	return (SUCCESS);
 }
 
-bool	is_quote_tok(t_token_type type)
+static void	init_vars(t_list *tokens, t_quote *quote, t_list **node, t_list **prev)
 {
-	return (type == TOK_DQUOTE || type == TOK_QUOTE);
-}
-
-bool	from_quote(t_quote *quote, t_list *node, t_list *prev)
-{
-	t_token	*cur_token;
-	t_token	*prev_token;
-
-	if (!node->next)
-		return (false);
-	cur_token = (t_token *)node->content;
-	if (quote->between && is_quote_tok(cur_token->type))
-	{
-		prev_token = (t_token *)prev->content;
-		return (prev_token->type == TOK_WORD
-			|| prev_token->type == TOK_DOLLAR
-			|| is_quote_tok(prev_token->type));
-	}
-	return (false);
-}
-
-bool	from_other(t_quote *quote, t_list *node, t_list *prev)
-{
-	t_token	*cur_token;
-	t_token	*prev_token;
-
-	prev_token = (t_token *)prev->content;
-	if (!quote->between && is_quote_tok(prev_token->type))
-	{
-		cur_token = (t_token *)node->content;
-		return (cur_token->type == TOK_WORD || cur_token->type == TOK_DOLLAR);
-	}
-	return (false);
-}
-
-/*
-** Checks if a valid insert position for merge token. For example:
-**	"word"(x)"word" || 'word'(x)'word'
-**	"word"(x)'word' || 'word'(x)"word"
-**	'word'(x)word   || word(x)'word'
-**	...
-**
-*/
-bool	is_insert_pos(t_quote *quote, t_list *node, t_list *prev)
-{
-	if (!prev)
-		return (false);
-	return (from_quote(quote, node, prev) || from_other(quote, node, prev));
+	quote->between = false;
+	quote->type = TOK_QUOTE;
+	*prev = NULL;
+	*node = tokens;
 }
 
 /*
@@ -103,9 +59,7 @@ int	insert_merge_token(t_list **tokens)
 	t_token	*token;
 	t_quote	quote;
 
-	prev = NULL;
-	node = *tokens;
-	quote = (t_quote){.between = false, .type = TOK_QUOTE};
+	init_vars(*tokens, &quote, &node, &prev);
 	while (node)
 	{
 		token = (t_token *)node->content;
