@@ -17,4 +17,4 @@ add_executable(tests ${SOURCES})
 
 add_dependencies(tests ${LIBFT})
 
-target_link_libraries(tests tester ft readline)
+target_link_libraries(tests tester ft readline tinfo)

@@ -24,6 +24,6 @@ add_executable(minishell ${SOURCES} srcs/executor/builtins/bi_unset.c srcs/execu
 
 add_dependencies(minishell ${LIBFT})
 
-target_link_libraries(minishell ft termcap readline)
+target_link_libraries(minishell ft termcap readline tinfo)
 
 add_subdirectory(tests)

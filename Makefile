@@ -23,11 +23,22 @@ ifeq ("$(wildcard $(RL_DIR)/libreadline.a)", "")
 	RL_SETUP	= 0
 endif
 
-INCLUDE_DIR		+= $(PWD)/lib/readline-$(RL_VERSION)/include
-LIB_DIR			+= $(PWD)/lib/readline-$(RL_VERSION)/lib
+INCLUDE_DIR	+= $(PWD)/lib/readline-$(RL_VERSION)/include
+LIB_DIR		+= $(PWD)/lib/readline-$(RL_VERSION)/lib
 
-CLINKS 		= -ltermcap -lreadline -lft
+CLINKS 		= -ltermcap -lft
 CFLAGS		= -Wall -Wextra -Werror -g -fsanitize=address
+
+UNAME_S		= $(shell uname -s)
+ifeq ($(UNAME_S), Darwin)
+	# uses clang which does not give the option but work correctly with linking anyway
+	CLINKS		+= -lreadline
+else ifeq ($(UNAME_S), Linux)
+	# uses gcc and prioritises dynamic over static lib. Also needs `tinfo` for tgetflag / PC etc.
+	CLINKS		+= -l:./libreadline.a -ltinfo
+else
+	$(error Unsupported Opertating system)
+endif
 
 ifdef TESTRUN
   CFLAGS	+= -D TESTRUN
@@ -129,14 +140,14 @@ ascii:
 	@echo -e "$$ASCII"
 
 $(NAME): $(OBJECTS) $(LIBFTDIR)/$(LIBFTLIB) $(RL_DIR)/libreadline.a
-	@$(CC) $(OBJECTS) -o $@ $(LIBS) $(CLINKS) $(INCLUDES) $(CFLAGS)
+	@$(CC) $(OBJECTS) -o $@ $(CLINKS) $(LIBS) $(INCLUDES) $(CFLAGS)
 	@printf "[$(G)INFO$(W)]: Finished building program $(NAME)\n"
 
 $(OBJECT_DIR)/%.o: %.c
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/shell/environ/pair
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/parser/{node,redir,token}
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/executor/{builtins,dup,execute,fork,path,pipe}
-	@if $(CC) -c -o $@ $< $(INCLUDES) $(CFLAGS); then \
+	@if $(CC) -c -o $@ $< $(LIBS) $(CLINKS) $(INCLUDES) $(CFLAGS); then \
 		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
 	else \
 	  	printf "\n[$(R)ERROR$(W)]: Failed to create object file %-33.33s\n" $@; \

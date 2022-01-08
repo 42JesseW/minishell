@@ -11,5 +11,7 @@ minishell
 ARCHIVE/
 *.dylib
 *.log
-*.so
+*.so*
 *.old
+*tar.gz
+*.pc
