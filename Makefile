@@ -147,7 +147,7 @@ $(OBJECT_DIR)/%.o: %.c
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/shell/environ/pair
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/parser/{node,redir,token}
 	@mkdir -p $(OBJECT_DIR)/$(SOURCE_DIR)/executor/{builtins,dup,execute,fork,path,pipe}
-	@if $(CC) -c -o $@ $< $(LIBS) $(CLINKS) $(INCLUDES) $(CFLAGS); then \
+	@if $(CC) -c -o $@ $< $(INCLUDES) $(CFLAGS); then \
 		printf "[$(G)INFO$(W)]: Successfully created object file %-33.33s\r" $@; \
 	else \
 	  	printf "\n[$(R)ERROR$(W)]: Failed to create object file %-33.33s\n" $@; \

@@ -32,9 +32,9 @@ datarootdir = ${prefix}/share
 srcdir = .
 VPATH = ..
 topdir = ..
-BUILD_DIR = /home/jvanderwolf/CLionProjects/minishell/lib/readline-7.0
+BUILD_DIR = /Users/jessevanderwolf/Documents/Projects/School/Codam/minishell-github/shelly/lib/readline-7.0
 
-INSTALL = /usr/bin/install -c
+INSTALL = /usr/local/bin/ginstall -c
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 
@@ -49,11 +49,11 @@ LN = ln
 
 SHELL = /bin/sh
 
-host_os = linux-gnu
-host_vendor = unknown
+host_os = darwin20.6.0
+host_vendor = apple
 
-prefix = /home/jvanderwolf/CLionProjects/minishell/lib/readline-7.0
-exec_prefix = /home/jvanderwolf/CLionProjects/minishell/lib/readline-7.0
+prefix = /Users/jessevanderwolf/Documents/Projects/School/Codam/minishell-github/shelly/lib/readline-7.0
+exec_prefix = /Users/jessevanderwolf/Documents/Projects/School/Codam/minishell-github/shelly/lib/readline-7.0
 includedir = ${prefix}/include
 bindir = ${exec_prefix}/bin
 libdir = ${exec_prefix}/lib
@@ -78,21 +78,21 @@ LOCAL_DEFS =
 # changes to bash-maintainers@gnu.org.
 #
 SHOBJ_CC = gcc
-SHOBJ_CFLAGS = -fPIC
+SHOBJ_CFLAGS = -fno-common
 SHOBJ_LD = ${CC}
 
-SHOBJ_LDFLAGS = -shared -Wl,-soname,$@
+SHOBJ_LDFLAGS = -dynamiclib -dynamic -undefined dynamic_lookup 
 SHOBJ_XLDFLAGS = 
 SHOBJ_LIBS = 
 
-SHLIB_XLDFLAGS =  -Wl,-rpath,$(libdir) -Wl,-soname,`basename $@ $(SHLIB_MINOR)`
-SHLIB_LIBS = 
+SHLIB_XLDFLAGS =  -dynamiclib -install_name $(libdir)/`echo $@ | sed "s:\..*::"`.$(SHLIB_MAJOR).$(SHLIB_LIBSUFF) -current_version $(SHLIB_MAJOR)$(SHLIB_MINOR) -compatibility_version $(SHLIB_MAJOR) -v
+SHLIB_LIBS = -lncurses
 
 SHLIB_DOT = .
 SHLIB_LIBPREF = lib
-SHLIB_LIBSUFF = so
+SHLIB_LIBSUFF = dylib
 
-SHLIB_LIBVERSION = $(SHLIB_LIBSUFF).$(SHLIB_MAJOR)$(SHLIB_MINOR)
+SHLIB_LIBVERSION = $(SHLIB_MAJOR)$(SHLIB_MINOR).$(SHLIB_LIBSUFF)
 SHLIB_DLLVERSION = $(SHLIB_MAJOR)
 
 SHLIB_STATUS = supported
