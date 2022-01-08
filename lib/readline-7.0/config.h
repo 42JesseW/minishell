@@ -220,7 +220,7 @@
 #define HAVE_TERMCAP_H 1
 
 /* Define if you have the <termio.h> header file.  */
-#define HAVE_TERMIO_H 1
+/* #undef HAVE_TERMIO_H */
 
 /* Define if you have the <termios.h> header file.  */
 #define HAVE_TERMIOS_H 1
@@ -252,18 +252,18 @@
 #define HAVE_LANGINFO_CODESET 1
 
 /* Define if you have <linux/audit.h> and it defines AUDIT_USER_TTY */
-#define HAVE_DECL_AUDIT_USER_TTY 1
+#define HAVE_DECL_AUDIT_USER_TTY 0
 
 /* Definitions pulled in from aclocal.m4. */
 #define VOID_SIGHANDLER 1
 
-#define GWINSZ_IN_SYS_IOCTL 1
+/* #undef GWINSZ_IN_SYS_IOCTL */
 
 #define STRUCT_WINSIZE_IN_SYS_IOCTL 1
 
 /* #undef STRUCT_WINSIZE_IN_TERMIOS */
 
-/* #undef TIOCSTAT_IN_SYS_IOCTL */
+#define TIOCSTAT_IN_SYS_IOCTL 1
 
 #define FIONREAD_IN_SYS_IOCTL 1
 
@@ -283,9 +283,9 @@
 
 /* #undef HAVE_USG_SIGHOLD */
 
-/* #undef MUST_REINSTALL_SIGHANDLERS */
+#define MUST_REINSTALL_SIGHANDLERS 1
 
-#define HAVE_POSIX_SIGSETJMP 1
+/* #undef HAVE_POSIX_SIGSETJMP */
 
 /* #undef CTYPE_NON_ASCII */
 

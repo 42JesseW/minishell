@@ -22,7 +22,7 @@ topdir = ..
 srcdir = .
 
 
-prefix = /home/jvanderwolf/CLionProjects/minishell/lib/readline-7.0
+prefix = /Users/jessevanderwolf/Documents/Projects/School/Codam/minishell-github/shelly/lib/readline-7.0
 
 datarootdir = ${prefix}/share
 
@@ -46,10 +46,10 @@ DESTDIR =
 SHELL = /bin/sh
 RM = rm -f
 
-INSTALL = /usr/bin/install -c
+INSTALL = /usr/local/bin/ginstall -c
 INSTALL_DATA = ${INSTALL} -m 644
 
-BUILD_DIR = /home/jvanderwolf/CLionProjects/minishell/lib/readline-7.0
+BUILD_DIR = /Users/jessevanderwolf/Documents/Projects/School/Codam/minishell-github/shelly/lib/readline-7.0
 TEXINPUTDIR = $(srcdir)
 
 MAKEINFO    = LANGUAGE= makeinfo

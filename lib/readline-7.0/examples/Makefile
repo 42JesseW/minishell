@@ -21,8 +21,8 @@ RL_LIBRARY_VERSION = 7.0
 SHELL = /bin/sh
 RM = rm -f
 
-prefix = /home/jvanderwolf/CLionProjects/minishell/lib/readline-7.0
-exec_prefix = /home/jvanderwolf/CLionProjects/minishell/lib/readline-7.0
+prefix = /Users/jessevanderwolf/Documents/Projects/School/Codam/minishell-github/shelly/lib/readline-7.0
+exec_prefix = /Users/jessevanderwolf/Documents/Projects/School/Codam/minishell-github/shelly/lib/readline-7.0
 
 datarootdir = ${prefix}/share
 
@@ -32,10 +32,10 @@ datadir = ${datarootdir}
 
 top_srcdir = ..
 #BUILD_DIR = .
-BUILD_DIR = /home/jvanderwolf/CLionProjects/minishell/lib/readline-7.0
+BUILD_DIR = /Users/jessevanderwolf/Documents/Projects/School/Codam/minishell-github/shelly/lib/readline-7.0
 installdir = $(datadir)/readline
 
-INSTALL = /usr/bin/install -c
+INSTALL = /usr/local/bin/ginstall -c
 INSTALL_PROGRAM = ${INSTALL}
 INSTALL_DATA = ${INSTALL} -m 644
 
