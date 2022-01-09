@@ -114,5 +114,5 @@ int	resolve_dollar(t_shell *shell, t_list **tokens)
 		else
 			node = node->next;
 	}
-	return (1);
+	return (SUCCESS);
 }
