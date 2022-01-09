@@ -12,6 +12,8 @@
 
 #include <minishell.h>
 
+int	g_exit_code_sig = 0;
+
 /*
 ** The tokenizer can fail for 3 reasons:
 **	1. input_string is empty

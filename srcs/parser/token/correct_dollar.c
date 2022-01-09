@@ -46,8 +46,6 @@ static int	correct(t_list *node, t_token *token)
 ** - BASHPID ($$)
 ** 	 https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 **
-** TESTS // TODO check this weird edge case
-**	- $>OUT
 */
 int	correct_dollar(t_list *tokens)
 {
