@@ -96,14 +96,14 @@ public:
 
 TEST_CASE_METHOD(ResolveDollarsFixture, "No dollars") {
 	init_tokens("> word | < word | > word");
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	ft_lstclear(&tokens, token_del);
 	shell_destroy(&shell);
 }
 
 TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar no resolve") {
 	init_tokens("$|$");
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	for (t_list *cur = tokens; cur != NULL; cur = cur->next)
 		CHECK(((t_token *)cur->content)->type != TOK_DOLLAR);
 	ft_lstclear(&tokens, token_del);
@@ -113,17 +113,17 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar no resolve") {
 TEST_CASE_METHOD(ResolveDollarsFixture, "quoting") {
 	init_tokens("\"$hasval\"");
 	REQUIRE(ft_lstsize(tokens) == 4);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 3);
 	ft_lstclear(&tokens, token_del);
 	init_tokens("\"\'$hasval\'\"");
 	REQUIRE(ft_lstsize(tokens) == 6);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 5);
 	ft_lstclear(&tokens, token_del);
 	init_tokens("\'$hasval\'");
 	REQUIRE(ft_lstsize(tokens) == 4);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 4);
 	ft_lstclear(&tokens, token_del);
 	shell_destroy(&shell);
@@ -134,7 +134,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve empty missing enviro
 
 	init_tokens("> word | < $missing | > word");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -150,7 +150,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve empty missing enviro
 	ft_lstclear(&tokens, token_del);
 	init_tokens("> $missing | < word | > word");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -166,7 +166,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve empty missing enviro
 	ft_lstclear(&tokens, token_del);
 	init_tokens("> word | < word | > $missing");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -188,7 +188,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve empty environ no val
 
 	init_tokens("> word | < $noval | > word");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -204,7 +204,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve empty environ no val
 	ft_lstclear(&tokens, token_del);
 	init_tokens("> $noval | < word | > word");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -220,7 +220,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve empty environ no val
 	ft_lstclear(&tokens, token_del);
 	init_tokens("> word | < word | > $noval");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -244,7 +244,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve environ with value")
 
 	init_tokens("> word | < $hasval | > word");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -260,7 +260,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve environ with value")
 	ft_lstclear(&tokens, token_del);
 	init_tokens("> $hasval | < word | > word");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -276,7 +276,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "One dollar resolve environ with value")
 	ft_lstclear(&tokens, token_del);
 	init_tokens("> word | < word | > $hasval");
 	REQUIRE(ft_lstsize(tokens) == 9);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 8);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -300,7 +300,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "Everything multiple times") {
 
 	init_tokens("$ word | $noval > $missing < $hasval << $hasval >> $missing   $noval $");
 	REQUIRE(ft_lstsize(tokens) == 20);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 14);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -324,7 +324,7 @@ TEST_CASE_METHOD(ResolveDollarsFixture, "Everything multiple times with quotes")
 
 	init_tokens("$ word | \"$noval\" > $missing < \"\'$hasval\'\" << $hasval >> \'$missing\'   $noval $");
 	REQUIRE(ft_lstsize(tokens) == 28);
-	REQUIRE(resolve_dollar(shell, &tokens) == 1);
+	REQUIRE(resolve_dollar(shell, &tokens, false) == 1);
 	REQUIRE(ft_lstsize(tokens) == 23);
 	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next, idx++)

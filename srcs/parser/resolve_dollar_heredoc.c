@@ -42,9 +42,9 @@ char	*resolve_dollar_heredoc(t_shell *shell, char *line)
 	char	*resolved_line;
 
 	tokens = tokenize(line);
-	if (!tokens || !correct_dollar(tokens))	// TODO this breaks stuff ?!
+	if (!tokens || !correct_dollar_heredoc(tokens))
 		return (NULL);
-	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
+	if (resolve_dollar(shell, &tokens, true) == SYS_ERROR)
 	{
 		ft_lstclear(&tokens, token_del);
 		return (NULL);

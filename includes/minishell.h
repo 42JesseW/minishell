@@ -150,7 +150,7 @@ int			consume_token(t_list *cmd_node, t_list *token_node);
 int			group_tokens(t_shell *shell, t_list **tokens);
 int			insert_merge_token(t_list **tokens);
 bool		is_insert_pos(t_quote *quote, t_list *node, t_list *prev);
-int			resolve_dollar(t_shell *shell, t_list **tokens);
+int			resolve_dollar(t_shell *shell, t_list **tokens, bool in_heredoc);
 char		*resolve_dollar_heredoc(t_shell *shell, char *line);
 int			create_redir_files(t_shell *shell);
 int			write_heredoc(t_shell *shell, char *file_path, char *delimiter);

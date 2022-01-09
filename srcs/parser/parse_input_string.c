@@ -95,7 +95,7 @@ int	parse_input_string(char *input_string, t_shell *shell)
 	if (!(*input_string))
 		return (SUCCESS);
 	tokens = tokenize(input_string);
-	if (!tokens)
+	if (!tokens || !has_paired_quotes(input_string))
 		return (get_tokenize_fail_exit(&tokens));
 	if (!redir_merge(tokens) || !correct_dollar(tokens))
 		return (parse_fail_exit(shell, &tokens));
@@ -103,7 +103,7 @@ int	parse_input_string(char *input_string, t_shell *shell)
 		return (SYS_ERROR);
 	if (remove_spaces(&tokens) == NONFATAL)
 		return (NONFATAL);
-	if (resolve_dollar(shell, &tokens) == SYS_ERROR)
+	if (resolve_dollar(shell, &tokens, false) == SYS_ERROR)
 		return (SYS_ERROR);
 	if (resolve_quotes(&tokens) == SYS_ERROR)
 		return (SYS_ERROR);
