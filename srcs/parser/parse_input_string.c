@@ -52,6 +52,13 @@ static int	parse_fail_exit(t_shell *shell, t_list **tokens)
 	return (NONFATAL);
 }
 
+static bool	has_invalid_syntax(t_list *tokens, char *input_string)
+{
+	return (!redir_merge(tokens)
+		|| !correct_dollar(tokens)
+		|| !has_paired_quotes(input_string));
+}
+
 /*
 ** parse_input_string() checks the incoming string
 ** from readline() and converts it into a list of
@@ -97,7 +104,7 @@ int	parse_input_string(char *input_string, t_shell *shell)
 	tokens = tokenize(input_string);
 	if (!tokens)
 		return (get_tokenize_fail_exit(&tokens));
-	if (!redir_merge(tokens) || !correct_dollar(tokens))
+	if (has_invalid_syntax(tokens, input_string))
 		return (parse_fail_exit(shell, &tokens));
 	if (insert_merge_token(&tokens) == SYS_ERROR)
 		return (SYS_ERROR);

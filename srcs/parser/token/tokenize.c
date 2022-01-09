@@ -70,7 +70,7 @@ t_list	*tokenize(const char *input_string)
 	t_lexer	lexer;
 
 	tokens = NULL;
-	if (!(*input_string) || !has_paired_quotes(input_string))
+	if (!(*input_string))
 		return (NULL);
 	lexer_init(&lexer, input_string);
 	while (lexer.idx < lexer.string_len)
