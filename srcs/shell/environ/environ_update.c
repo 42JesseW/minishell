@@ -44,11 +44,11 @@ int	environ_update(t_list **environ, char *key, const char *val, bool append)
 		{
 			if (!val && pair->val)
 				return (SUCCESS);
-			if (append)
+			if (append || (!val && !pair->val))
 				new_val = ft_strjoin(pair->val, val);
 			else
 				new_val = ft_strdup(val);
-			if (!new_val)
+			if (!new_val && !(!val && !pair->val))
 				return (SYS_ERROR);
 			free(pair->val);
 			pair->val = new_val;
