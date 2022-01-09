@@ -90,7 +90,7 @@ static int	resolve(t_shell *shell, t_list **tokens, t_list **node)
 ** if its inside of a nested quote: "'$ENV'"
 */
 
-int	resolve_dollar(t_shell *shell, t_list **tokens)
+int	resolve_dollar(t_shell *shell, t_list **tokens, bool in_heredoc)
 {
 	t_list	*node;
 	t_token	*token;
@@ -105,7 +105,8 @@ int	resolve_dollar(t_shell *shell, t_list **tokens)
 			quote.between = true;
 		else if (quote.between && quote_is_type(true, &quote, token->type))
 			quote.between = false;
-		if ((!quote.between || (quote.between && quote.type == TOK_DQUOTE))
+		if ((in_heredoc || !quote.between
+				|| (quote.between && quote.type == TOK_DQUOTE))
 			&& token->type == TOK_DOLLAR)
 		{
 			if (resolve(shell, tokens, &node) < 0)

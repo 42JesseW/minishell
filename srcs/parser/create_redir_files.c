@@ -63,7 +63,7 @@ static int	get_redir_fd(t_shell *shell, t_redir *node)
 	if (fd == -1)
 	{
 		if (!g_exit_code_sig)
-			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, node->file,
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, node->file,
 				strerror(errno));
 		else
 			ft_lstclear(&shell->cmd_nodes, node_del);

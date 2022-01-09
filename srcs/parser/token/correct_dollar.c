@@ -68,3 +68,26 @@ int	correct_dollar(t_list *tokens)
 	}
 	return (SUCCESS);
 }
+
+int	correct_dollar_heredoc(t_list *tokens)
+{
+	t_list	*node;
+	t_token	*token;
+	t_token	*next_token;
+
+	node = tokens;
+	while (node)
+	{
+		token = (t_token *)node->content;
+		if (token->type == TOK_DOLLAR)
+		{
+			next_token = NULL;
+			if (node->next)
+				next_token = (t_token *)node->next->content;
+			if (!node->next || next_token->type != TOK_WORD)
+				token->type = TOK_WORD;
+		}
+		node = node->next;
+	}
+	return (SUCCESS);
+}

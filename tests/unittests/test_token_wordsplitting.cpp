@@ -217,7 +217,7 @@ TEST_CASE_METHOD(WordSplittingFixture, "Combine with other parse functions - One
 	init_tokens(R"(echo "one"'two'"three")");
 	insert_merge_token(&tokens);
 	remove_spaces(&tokens);
-	REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+	REQUIRE(resolve_dollar(shell, &tokens, false) != SYS_ERROR);
 	int	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
 	{
@@ -234,7 +234,7 @@ TEST_CASE_METHOD(WordSplittingFixture, "Combine with other parse functions - Two
 	init_tokens(R"(echo "one"'two'"three" 'four' "five"'six' "$PWD")");
 	insert_merge_token(&tokens);
 	remove_spaces(&tokens);
-	REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+	REQUIRE(resolve_dollar(shell, &tokens, false) != SYS_ERROR);
 	int	idx = 0;
 	for (t_list *node = tokens; node != NULL; node = node->next)
 	{
@@ -251,7 +251,7 @@ TEST_CASE_METHOD(WordSplittingFixture, "Resolve quotes - One") {
 	init_tokens(R"(echo "one"'two'"three" 'four' "five"'six' "$PWD")");
 	insert_merge_token(&tokens);
 	remove_spaces(&tokens);
-	REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+	REQUIRE(resolve_dollar(shell, &tokens, false) != SYS_ERROR);
 	REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 	REQUIRE(ft_lstsize(tokens) == 5);
 	for (t_list *node = tokens; node != NULL; node = node->next)
@@ -265,7 +265,7 @@ TEST_CASE_METHOD(WordSplittingFixture, "Resolve quotes - Two") {
 	init_tokens(R"(export TEST="cat")");
 	insert_merge_token(&tokens);
 	remove_spaces(&tokens);
-	REQUIRE(resolve_dollar(shell, &tokens) != SYS_ERROR);
+	REQUIRE(resolve_dollar(shell, &tokens, false) != SYS_ERROR);
 	REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 	REQUIRE(ft_lstsize(tokens) == 2);
 	for (t_list *node = tokens; node != NULL; node = node->next)

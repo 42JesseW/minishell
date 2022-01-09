@@ -68,6 +68,7 @@ void	normalize(t_list **tokens);
 int		redir_merge(t_list *tokens);
 int		validate_syntax(t_list *tokens);
 int		correct_dollar(t_list *tokens);
+int		correct_dollar_heredoc(t_list *tokens);
 int		resolve_quotes(t_list **tokens);
 
 t_token	*get_next_token(t_lexer *lexer);
