@@ -12,58 +12,6 @@
 
 #include <minishell.h>
 
-static int	write_heredoc_line(t_shell *shell, int fd, char *line)
-{
-	char	*resolved_line;
-
-	resolved_line = resolve_dollar_heredoc(shell, line);
-	if (!resolved_line)
-	{
-		free(line);
-		return (SYS_ERROR);
-	}
-	write(fd, resolved_line, ft_strlen(resolved_line));
-	write(fd, "\n", 1);
-	free(resolved_line);
-	return (SUCCESS);
-}
-
-/*
-** write_heredoc() reads from STDIN using readline
-** and appends the data to HEREDOC_FILE using {fd}
-** until the line returned by readline matches the
-** {delimiter} string.
-*/
-
-static int	write_heredoc(t_shell *shell, char *file_path, char *delimiter)
-{
-	char	*line;
-	int		ret;
-	int		fd;
-
-	fd = open(file_path, O_WRONLY | O_APPEND);
-	if (fd == -1)
-		return (SYS_ERROR);
-	line = readline(HEREDOC_PROMPT);
-	while (line)
-	{
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		ret = write_heredoc_line(shell, fd, line);
-		free(line);
-		if (ret == SYS_ERROR)
-		{
-			close(fd);
-			return (SYS_ERROR);
-		}
-		line = readline(HEREDOC_PROMPT);
-	}
-	return (SUCCESS);
-}
-
 /*
 ** convert_heredoc() converts REDIR_DELIM nodes
 ** to REDIR_IN nodes in the following way:
@@ -114,7 +62,11 @@ static int	get_redir_fd(t_shell *shell, t_redir *node)
 		fd = open(node->file, O_CREAT | O_APPEND | O_WRONLY, mode);
 	if (fd == -1)
 	{
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, node->file, strerror(errno));
+		if (!g_exit_code_sig)
+			dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, node->file,
+				strerror(errno));
+		else
+			ft_lstclear(&shell->cmd_nodes, node_del);
 		errno = 0;
 		return (NONFATAL);
 	}

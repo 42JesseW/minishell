@@ -20,6 +20,19 @@ static void	swap_ptr(t_list **tokens, t_list **word, t_list **next_node)
 	*next_node = *word;
 }
 
+static char	*get_exit_code(int shell_exit_code)
+{
+	int	exit_code;
+
+	exit_code = shell_exit_code;
+	if (g_exit_code_sig)
+	{
+		exit_code = g_exit_code_sig;
+		g_exit_code_sig = 0;
+	}
+	return (ft_itoa(exit_code));
+}
+
 /*
 ** resolve() should do the following:
 **	1. unlink the TOK_DOLLAR node
@@ -41,7 +54,7 @@ static int	resolve(t_shell *shell, t_list **tokens, t_list **node)
 	token = (t_token *)word->content;
 	kv[0] = token->token;
 	if (ft_strcmp(kv[0], "?") == 0)
-		token_string = ft_itoa(shell->exit_code);
+		token_string = get_exit_code(shell->exit_code);
 	else
 	{
 		kv[1] = environ_get(shell->environ, kv[0]);

@@ -24,6 +24,9 @@ add_executable(minishell ${SOURCES} srcs/executor/builtins/bi_unset.c srcs/execu
 
 add_dependencies(minishell ${LIBFT})
 
-target_link_libraries(minishell ft termcap readline tinfo)
-
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_libraries(minishell ft termcap readline tinfo)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    target_link_libraries(minishell ft termcap readline)
+endif()
 add_subdirectory(tests)

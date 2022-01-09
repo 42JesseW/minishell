@@ -81,6 +81,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  parser/resolve_dollar.c \
 			  parser/resolve_dollar_heredoc.c \
 			  parser/create_redir_files.c \
+			  parser/write_heredoc.c \
 			  parser/parse_input_string.c \
 			  executor/builtins/bi_check.c \
 			  executor/builtins/bi_echo.c \

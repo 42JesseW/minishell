@@ -17,4 +17,8 @@ add_executable(tests ${SOURCES})
 
 add_dependencies(tests ${LIBFT})
 
-target_link_libraries(tests tester ft readline tinfo)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    target_link_libraries(tests tester ft readline tinfo)
+elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    target_link_libraries(tests tester ft readline)
+endif()

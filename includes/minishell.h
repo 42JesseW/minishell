@@ -107,6 +107,8 @@ typedef struct s_builtin
 	int			(*function)(char **, t_exe *);
 }	t_builtin;
 
+extern int	g_exit_code_sig;
+
 void		pair_del(void *pair);
 
 char		*pair_join(t_pair *pair);
@@ -130,6 +132,8 @@ int			shell_exit(t_shell **shell);
 int			shell_noninteractive(t_shell **shell, char **argv);
 int			init_inputrc(void);
 void		set_signals(bool is_parent);
+void		sigint_handler(int sig);
+void		sigint_handler_heredoc(int sig);
 
 void		redir_del(void *redir);
 t_redir		*redir_new_def(void);
@@ -149,6 +153,7 @@ bool		is_insert_pos(t_quote *quote, t_list *node, t_list *prev);
 int			resolve_dollar(t_shell *shell, t_list **tokens);
 char		*resolve_dollar_heredoc(t_shell *shell, char *line);
 int			create_redir_files(t_shell *shell);
+int			write_heredoc(t_shell *shell, char *file_path, char *delimiter);
 
 void		nodes_print_stdout(t_list *cmd_nodes);	// TODO remove
 void		token_display_stdout(t_list *tokens);	// TODO remove
