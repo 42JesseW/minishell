@@ -10,8 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO - builtin echo : echo "bla di bla" | grep "bla" | wc -l blijft hangen
-//
 // TODO - Kijken naar melding: shelly: system error: Interrupted system call
 //        wanneer je langer wacht met afsluiten. Klopt niet
 //			-> Doet hij dit ook als er nog geen command line is uitgevoerd (en
