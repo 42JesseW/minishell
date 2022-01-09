@@ -48,7 +48,7 @@ int	execute_builtin(int idx, t_builtin *builtin, t_node *node, t_exe *exe)
 	if (ft_lstsize(node->redir) > 0)
 	{
 		if (dup_redirect(node) == SYS_ERROR)
-			return (SYS_ERROR);
+			return (SUCCESS);
 	}
 	if ((*builtin->function)(node->cmd, exe) == SYS_ERROR)
 		return (SYS_ERROR);

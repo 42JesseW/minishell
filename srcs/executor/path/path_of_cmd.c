@@ -20,7 +20,7 @@
 char	*get_path_environ(char *cmd, t_exe *exe)
 {
 	char	*path;
-	t_list 	*path_node;
+	t_list	*path_node;
 	int		len;
 
 	path_node = exe->paths;

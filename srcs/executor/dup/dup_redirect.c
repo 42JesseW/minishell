@@ -27,7 +27,7 @@ int	dup_redirect_read(int fd)
 	int	fd_dup;
 
 	if (fd == -1)
-		return (SUCCESS);
+		return (SYS_ERROR);
 	fd_dup = dup2(fd, STDIN_FILENO);
 	if (fd_dup == -1)
 		return (SYS_ERROR);

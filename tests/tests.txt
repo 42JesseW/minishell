@@ -159,3 +159,45 @@ echo "$USER"
 echo "$USER $PWD $HOME"
 echo;echo $?
 echo one | grep -q two;echo $?
+
+#EVAL
+/bin/ls
+
+
+/bin/ls -l
+echo Hi
+echo -n Hi
+exit
+exit 42
+exit -3
+exit bla
+/bin/ls -l
+echo;echo $?
+/bin/ls filethatdoesntexist
+echo;echo $?
+expr $? + $?
+echo "bla bla"
+echo "cat lol.c | cat > lol.c"
+echo ''
+echo 'bla'
+exit '42'
+echo 'env'
+echo 'ls -l | wc -l'
+echo '$USER'
+env
+export NEW_VAR;export | grep "NEW_VAR"
+env | grep USER=;unset USER;env | grep USER=
+cd tests
+cd tests;pwd
+cd .;pwd
+cd ..;pwd
+pwd
+unset PATH
+export PATH=directory1:directory2
+cat < Makefile
+< Makefile cat
+ls -la > OUT1
+ls -la > OUT1 > OUT1;rm OUT1
+ls -la > OUT1 > OUT2;rm OUT1;rm OUT2
+< Makefile cat > OUT1;rm OUT1
+< OUT1 ls -la >> OUT1

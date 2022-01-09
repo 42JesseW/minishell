@@ -25,12 +25,12 @@
 
 int	pipe_loop(t_exe *exe, t_shell *shell)
 {
-    t_list  *cmd_node;
+	t_list	*cmd_node;
 	int		idx;
 	int		amount_pipes;
 
 	idx = 0;
-    cmd_node = shell->cmd_nodes;
+	cmd_node = shell->cmd_nodes;
 	amount_pipes = exe->amount_cmds - 1;
 	while (idx < exe->amount_cmds)
 	{
