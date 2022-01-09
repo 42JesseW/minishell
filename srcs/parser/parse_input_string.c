@@ -45,6 +45,8 @@ static int	parse_fail_exit(t_shell *shell, t_list **tokens)
 	if (*tokens)
 		ft_lstclear(tokens, token_del);
 	shell->exit_code = EXIT_PARSE_FAIL;
+	if (g_exit_code_sig)
+		g_exit_code_sig = 0;
 	return (NONFATAL);
 }
 

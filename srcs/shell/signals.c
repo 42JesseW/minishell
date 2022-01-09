@@ -12,12 +12,20 @@
 
 #include <minishell.h>
 
-// TODO reset exit_code to 1 for SIGINT -> echo $? after CTRL + C
+void	sigint_handler_heredoc(int sig)
+{
+	(void)sig;
+	g_exit_code_sig = 1;
+	rl_redisplay();
+	rl_done = 1;
+}
+
 void	sigint_handler(int sig)
 {
 	(void)sig;
 	rl_replace_line("", 0);
 	write(STDOUT_FILENO, "\n", 1);
+	g_exit_code_sig = 1;
 	rl_on_new_line();
 	rl_redisplay();
 }

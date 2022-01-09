@@ -22,6 +22,8 @@ static const char	g_prompt_startup[] = "\n"
 	"          -- created by aheister & jevan-de --"
 	"\n";
 
+int					g_exit_code_sig = 0;
+
 /*
 ** main() has 4 main jobs:
 **	1. checking arguments passed to the program

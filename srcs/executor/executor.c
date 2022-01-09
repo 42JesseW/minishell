@@ -67,6 +67,8 @@ int	wait_process_end(t_shell *shell, t_list	*pid_node)
 		}
 		if (WIFEXITED(w_status))
 			shell->exit_code = WEXITSTATUS(w_status);
+		if (g_exit_code_sig)
+			g_exit_code_sig = 0;
 		pid_node = pid_node->next;
 	}
 	return (SUCCESS);
