@@ -20,17 +20,20 @@
 char	*get_path_environ(char *cmd, t_exe *exe)
 {
 	char	*path;
+	t_list 	*path_node;
 	int		len;
 
-	len = ft_lstsize(exe->paths);
+	path_node = exe->paths;
+	len = ft_lstsize(path_node);
 	while (len > 0)
 	{
-		path = ft_strjoin(exe->paths->content, cmd);
+		path = ft_strjoin(path_node->content, cmd);
 		if (path == NULL)
 			return (NULL);
 		if (access(path, F_OK) != -1)
 			return (path);
-		exe->paths = exe->paths->next;
+		free(path);
+		path_node = path_node->next;
 		len--;
 	}
 	return (cmd);
