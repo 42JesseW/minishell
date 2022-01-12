@@ -12,16 +12,6 @@
 
 #include <minishell.h>
 
-static void	invalid_key_msg(char *key, int *exit_code)
-{
-	if (*exit_code == EXIT_SUCCESS)
-		*exit_code = EXIT_FAILURE;
-	ft_dprintf(STDERR_FILENO,
-		"%s: export: `%s': not a valid identifier\n",
-		SHELL_NAME,
-		key);
-}
-
 static int	export(t_exe *exe, t_pair *pair)
 {
 	bool	append;
@@ -106,7 +96,7 @@ int	builtin_export(char **cmd, t_exe *exe)
 		pair = pair_new_val(cmd[idx]);
 		if (!pair)
 			return (SYS_ERROR);
-		if (is_valid_key(pair))
+		if (is_valid_key(pair->key))
 		{
 			if (export(exe, pair) == SYS_ERROR)
 				return (SYS_ERROR);

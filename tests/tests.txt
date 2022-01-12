@@ -152,6 +152,14 @@ cat < Dockerfile < LICENSE < Makefile -e
 > OUT cat -e < Makefile;cat OUT;rm OUT
 < Makefile grep NAME > OUT;cat OUT;rm OUT
 
+#PATHRESOLVE
+ls
+/bin/ls
+/bin/../bin/ls
+/usr/bin/../../bin/ls
+cd /bin;./ls
+cd /;bin/ls
+
 #ENVIRONMENT variables
 echo $
 echo $USER
@@ -184,7 +192,7 @@ exit '42'
 echo 'env'
 echo 'ls -l | wc -l'
 echo '$USER'
-env
+env | sort
 export NEW_VAR;export | grep "NEW_VAR"
 env | grep USER=;unset USER;env | grep USER=
 cd tests

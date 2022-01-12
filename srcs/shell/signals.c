@@ -12,6 +12,11 @@
 
 #include <minishell.h>
 
+int	default_readline_event(void)
+{
+	return (0);
+}
+
 void	sigint_handler_heredoc(int sig)
 {
 	(void)sig;

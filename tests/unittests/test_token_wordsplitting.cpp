@@ -13,6 +13,12 @@ public:
 		REQUIRE(shell != NULL);
 	}
 
+	~WordSplittingFixture()
+	{
+		ft_lstclear(&shell->cmd_nodes, node_del);
+		ft_lstclear(&shell->environ, pair_del);
+	}
+
 	void	init_tokens(const char *input_string) override {
 		tokens = tokenize(input_string);
 		REQUIRE(tokens != NULL);

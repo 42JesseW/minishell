@@ -40,6 +40,7 @@ static int	convert_heredoc(t_shell *shell, t_redir *node, int mode)
 	if (fd == -1 || unlink(file_path) < 0)
 		return (SYS_ERROR);
 	node->type = REDIR_IN;
+	free(node->file);
 	node->file = ft_strdup(file_path);
 	if (!node->file)
 		return (SYS_ERROR);

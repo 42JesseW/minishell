@@ -453,6 +453,12 @@ public:
 		REQUIRE(shell != NULL);
 	}
 
+	~ParseBeforeGroupFixture()
+	{
+		ft_lstclear(&shell->cmd_nodes, node_del);
+		ft_lstclear(&shell->environ, pair_del);
+	}
+
 	void	init_test(t_test *test)
 	{
 		init_tokens(test->input_string);

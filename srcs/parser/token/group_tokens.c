@@ -41,7 +41,7 @@ static void	move_and_unlink_token(t_list **tokens, t_list **node)
 {
 	t_list	*unlinked;
 
-    *node = (*node)->next;
+	*node = (*node)->next;
 	unlinked = ft_lstunlink(tokens, *tokens);
 	ft_lstdelone(unlinked, token_del);
 }

@@ -12,72 +12,41 @@
 
 #include <minishell.h>
 
-int	check_all_alpha(char *builtin_name, char *cmd)
+static void	unset(t_list **environ, char *key)
 {
-	int		idx;
-	char	*message;
-
-	idx = 0;
-	while (idx < (int)ft_strlen(cmd))
-	{
-		if ((idx == 0 && ft_isalpha(cmd[idx]) == 0 && cmd[idx] != '_')
-			|| (ft_isalnum(cmd[idx]) == 0 && cmd[idx] != '_'))
-		{
-			message = ft_strnjoin(4, builtin_name, ": '", cmd, "'");
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, message,
-				"not a valid identifier");
-			free(message);
-			return (EXIT_FAILURE);
-		}
-		idx++;
-	}
-	return (EXIT_SUCCESS);
-}
-
-void	key_loop(char **cmd, t_exe *exe)
-{
-	int		idx;
-	t_pair	*pair;
 	t_list	*node;
+	t_pair	*pair;
 
-	idx = 1;
-	while (idx < ft_strarrlen(cmd))
+	node = *environ;
+	while (node)
 	{
-		if (check_all_alpha("unset", cmd[idx]) == EXIT_SUCCESS)
+		pair = (t_pair *)node->content;
+		if (ft_strcmp(pair->key, key) == 0)
 		{
-			node = *exe->environ;
-			while (node)
-			{
-				pair = node->content;
-				if (ft_strncmp(pair->key, cmd[idx], ft_strlen(cmd[idx])) == 0)
-				{
-					ft_lstunlink(exe->environ, node);
-					ft_lstdelone(node, pair_del);
-					break ;
-				}
-				else
-					node = node->next;
-			}
+			ft_lstunlink(environ, node);
+			ft_lstdelone(node, pair_del);
+			break ;
 		}
-		idx++;
+		node = node->next;
 	}
 }
-
-/*
-** DESCRIPTION
-**	-  The function 'unset' unsets values and attributes of variables
-**     and functions of the environmental variables
-*/
 
 int	builtin_unset(char **cmd, t_exe *exe)
 {
-	if (ft_strarrlen(cmd) < 2)
+	int	exit_code;
+	int	idx;
+
+	if (!cmd || !cmd[0] || ft_strcmp(cmd[0], "unset") != 0)
+		return (EXIT_FAILURE);
+	idx = 1;
+	exit_code = EXIT_SUCCESS;
+	while (cmd[idx])
 	{
-		if (ft_strarrlen(cmd) == 1)
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "unset",
-				"not enough arguments");
-		return (SUCCESS);
+		if (is_valid_key(cmd[idx]))
+			unset(exe->environ, cmd[idx]);
+		else
+			invalid_key_msg(cmd[idx], &exit_code);
+		idx++;
 	}
-	key_loop(cmd, exe);
-	return (EXIT_SUCCESS);
+	return (exit_code);
 }

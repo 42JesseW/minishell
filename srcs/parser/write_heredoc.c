@@ -18,10 +18,7 @@ static int	write_heredoc_line(t_shell *shell, int fd, char *line)
 
 	resolved_line = resolve_dollar_heredoc(shell, line);
 	if (!resolved_line)
-	{
-		free(line);
 		return (SYS_ERROR);
-	}
 	write(fd, resolved_line, ft_strlen(resolved_line));
 	write(fd, "\n", 1);
 	free(resolved_line);
@@ -31,6 +28,7 @@ static int	write_heredoc_line(t_shell *shell, int fd, char *line)
 static int	destruct_readline_environment(char *file_path, int fd)
 {
 	rl_event_hook = NULL;
+	signal(SIGINT, sigint_handler);
 	if (rl_done && g_exit_code_sig)
 	{
 		unlink(file_path);
@@ -38,14 +36,16 @@ static int	destruct_readline_environment(char *file_path, int fd)
 		rl_done = 0;
 		return (SYS_ERROR);
 	}
-	signal(SIGINT, sigint_handler);
 	return (SUCCESS);
 }
 
-int	default_event(void)
-{
-	return (0);
-}
+/*
+** The rl_event_hook, if set, prevents the unit tests from
+** working. To prevent the unit test from failing, but the
+** CTRL + C signal to still work when running interactive,
+** a define is used when compiling the unit tests.
+*/
+#ifndef TESTRUN
 
 static int	init_readline_environment(char *file_path, int *fd)
 {
@@ -55,10 +55,26 @@ static int	init_readline_environment(char *file_path, int *fd)
 	if (file_descriptor == -1)
 		return (SYS_ERROR);
 	*fd = file_descriptor;
-	rl_event_hook = default_event;
+	rl_event_hook = default_readline_event;
 	signal(SIGINT, sigint_handler_heredoc);
 	return (SUCCESS);
 }
+
+#else
+
+static int	init_readline_environment(char *file_path, int *fd)
+{
+	int	file_descriptor;
+
+	file_descriptor = open(file_path, O_WRONLY | O_APPEND);
+	if (file_descriptor == -1)
+		return (SYS_ERROR);
+	*fd = file_descriptor;
+	signal(SIGINT, sigint_handler_heredoc);
+	return (SUCCESS);
+}
+
+#endif
 
 /*
 ** write_heredoc() reads from STDIN using readline

@@ -12,20 +12,30 @@
 
 #include <minishell.h>
 
-bool	is_valid_key(t_pair *pair)
+void	invalid_key_msg(char *key, int *exit_code)
+{
+	if (*exit_code == EXIT_SUCCESS)
+		*exit_code = EXIT_FAILURE;
+	ft_dprintf(STDERR_FILENO,
+		"%s: export: `%s': not a valid identifier\n",
+		SHELL_NAME,
+		key);
+}
+
+bool	is_valid_key(char *key)
 {
 	int	idx;
 
 	idx = 0;
-	while (pair->key[idx])
+	while (key[idx])
 	{
-		if (idx == 0 && !(ft_isalpha(pair->key[idx]) || pair->key[idx] == '_'))
+		if (idx == 0 && !(ft_isalpha(key[idx]) || key[idx] == '_'))
 			return (false);
 		else
 		{
-			if (!(ft_isalnum(pair->key[idx]) || pair->key[idx] == '_'))
+			if (!(ft_isalnum(key[idx]) || key[idx] == '_'))
 			{
-				if (!(pair->key[idx] == '+' && !pair->key[idx + 1]))
+				if (!(key[idx] == '+' && !key[idx + 1]))
 					return (false);
 			}
 		}

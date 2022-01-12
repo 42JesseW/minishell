@@ -38,6 +38,8 @@ int	check_special_builtin(t_builtin *builtin, char **cmd)
 
 int	execute_builtin(int idx, t_builtin *builtin, t_node *node, t_exe *exe)
 {
+	int	exit_code;
+
 	if (exe->amount_cmds > 1)
 	{
 		if (check_special_builtin(builtin, node->cmd) == SUCCESS)
@@ -50,7 +52,9 @@ int	execute_builtin(int idx, t_builtin *builtin, t_node *node, t_exe *exe)
 		if (dup_redirect(node) == SYS_ERROR)
 			return (SUCCESS);
 	}
-	if ((*builtin->function)(node->cmd, exe) == SYS_ERROR)
+	exit_code = (*builtin->function)(node->cmd, exe);
+	*exe->exit_code = exit_code;
+	if (exit_code == SYS_ERROR)
 		return (SYS_ERROR);
 	else
 		return (SUCCESS);

@@ -132,6 +132,7 @@ int			shell_exit(t_shell **shell);
 int			shell_noninteractive(t_shell **shell, char **argv);
 int			init_inputrc(void);
 void		set_signals(bool is_parent);
+int			default_readline_event(void);
 void		sigint_handler(int sig);
 void		sigint_handler_heredoc(int sig);
 
@@ -167,7 +168,8 @@ int			builtin_pwd(char **cmd, t_exe *exe);
 int			builtin_unset(char **cmd, t_exe *exe);
 int			builtin_cd(char **cmd, t_exe *exe);
 int			builtin_export(char **cmd, t_exe *exe);
-bool		is_valid_key(t_pair *pair);
+bool		is_valid_key(char *key);
+void		invalid_key_msg(char *key, int *exit_code);
 char		**envp_lexical_sort(char **envp);
 int			init_builtins(t_exe *exe);
 

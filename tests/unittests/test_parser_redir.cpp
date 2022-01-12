@@ -21,6 +21,12 @@ public:
 		REQUIRE(shell != NULL);
 	}
 
+	~CreateRedirFilesFixture()
+	{
+		ft_lstclear(&shell->cmd_nodes, node_del);
+		ft_lstclear(&shell->environ, pair_del);
+	}
+
 	void	init_tokens(const char *input_string) override {
 		tokens = tokenize(input_string);
 		REQUIRE(tokens != NULL);
@@ -170,43 +176,43 @@ TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_APP (multiple)") {
 	}
 }
 
-//TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_DELIM") {
-//	std::string	delim		= "EOF";
-//	std::string	cmd			= "cat << " + delim;
-//	std::string	file_name	= "IN";
-//	std::string	file_data	= "testdata";
-//	ssize_t		file_size	= file_data.length() + delim.length();
-//	char		read_buff[file_data.length() + 1];
-//	int			fd;
-//	int			old_fd;
-//
-//	/* write testdata to file */
-//	fd = open(file_name.c_str(), O_CREAT | O_TRUNC | O_WRONLY, 0644);
-//	REQUIRE(fd != -1);
-//	REQUIRE(write(fd, (file_data + "\n" + delim).c_str(), file_size + 1) != -1);
-//	close(fd);
-//	/* make sure readline reads from file instead of STDIN */
-//	fd = open("IN", O_RDONLY);
-//	old_fd = dup(STDIN_FILENO);
-//	REQUIRE(dup2(fd, STDIN_FILENO) == 0);
-//	init_tokens(cmd.c_str());
-//	REQUIRE(create_redir_files(shell) != SYS_ERROR);
-//	auto	*cmd_node	= (t_node *)shell->cmd_nodes->content;
-//	auto	*redir_node	= (t_redir *)cmd_node->redir->content;
-//	REQUIRE(redir_node->fd > 2);
-//	REQUIRE(redir_node->type == REDIR_IN);
-//	errno = 0;
-//	REQUIRE((fcntl(redir_node->fd, F_GETFD) != -1 && errno != EBADF));
-//	/* read testdata into read_buffer to compare */
-//	REQUIRE(read(redir_node->fd, read_buff, file_data.length()) == file_data.length());
-//	read_buff[file_data.length()] = 0;
-//	REQUIRE(strcmp(read_buff, file_data.c_str()) == 0);
-//	close(fd);
-//	REQUIRE(close(redir_node->fd) == EXIT_SUCCESS);
-//	/* reset some stuff */
-//	REQUIRE(dup2(old_fd, STDIN_FILENO) == 0);
-//	remove(file_name.c_str());
-//}
+TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_DELIM") {
+	std::string	delim		= "EOF";
+	std::string	cmd			= "cat << " + delim;
+	std::string	file_name	= "IN";
+	std::string	file_data	= "testdata";
+	ssize_t		file_size	= file_data.length() + delim.length();
+	char		read_buff[file_data.length() + 1];
+	int			fd;
+	int			old_fd;
+
+	/* write testdata to file */
+	fd = open(file_name.c_str(), O_CREAT | O_TRUNC | O_WRONLY, 0644);
+	REQUIRE(fd != -1);
+	REQUIRE(write(fd, (file_data + "\n" + delim).c_str(), file_size + 1) != -1);
+	close(fd);
+	/* make sure readline reads from file instead of STDIN */
+	fd = open("IN", O_RDONLY);
+	old_fd = dup(STDIN_FILENO);
+	REQUIRE(dup2(fd, STDIN_FILENO) == 0);
+	init_tokens(cmd.c_str());
+	REQUIRE(create_redir_files(shell) != SYS_ERROR);
+	auto	*cmd_node	= (t_node *)shell->cmd_nodes->content;
+	auto	*redir_node	= (t_redir *)cmd_node->redir->content;
+	REQUIRE(redir_node->fd > 2);
+	REQUIRE(redir_node->type == REDIR_IN);
+	errno = 0;
+	REQUIRE((fcntl(redir_node->fd, F_GETFD) != -1 && errno != EBADF));
+	/* read testdata into read_buffer to compare */
+	REQUIRE(read(redir_node->fd, read_buff, file_data.length()) == file_data.length());
+	read_buff[file_data.length()] = 0;
+	REQUIRE(strcmp(read_buff, file_data.c_str()) == 0);
+	close(fd);
+	REQUIRE(close(redir_node->fd) == EXIT_SUCCESS);
+	/* reset some stuff */
+	REQUIRE(dup2(old_fd, STDIN_FILENO) == 0);
+	remove(file_name.c_str());
+}
 
 TEST_CASE_METHOD(CreateRedirFilesFixture, "REDIR_DELIM (multiple)") {
 	std::string	delim		= "EOF";
