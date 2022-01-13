@@ -79,7 +79,7 @@ char	*get_full_path(char *cmd, t_exe *exe)
 		if (access(path, F_OK) != -1)
 			return (path);
 		else
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path,
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, cmd,
 				strerror(errno));
 		return (NULL);
 	}

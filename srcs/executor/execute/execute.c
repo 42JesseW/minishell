@@ -31,7 +31,7 @@ void	execute_cmd(char **cmd, t_exe *exe)
 		exit (EXIT_SUCCESS);
 	path = get_full_path(cmd[0], exe);
 	if (path == NULL)
-		exit (EXIT_FAILURE);
+		exit (EXIT_CMD_NOT_FOUND);
 	if (execve(path, cmd, exe->envp) == -1)
 	{
 		ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path,
