@@ -36,15 +36,15 @@ static char	*join_tokens(t_list *tokens)
 	return (resolved_line);
 }
 
-char	*resolve_dollar_heredoc(t_list *environ, char *line)
+char	*resolve_dollar_heredoc(t_shell *shell, char *line)
 {
 	t_list	*tokens;
 	char	*resolved_line;
 
 	tokens = tokenize(line);
-	if (!tokens || !correct_dollar(tokens))
+	if (!tokens || !correct_dollar_heredoc(tokens))
 		return (NULL);
-	if (resolve_dollar(environ, &tokens) == SYS_ERROR)
+	if (resolve_dollar(shell, &tokens, true) == SYS_ERROR)
 	{
 		ft_lstclear(&tokens, token_del);
 		return (NULL);
@@ -55,5 +55,6 @@ char	*resolve_dollar_heredoc(t_list *environ, char *line)
 		ft_lstclear(&tokens, token_del);
 		return (NULL);
 	}
+	ft_lstclear(&tokens, token_del);
 	return (resolved_line);
 }

@@ -12,22 +12,62 @@
 
 #include <minishell.h>
 
-/* remove OLDPWD and increment SHLVL */
-static int	init_environment(t_list **environ)
+static void	erase_oldpwd(t_list *environ)
+{
+	t_list	*env;
+	t_pair	*pair;
+
+	env = environ;
+	while (env)
+	{
+		pair = (t_pair *)env->content;
+		if (ft_strcmp(pair->key, "OLDPWD") == 0)
+		{
+			free(pair->val);
+			pair->val = NULL;
+			break ;
+		}
+		env = env->next;
+	}
+}
+
+static int	increment_shell_level(t_list **environ)
 {
 	const char	*old_val;
 	char		*new_val;
 	int			shell_level;
+	int			exit_code;
 
+	exit_code = SUCCESS;
 	old_val = environ_get(*environ, "SHLVL");
 	if (!old_val)
 		old_val = "1";
 	shell_level = ft_atoi(old_val) + 1;
 	new_val = ft_itoa(shell_level);
-	if (!new_val || environ_update(environ, "SHLVL", new_val) == SYS_ERROR)
-		return (SYS_ERROR);
-	environ_remove(environ, "OLDPWD");
-	free(new_val);
+	if (!new_val)
+		exit_code = SYS_ERROR;
+	else
+	{
+		if (environ_update(environ, "SHLVL", new_val, false) == SYS_ERROR)
+			exit_code = SYS_ERROR;
+		free(new_val);
+	}
+	return (exit_code);
+}
+
+/* remove OLDPWD value and increment SHLVL */
+static int	init_environment(t_list **environ)
+{
+	if (isatty(STDIN_FILENO))
+	{
+		if (increment_shell_level(environ) == SYS_ERROR)
+			return (SYS_ERROR);
+	}
+	errno = 0;
+	if (!environ_get(*environ, "OLDPWD"))
+		environ_update(environ, "OLDPWD", NULL, false);
+	else
+		erase_oldpwd(*environ);
 	return (SUCCESS);
 }
 
@@ -57,6 +97,7 @@ t_shell	*shell_init(const char *envp[])
 		return (NULL);
 	}
 	shell->exit_code = 0;
+	shell->shell_exit = 0;
 	shell->environ = environ;
 	shell->cmd_nodes = NULL;
 	return (shell);

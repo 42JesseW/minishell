@@ -41,12 +41,12 @@ int	child_process(int idx, t_exe *exe, t_node *cmd_node)
 	if (exe->amount_cmds > 1)
 	{
 		if (dup_pipes(idx, 0, exe) == SYS_ERROR)
-			return (SYS_ERROR);
+			exit (EXIT_FAILURE);
 	}
 	if (ft_lstsize(cmd_node->redir) > 0)
 	{
 		if (dup_redirect(cmd_node) == SYS_ERROR)
-			return (SYS_ERROR);
+			exit (EXIT_FAILURE);
 	}
 	execute_cmd(cmd_node->cmd, exe);
 	return (SUCCESS);

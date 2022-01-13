@@ -46,8 +46,6 @@ static int	correct(t_list *node, t_token *token)
 ** - BASHPID ($$)
 ** 	 https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 **
-** TESTS // TODO check this weird edge case
-**	- $>OUT
 */
 int	correct_dollar(t_list *tokens)
 {
@@ -65,6 +63,29 @@ int	correct_dollar(t_list *tokens)
 				dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
 				return (PARSE_FAIL);
 			}
+		}
+		node = node->next;
+	}
+	return (SUCCESS);
+}
+
+int	correct_dollar_heredoc(t_list *tokens)
+{
+	t_list	*node;
+	t_token	*token;
+	t_token	*next_token;
+
+	node = tokens;
+	while (node)
+	{
+		token = (t_token *)node->content;
+		if (token->type == TOK_DOLLAR)
+		{
+			next_token = NULL;
+			if (node->next)
+				next_token = (t_token *)node->next->content;
+			if (!node->next || next_token->type != TOK_WORD)
+				token->type = TOK_WORD;
 		}
 		node = node->next;
 	}

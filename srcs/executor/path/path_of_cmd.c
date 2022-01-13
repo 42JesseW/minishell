@@ -20,25 +20,23 @@
 char	*get_path_environ(char *cmd, t_exe *exe)
 {
 	char	*path;
+	t_list	*path_node;
 	int		len;
 
-	len = ft_lstsize(exe->paths);
+	path_node = exe->paths;
+	len = ft_lstsize(path_node);
 	while (len > 0)
 	{
-		path = ft_strjoin(exe->paths->content, cmd);
+		path = ft_strjoin(path_node->content, cmd);
 		if (path == NULL)
-		{
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "malloc",
-				strerror(errno));
 			return (NULL);
-		}
 		if (access(path, F_OK) != -1)
 			return (path);
-		exe->paths = exe->paths->next;
+		free(path);
+		path_node = path_node->next;
 		len--;
 	}
-	ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, path, strerror(errno));
-	return (NULL);
+	return (cmd);
 }
 
 char	*get_path_relative(char *cmd)
@@ -71,12 +69,12 @@ char	*get_full_path(char *cmd, t_exe *exe)
 {
 	char	*path;
 
+	path = NULL;
 	if (ft_strnstr(cmd, "/", ft_strlen(cmd)) != NULL)
 	{
 		if (ft_strncmp(cmd, "/", 1) == 0)
 			path = cmd;
-		else if (ft_strncmp(cmd, "./", 2) == 0
-			|| ft_strncmp(cmd, "../", 3) == 0)
+		else
 			path = get_path_relative(cmd);
 		if (access(path, F_OK) != -1)
 			return (path);

@@ -24,7 +24,7 @@ public:
 		REQUIRE(correct_dollar(tokens));
 		remove_spaces(&tokens);
 		REQUIRE(validate_syntax(tokens));
-		REQUIRE(resolve_dollar(shell->environ, &tokens) != SYS_ERROR);
+		REQUIRE(resolve_dollar(shell, &tokens, false) != SYS_ERROR);
 		REQUIRE(resolve_quotes(&tokens) != SYS_ERROR);
 		normalize(&tokens);
 		REQUIRE(group_tokens(shell, &tokens) != SYS_ERROR);
@@ -33,7 +33,6 @@ public:
 
 TEST_CASE_METHOD(ConvertHereDocFixture, "One HereDoc") {
 	init_tokens("cat << EOF");
-	nodes_print_stdout(shell->cmd_nodes);
 	ft_lstclear(&shell->cmd_nodes, node_del);
 	ft_lstclear(&tokens, token_del);
 }

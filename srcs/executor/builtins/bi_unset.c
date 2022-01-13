@@ -10,42 +10,43 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-// TODO unlinken van node gaat fout
-// TODO PATH* - unset: `PATH*': not a valid identifier
-// TODO unset <key1> <key2> <key3> ... moet alle keys verwijderen
-
 #include <minishell.h>
 
-/*
-** DESCRIPTION
-**	-  The function 'unset' unsets values and attributes of variables
-**     and functions of the environmental variables
-*/
+static void	unset(t_list **environ, char *key)
+{
+	t_list	*node;
+	t_pair	*pair;
+
+	node = *environ;
+	while (node)
+	{
+		pair = (t_pair *)node->content;
+		if (ft_strcmp(pair->key, key) == 0)
+		{
+			ft_lstunlink(environ, node);
+			ft_lstdelone(node, pair_del);
+			break ;
+		}
+		node = node->next;
+	}
+}
 
 int	builtin_unset(char **cmd, t_exe *exe)
 {
-	t_pair	*pair;
-	t_list	*node;
+	int	exit_code;
+	int	idx;
 
-	if (ft_strarrlen(cmd) < 2 || ft_strarrlen(cmd) > 2)
+	if (!cmd || !cmd[0] || ft_strcmp(cmd[0], "unset") != 0)
+		return (EXIT_FAILURE);
+	idx = 1;
+	exit_code = EXIT_SUCCESS;
+	while (cmd[idx])
 	{
-		if (ft_strarrlen(cmd) == 1)
-			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, "unset",
-				"not enough arguments");
-		return (SUCCESS);
-	}
-	node = *exe->environ;
-	while (node)
-	{
-		pair = node->content;
-		if (ft_strncmp(pair->key, cmd[1], ft_strlen(cmd[1])) == 0)
-		{
-			ft_lstunlink(exe->environ, node);
-			ft_lstdelone(node, pair_del);
-			return (SUCCESS);
-		}
+		if (is_valid_key(cmd[idx]))
+			unset(exe->environ, cmd[idx]);
 		else
-			node = node->next;
+			invalid_key_msg(cmd[idx], &exit_code);
+		idx++;
 	}
-	return (EXIT_SUCCESS);
+	return (exit_code);
 }

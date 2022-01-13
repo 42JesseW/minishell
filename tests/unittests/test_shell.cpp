@@ -5,6 +5,7 @@ extern "C" {
 }
 
 static const char	*envp[] = {
+	"OLDPWD=",
 	"__INTELLIJ_COMMAND_HISTFILE__=/Users/jevan-de/Library/Application Support/JetBrains/CLion2020.2/terminal/history/history-25",
 	"HOME=/Users/jevan-de",
 	"ZDOTDIR=",
@@ -50,7 +51,7 @@ SCENARIO("initialize a shell structure from entrypoint") {
 				{
 					pair = (t_pair *)env->content;
 					kv = pair_join(pair);
-					if (strcmp(pair->key, "SHLVL") != 0) {
+					if (strcmp(pair->key, "SHLVL") != 0 && strcmp(pair->key, "OLDPWD") != 0) {
 						CHECK(strcmp(envp[idx], kv) == 0);
 					}
 					free(kv);

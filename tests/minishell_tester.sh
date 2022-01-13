@@ -14,7 +14,7 @@ N=$(tput sgr0)
 
 BASH_SHELL=/bin/bash
 YOUR_SHELL=$(ps -o comm= $PPID)
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd)
 
 # tests check for the following
 # 1. exit_code
@@ -57,7 +57,7 @@ norm_paths=(
 	"$SCRIPT_DIR/../libft/srcs"
 	"$SCRIPT_DIR/../srcs"
 )
-norminette "${norm_paths[@]}" # TODO norminette output parsing
+norminette "${norm_paths[@]}" | grep --invert-match "OK" # TODO norminette output parsing
 if [[ "$?" -eq 1 ]]; then
 	EXITCODE=1
 fi
@@ -98,15 +98,15 @@ do
   fi
   # if the $cmd variable contains a ':' character, a HEREDOC is
   # specified.
-  if [[ "$cmd" =~ .*":".* ]]; then
-  	IFS=':' read -r -a heredoc_cmd <<< "$cmd"
-		cmd="$(printf "%s%s\n%s\n%s\n" \
-			"cat << " \
-			"${heredoc_cmd[0]}" \
-			"$(for sub in "${heredoc_cmd[@]:1:${#heredoc_cmd[@]}-2}"; do echo "$sub"; done)" \
-			"${heredoc_cmd[${#heredoc_cmd[@]}-1]}" \
-		)"
-  fi
+#  if [[ "$cmd" =~ .*":".* ]]; then
+#  	IFS=':' read -r -a heredoc_cmd <<< "$cmd"
+#		cmd="$(printf "%s%s\n%s\n%s\n" \
+#			"cat << " \
+#			"${heredoc_cmd[0]}" \
+#			"$(for sub in "${heredoc_cmd[@]:1:${#heredoc_cmd[@]}-2}"; do echo "$sub"; done)" \
+#			"${heredoc_cmd[${#heredoc_cmd[@]}-1]}" \
+#		)"
+#  fi
   bash_output=$(timeout $TIMEOUT echo "$cmd" | $BASH_SHELL 2>&1)
   bash_exit_code=$?
   your_output=$(timeout $TIMEOUT echo "$cmd" | $YOUR_SHELL 2>&1)

@@ -12,65 +12,13 @@
 
 #include <minishell.h>
 
-static int	write_heredoc_line(t_list *environ, int fd, char *line)
-{
-	char	*resolved_line;
-
-	resolved_line = resolve_dollar_heredoc(environ, line);
-	if (!resolved_line)
-	{
-		free(line);
-		return (SYS_ERROR);
-	}
-	write(fd, resolved_line, ft_strlen(resolved_line));
-	write(fd, "\n", 1);
-	free(resolved_line);
-	return (SUCCESS);
-}
-
-/*
-** write_heredoc() reads from STDIN using readline
-** and appends the data to HEREDOC_FILE using {fd}
-** until the line returned by readline matches the
-** {delimiter} string.
-*/
-
-static int	write_heredoc(t_list *environ, char *file_path, char *delimiter)
-{
-	char	*line;
-	int		ret;
-	int		fd;
-
-	fd = open(file_path, O_WRONLY | O_APPEND);
-	if (fd == -1)
-		return (SYS_ERROR);
-	line = readline(HEREDOC_PROMPT);
-	while (line)
-	{
-		if (ft_strcmp(line, delimiter) == 0)
-		{
-			free(line);
-			break ;
-		}
-		ret = write_heredoc_line(environ, fd, line);
-		free(line);
-		if (ret == SYS_ERROR)
-		{
-			close(fd);
-			return (SYS_ERROR);
-		}
-		line = readline(HEREDOC_PROMPT);
-	}
-	return (SUCCESS);
-}
-
 /*
 ** convert_heredoc() converts REDIR_DELIM nodes
 ** to REDIR_IN nodes in the following way:
 **	1. remove the HEREDOC_FILE file if exists
 */
 
-static int	convert_heredoc(t_list *environ, t_redir *node, int mode)
+static int	convert_heredoc(t_shell *shell, t_redir *node, int mode)
 {
 	char	file_path[PATH_MAX];
 	char	cwd[PATH_MAX];
@@ -86,26 +34,27 @@ static int	convert_heredoc(t_list *environ, t_redir *node, int mode)
 	if (fd == -1)
 		return (SYS_ERROR);
 	close(fd);
-	if (write_heredoc(environ, file_path, node->file) == SYS_ERROR)
+	if (write_heredoc(shell, file_path, node->file) == SYS_ERROR)
 		return (SYS_ERROR);
 	fd = open(file_path, O_RDONLY);
 	if (fd == -1 || unlink(file_path) < 0)
 		return (SYS_ERROR);
 	node->type = REDIR_IN;
+	free(node->file);
 	node->file = ft_strdup(file_path);
 	if (!node->file)
 		return (SYS_ERROR);
 	return (fd);
 }
 
-static int	get_redir_fd(t_list *environ, t_redir *node)
+static int	get_redir_fd(t_shell *shell, t_redir *node)
 {
 	int	mode;
 	int	fd;
 
-	mode = 0644;
+	mode = DF_OPEN_PERM;
 	if (node->type == REDIR_DELIM)
-		fd = convert_heredoc(environ, node, mode);
+		fd = convert_heredoc(shell, node, mode);
 	else if (node->type == REDIR_IN)
 		fd = open(node->file, O_RDONLY);
 	else if (node->type == REDIR_OUT)
@@ -114,7 +63,11 @@ static int	get_redir_fd(t_list *environ, t_redir *node)
 		fd = open(node->file, O_CREAT | O_APPEND | O_WRONLY, mode);
 	if (fd == -1)
 	{
-		dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, node->file, strerror(errno));
+		if (!g_exit_code_sig)
+			ft_dprintf(STDERR_FILENO, SHELL_NAME FMT_ERR, node->file,
+				strerror(errno));
+		else
+			ft_lstclear(&shell->cmd_nodes, node_del);
 		errno = 0;
 		return (NONFATAL);
 	}
@@ -152,7 +105,7 @@ int	create_redir_files(t_shell *shell)
 		while (redir_node)
 		{
 			redir = (t_redir *)redir_node->content;
-			fd = get_redir_fd(shell->environ, redir);
+			fd = get_redir_fd(shell, redir);
 			if (fd <= NONFATAL)
 				return (fd);
 			redir->fd = fd;
@@ -160,5 +113,5 @@ int	create_redir_files(t_shell *shell)
 		}
 		cmd_node = cmd_node->next;
 	}
-	return (1);
+	return (SUCCESS);
 }

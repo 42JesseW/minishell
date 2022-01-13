@@ -12,6 +12,8 @@
 
 #include <minishell.h>
 
+int	g_exit_code_sig = 0;
+
 /*
 ** The tokenizer can fail for 3 reasons:
 **	1. input_string is empty
@@ -22,7 +24,7 @@
 ** already checks for this. For option 3, malloc will
 ** set {errno} to reflect the error.
 */
-static int	get_tokenize_fail_exit(void)
+static int	get_tokenize_fail_exit(t_list **tokens)
 {
 	int		exit_code;
 
@@ -35,7 +37,19 @@ static int	get_tokenize_fail_exit(void)
 	}
 	else
 		ft_dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, "multiline");
+	if (*tokens)
+		ft_lstclear(tokens, token_del);
 	return (exit_code);
+}
+
+static int	parse_fail_exit(t_shell *shell, t_list **tokens)
+{
+	if (*tokens)
+		ft_lstclear(tokens, token_del);
+	shell->exit_code = EXIT_PARSE_FAIL;
+	if (g_exit_code_sig)
+		g_exit_code_sig = 0;
+	return (NONFATAL);
 }
 
 /*
@@ -81,21 +95,22 @@ int	parse_input_string(char *input_string, t_shell *shell)
 	if (!(*input_string))
 		return (SUCCESS);
 	tokens = tokenize(input_string);
-	if (!tokens)
-		return (get_tokenize_fail_exit());
+	if (!tokens || !has_paired_quotes(input_string))
+		return (get_tokenize_fail_exit(&tokens));
 	if (!redir_merge(tokens) || !correct_dollar(tokens))
+		return (parse_fail_exit(shell, &tokens));
+	if (insert_merge_token(&tokens) == SYS_ERROR)
+		return (SYS_ERROR);
+	if (remove_spaces(&tokens) == NONFATAL)
 		return (NONFATAL);
-	remove_spaces(&tokens);
-	if (!validate_syntax(tokens))
-		return (NONFATAL);
-	if (resolve_dollar(shell->environ, &tokens) == SYS_ERROR)
+	if (resolve_dollar(shell, &tokens, false) == SYS_ERROR)
 		return (SYS_ERROR);
 	if (resolve_quotes(&tokens) == SYS_ERROR)
-		return (0);
+		return (SYS_ERROR);
+	if (!validate_syntax(tokens))
+		return (parse_fail_exit(shell, &tokens));
 	normalize(&tokens);
 	if (group_tokens(shell, &tokens) == SYS_ERROR)
 		return (SYS_ERROR);
-	if (create_redir_files(shell) == SYS_ERROR)
-		return (SYS_ERROR);
-	return (SUCCESS);
+	return (create_redir_files(shell));
 }

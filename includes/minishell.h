@@ -14,9 +14,13 @@
 
 # define MINISHELL_H
 
+# define EXIT_CMD_NOT_FOUND 127
+# define EXIT_PARSE_FAIL 258
 # define SYS_ERROR -1
 # define NONFATAL 0
 # define SUCCESS 1
+
+# define DF_OPEN_PERM 0664
 
 # define B "\e[0;38;2;218;165;32m"
 # define R "\e[m"
@@ -42,9 +46,9 @@
 # include <sys/wait.h>
 # include <readline/history.h>
 # include <readline/readline.h>
-# include <libft/includes/libft.h>
-# include <libft/includes/printf.h>
-# include <libft/includes/get_next_line.h>
+# include <libft.h>
+# include <printf.h>
+# include <get_next_line.h>
 
 typedef enum e_redir_type
 {
@@ -79,6 +83,7 @@ typedef struct s_pair
 typedef struct s_shell
 {
 	int		exit_code;
+	int		shell_exit;
 	t_list	*environ;
 	t_list	*cmd_nodes;
 }	t_shell;
@@ -88,6 +93,8 @@ typedef struct s_exe
 	int		**pipe_fds;
 	char	**envp;
 	int		amount_cmds;
+	int		*exit_code;
+	int		*shell_exit;
 	t_list	**environ;
 	t_list	*pids;
 	t_list	*paths;
@@ -99,6 +106,8 @@ typedef struct s_builtin
 	char		*name;
 	int			(*function)(char **, t_exe *);
 }	t_builtin;
+
+extern int	g_exit_code_sig;
 
 void		pair_del(void *pair);
 
@@ -112,15 +121,20 @@ t_pair		*pair_new_val(const char *kv);
 int			environ_from_envp(t_list **root, const char **envp);
 char		**environ_to_envp(t_list *root);
 const char	*environ_get(t_list *environ, const char *key);
-int			environ_update(t_list **environ, char *key, const char *val);
+int			environ_update(t_list **environ, char *key, const char *val,
+				bool append);
 t_list		*environ_new(char *key, const char *val);
 void		environ_remove(t_list **environ, char *key);
 
 void		shell_destroy(t_shell **shell);
 t_shell		*shell_init(const char *envp[]);
-int			shell_noninteractive(t_shell *shell, char **argv);
+int			shell_exit(t_shell **shell);
+int			shell_noninteractive(t_shell **shell, char **argv);
 int			init_inputrc(void);
 void		set_signals(bool is_parent);
+int			default_readline_event(void);
+void		sigint_handler(int sig);
+void		sigint_handler_heredoc(int sig);
 
 void		redir_del(void *redir);
 t_redir		*redir_new_def(void);
@@ -135,19 +149,28 @@ t_node		*node_new_val(char **cmd, t_list *redir);
 int			parse_input_string(char *input_string, t_shell *shell);
 int			consume_token(t_list *cmd_node, t_list *token_node);
 int			group_tokens(t_shell *shell, t_list **tokens);
-int			resolve_dollar(t_list *environ, t_list **tokens);
-char		*resolve_dollar_heredoc(t_list *environ, char *line);
+int			insert_merge_token(t_list **tokens);
+int			merge_word_tokens(t_list **tokens);
+bool		is_insert_pos(t_quote *quote, t_list *node, t_list *prev);
+int			resolve_dollar(t_shell *shell, t_list **tokens, bool in_heredoc);
+char		*resolve_dollar_heredoc(t_shell *shell, char *line);
 int			create_redir_files(t_shell *shell);
+int			write_heredoc(t_shell *shell, char *file_path, char *delimiter);
 
-void		nodes_print_stdout(t_list *cmd_nodes);
+void		token_display_stdout(t_list *tokens);
 
 // BUILTINS
 int			builtin_check(int idx, t_node *node, t_exe *exe);
 int			builtin_echo(char **cmd, t_exe *exe);
 int			builtin_env(char **cmd, t_exe *exe);
+int			builtin_exit(char **cmd, t_exe *exe);
 int			builtin_pwd(char **cmd, t_exe *exe);
 int			builtin_unset(char **cmd, t_exe *exe);
 int			builtin_cd(char **cmd, t_exe *exe);
+int			builtin_export(char **cmd, t_exe *exe);
+bool		is_valid_key(char *key);
+void		invalid_key_msg(char *key, int *exit_code);
+char		**envp_lexical_sort(char **envp);
 int			init_builtins(t_exe *exe);
 
 // INITIALISATION
@@ -177,5 +200,7 @@ int			close_pipe_ends(int **pipes_fds, int idx);
 // EXECUTION
 char		*get_full_path(char *cmd, t_exe *exe);
 void		execute_cmd(char **cmd, t_exe *exe);
+int			execute_builtin(int idx, t_builtin *builtin, t_node *node,
+				t_exe *exe);
 
 #endif

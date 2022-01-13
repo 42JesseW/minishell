@@ -1,0 +1,10 @@
+>
+<
+>>
+<<
+cat <<< file
+ls >>> file
+<>
+><
+cat <> file
+cat >< file

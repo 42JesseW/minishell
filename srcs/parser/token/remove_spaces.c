@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <minishell.h>
 
 /* remove and free space node and link dependent nodes */
 static void	rm(t_list **tokens, t_list **node, t_list **prev)
@@ -27,7 +27,7 @@ static void	rm(t_list **tokens, t_list **node, t_list **prev)
 }
 
 /* remove spaces from the token list ignoring those between quotes. */
-void	remove_spaces(t_list **tokens)
+int	remove_spaces(t_list **tokens)
 {
 	t_list	*node;
 	t_list	*prev;
@@ -52,4 +52,5 @@ void	remove_spaces(t_list **tokens)
 			node = node->next;
 		}
 	}
+	return (*tokens != NULL);
 }

@@ -79,5 +79,5 @@ int	init_paths(t_exe *exe, t_shell *shell)
 		else
 			node = node->next;
 	}
-	return (SYS_ERROR);
+	return (SUCCESS);
 }
