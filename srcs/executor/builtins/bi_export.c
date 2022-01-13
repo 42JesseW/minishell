@@ -96,7 +96,7 @@ int	builtin_export(char **cmd, t_exe *exe)
 		pair = pair_new_val(cmd[idx]);
 		if (!pair)
 			return (SYS_ERROR);
-		if (is_valid_key(pair->key))
+		if (ft_strlen(pair->key) > 0 && is_valid_key(pair->key))
 		{
 			if (export(exe, pair) == SYS_ERROR)
 				return (SYS_ERROR);

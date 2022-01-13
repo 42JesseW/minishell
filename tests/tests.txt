@@ -77,6 +77,7 @@ export NEW_VAR=a;export NEW_VAR;export | grep "NEW_VAR"
 export _NEW_VAR;export | grep "_NEW_VAR"
 export ___NEW_VAR;export | grep "___NEW_VAR"
 export _NEW_VAR1;export | grep "_NEW_VAR1"
+export =a;export | grep --invert-match 'declare -x _='
 
 #QUOTES single quote
 echo 'hello there'
