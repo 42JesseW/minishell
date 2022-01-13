@@ -157,8 +157,7 @@ char		*resolve_dollar_heredoc(t_shell *shell, char *line);
 int			create_redir_files(t_shell *shell);
 int			write_heredoc(t_shell *shell, char *file_path, char *delimiter);
 
-void		nodes_print_stdout(t_list *cmd_nodes);	// TODO remove
-void		token_display_stdout(t_list *tokens);	// TODO remove
+void		token_display_stdout(t_list *tokens);
 
 // BUILTINS
 int			builtin_check(int idx, t_node *node, t_exe *exe);

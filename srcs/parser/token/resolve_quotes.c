@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parser.h>
+#include <minishell.h>
 
 static void	remove_token(t_list **tokens, t_list *rm)
 {
@@ -44,7 +44,7 @@ static int	append_to_token(t_token *new_token, t_list *node)
 		return (SYS_ERROR);
 	free(new_token->token);
 	new_token->token = new_token_str;
-	return (1);
+	return (SUCCESS);
 }
 
 static int	insert_word(t_list **tokens, t_list *prev, t_list **ref,
@@ -66,7 +66,7 @@ static int	insert_word(t_list **tokens, t_list *prev, t_list **ref,
 		prev->next = node;
 	}
 	*ref = node;
-	return (1);
+	return (SUCCESS);
 }
 
 /*
