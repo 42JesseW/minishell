@@ -69,12 +69,12 @@ char	*get_full_path(char *cmd, t_exe *exe)
 {
 	char	*path;
 
+	path = NULL;
 	if (ft_strnstr(cmd, "/", ft_strlen(cmd)) != NULL)
 	{
 		if (ft_strncmp(cmd, "/", 1) == 0)
 			path = cmd;
-		else if (ft_strncmp(cmd, "./", 2) == 0
-			|| ft_strncmp(cmd, "../", 3) == 0)
+		else
 			path = get_path_relative(cmd);
 		if (access(path, F_OK) != -1)
 			return (path);
