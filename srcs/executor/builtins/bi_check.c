@@ -53,7 +53,8 @@ int	execute_builtin(int idx, t_builtin *builtin, t_node *node, t_exe *exe)
 			return (SUCCESS);
 	}
 	exit_code = (*builtin->function)(node->cmd, exe);
-	*exe->exit_code = exit_code;
+	if (ft_strcmp(builtin->name, "exit") != 0)
+		*exe->exit_code = exit_code;
 	if (exit_code == SYS_ERROR)
 		return (SYS_ERROR);
 	else

@@ -16,11 +16,13 @@ int	shell_exit(t_shell **shell)
 {
 	t_shell	*p;
 	int		exit_code;
+	bool	shell_exit;
 
 	p = *shell;
 	exit_code = p->exit_code;
+	shell_exit = p->shell_exit;
 	shell_destroy(shell);
-	if (errno == 0 && isatty(STDIN_FILENO))
+	if (errno == 0 && isatty(STDIN_FILENO) && !shell_exit)
 		printf("exit\n");
 	return (exit_code);
 }
