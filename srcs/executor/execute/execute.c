@@ -12,8 +12,6 @@
 
 #include <minishell.h>
 
-// TODO test following command "touch DANG ; chmod u-r DANG ; cat DANG"
-
 /*
 ** DESCRIPTION
 **	- Finds the path to the folder from where the cmd can be executed
