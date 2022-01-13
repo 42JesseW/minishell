@@ -60,7 +60,7 @@ int	correct_dollar(t_list *tokens)
 		{
 			if (correct(node, token) == PARSE_FAIL)
 			{
-				dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
+				ft_dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
 				return (PARSE_FAIL);
 			}
 		}

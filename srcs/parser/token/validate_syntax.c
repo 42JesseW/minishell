@@ -89,7 +89,7 @@ int	validate_syntax(t_list *tokens)
 		if ((token->type == TOK_PIPE && !valid_pipe_position(prev))
 			|| (is_redir_type(token->type, REDIR_ALL) && !redir_has_word(node)))
 		{
-			dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
+			ft_dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
 			return (PARSE_FAIL);
 		}
 		prev = node;

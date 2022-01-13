@@ -89,7 +89,7 @@ int	redir_merge(t_list *tokens)
 			count = scan_redirs(node, &merge_node);
 			if (count > 2 || (count == 2 && !merge(node, merge_node)))
 			{
-				dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
+				ft_dprintf(STDERR_FILENO, SHELL_NAME SYNTAX_ERR, token->token);
 				return (PARSE_FAIL);
 			}
 		}
