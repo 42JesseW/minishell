@@ -170,8 +170,6 @@ echo one | grep -q two;echo $?
 
 #EVAL
 /bin/ls
-
-
 /bin/ls -l
 echo Hi
 echo -n Hi
@@ -209,3 +207,8 @@ ls -la > OUT1 > OUT1;rm OUT1
 ls -la > OUT1 > OUT2;rm OUT1;rm OUT2
 < Makefile cat > OUT1;rm OUT1
 < OUT1 ls -la >> OUT1
+dsbksdgbksdghsd
+echo $PATH
+echo "$PATH"
+echo $USER
+echo "$USER"
