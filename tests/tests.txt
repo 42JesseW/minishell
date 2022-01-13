@@ -170,8 +170,7 @@ echo one | grep -q two;echo $?
 
 #EVAL
 /bin/ls
-
-
+touch DANG;chmod u-r DANG;cat DANG
 /bin/ls -l
 echo Hi
 echo -n Hi

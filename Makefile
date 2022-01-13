@@ -176,7 +176,7 @@ clean:
 fclean: clean
 	@rm -f $(NAME) $(LIBFTLIB)
 	@make --directory=$(LIBFTDIR) fclean
-	@make --directory=$(RL_DIR) clean
+	@if [ -f "$(RL_DIR)/Makefile" ]; then make --directory=$(RL_DIR) clean; fi
 
 re: fclean all
 
