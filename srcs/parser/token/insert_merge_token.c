@@ -35,7 +35,8 @@ static int	insert(t_list **tokens, t_list **node, t_list **prev)
 	return (SUCCESS);
 }
 
-static void	init_vars(t_list *tokens, t_quote *quote, t_list **node, t_list **prev)
+static void	init_vars(t_list *tokens, t_quote *quote, t_list **node,
+					t_list **prev)
 {
 	quote->between = false;
 	quote->type = TOK_QUOTE;

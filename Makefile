@@ -174,6 +174,7 @@ clean:
 fclean: clean
 	@rm -f $(NAME) $(LIBFTLIB)
 	@make --directory=$(LIBFTDIR) fclean
+	@make --directory=$(RL_DIR) distclean
 
 re: fclean all
 

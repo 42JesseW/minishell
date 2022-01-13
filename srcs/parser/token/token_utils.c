@@ -80,25 +80,41 @@ bool	quote_is_type(bool match_type, t_quote *quote, t_token_type type)
 	return (match_type && type_matches && is_quote_type);
 }
 
-void	token_display_stdout(t_list *tokens) // TODO not norm
+static void	write_tokens_stdout(t_token *token)
 {
-	printf("[list size: %d]\n[type  :  token]\n", ft_lstsize(tokens));
-	for (t_list *node = tokens; node != NULL; node = node->next)
+	int		idx;
+	int		map_len;
+
+	idx = 0;
+	map_len = (int)(sizeof(g_map) / sizeof(t_token_map));
+	while (idx < map_len)
 	{
-		t_token	*token = node->content;
+		if (g_map[idx].type == token->type)
+			printf("\"%4s\"", g_map[idx].c);
+		idx++;
+	}
+}
+
+void	token_display_stdout(t_list *tokens)
+{
+	t_token	*token;
+	t_list	*node;
+
+	node = tokens;
+	printf("[list size: %d]\n[type  :  token]\n", ft_lstsize(tokens));
+	while (node != NULL)
+	{
+		token = node->content;
 		if (token->type == TOK_WORD)
 			printf("\"word\"");
 		if (token->type == TOK_MERGE)
 			printf("\"merge\"");
-		for (int idx = 0; idx < (int)(sizeof(g_map) / sizeof(t_token_map)); idx++)
-		{
-			if (g_map[idx].type == token->type)
-				printf("\"%4s\"", g_map[idx].c);
-		}
+		write_tokens_stdout(token);
 		if (token->type == TOK_DGREAT)
 			printf("\"%4s\"", ">>");
 		if (token->type == TOK_DLESS)
 			printf("\"%4s\"", "<<");
 		printf(" | \"%s\"\n", token->token);
+		node = node->next;
 	}
 }

@@ -150,6 +150,7 @@ int			parse_input_string(char *input_string, t_shell *shell);
 int			consume_token(t_list *cmd_node, t_list *token_node);
 int			group_tokens(t_shell *shell, t_list **tokens);
 int			insert_merge_token(t_list **tokens);
+int			merge_word_tokens(t_list **tokens);
 bool		is_insert_pos(t_quote *quote, t_list *node, t_list *prev);
 int			resolve_dollar(t_shell *shell, t_list **tokens, bool in_heredoc);
 char		*resolve_dollar_heredoc(t_shell *shell, char *line);
