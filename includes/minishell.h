@@ -200,5 +200,7 @@ int			close_pipe_ends(int **pipes_fds, int idx);
 // EXECUTION
 char		*get_full_path(char *cmd, t_exe *exe);
 void		execute_cmd(char **cmd, t_exe *exe);
+int			execute_builtin(int idx, t_builtin *builtin, t_node *node,
+				t_exe *exe);
 
 #endif

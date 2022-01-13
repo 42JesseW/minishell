@@ -97,6 +97,7 @@ SOURCES		= shell/environ/pair/pair_del.c \
 			  executor/dup/dup_pipes.c \
 			  executor/dup/dup_redirect.c \
 			  executor/execute/execute.c \
+			  executor/execute/execute_builtin.c \
 			  executor/fork/fork.c \
 			  executor/path/path_of_cmd.c \
 			  executor/path/path_init.c \
