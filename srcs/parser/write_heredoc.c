@@ -16,10 +16,14 @@ static int	write_heredoc_line(t_shell *shell, int fd, char *line)
 {
 	char	*resolved_line;
 
-	resolved_line = resolve_dollar_heredoc(shell, line);
-	if (!resolved_line)
-		return (SYS_ERROR);
-	write(fd, resolved_line, ft_strlen(resolved_line));
+	resolved_line = NULL;
+	if (ft_strlen(line) > 0)
+	{
+		resolved_line = resolve_dollar_heredoc(shell, line);
+		if (!resolved_line)
+			return (SYS_ERROR);
+		write(fd, resolved_line, ft_strlen(resolved_line));
+	}
 	write(fd, "\n", 1);
 	free(resolved_line);
 	return (SUCCESS);
