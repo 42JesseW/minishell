@@ -2,7 +2,7 @@
 As beautiful as a shell
 
 Code named "Shelly", this program compiles to a fully functional, bash-like, shell.
-For reference, we therefore reference to the [bash manual](https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html).
+For reference, we therefore refer to the [bash manual](https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html).
 
 ## What does it do
 
