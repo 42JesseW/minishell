@@ -7,7 +7,7 @@ For reference, we therefore reference to the [bash manual](https://www.gnu.org/s
 ## What does it do
 
 * Shows a prompt when waiting for a new command.
-* Has a working History.
+* Has a working History (Up and Down arrows).
 * Searches and launches the right executable (based on the PATH variable or by using relative or absolute path)
 * Just like bash, it implements builtins:
 
@@ -24,14 +24,14 @@ For reference, we therefore reference to the [bash manual](https://www.gnu.org/s
 * ’ inhibits all interpretation of a sequence of characters.
 * " inhibits all interpretation of a sequence of characters except for $.
 
-### Redirections:
-* `<` redirects input.
-* `>` redirects output.
-* `<<` reads input from the current source until a line containing only the delimiter is seen.
-* `>>` redirects output with append mode.
+* Redirections:
+  * `<` redirects input.
+  * `>` redirects output.
+  * `<<` reads input from the current source until a line containing only the delimiter is seen.
+  * `>>` redirects output with append mode.
 
-### Pipes
-* `|` The output of each command in the pipeline is connected via a pipe to the input of the next command.
+* Pipes
+  * `|` The output of each command in the pipeline is connected via a pipe to the input of the next command.
 
 * Environment variables ($ followed by characters) expands to their corresponding values.
 * `$?` expands to the exit status of the most recently executed foreground pipeline.
