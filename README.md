@@ -60,7 +60,7 @@ If you follow the following steps you're ready to use shelly:
 2. Use [make](https://www.gnu.org/software/make/) to compile the program. Running the `make` command in the cloned directory should do the job.
 The makefile will configure and compile `readline`, which is also added, in the local repository's directory. It will then link al needed libaries
 and object files into the executable file `minishell`. You can then execute the executable `./minishell`.
-3 (Optional) You can make the use of the program easier by adding the install directory to your PATH. If you're in the repository's directory you
+3. (Optional) You can make the use of the program easier by adding the install directory to your PATH. If you're in the repository's directory you
 can use the following command for this: `export PATH+=":$PWD".
 
 ## Known issues / quirks
